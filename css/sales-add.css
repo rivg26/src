@@ -1,0 +1,84 @@
+label {
+    font-size: 1rem;
+}
+
+i {
+    margin-right: 7px;
+}
+
+.wrapper {
+    width: 100%;
+}
+
+.img-Banner-Signup {
+    width: 100vw;
+    height: 20vh;
+    padding: 0;
+
+}
+
+.agreement {
+    height: 400px;
+    overflow-y: scroll;
+}
+
+#errorBox {
+    display: none;
+}
+
+.parent {
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.child {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex: 1 0 22%;
+    margin: 1rem;
+    height: auto;
+
+}
+
+.card {
+    height: 42.5rem;
+}
+
+.card-title {
+    height: 3.5rem;
+    text-align: center;
+}
+
+.card:hover {
+    transform: scale(1.05);
+
+}
+
+#customerTable tbody tr td:nth-child(2) {
+    margin: 0;
+    padding: 0.8rem;
+    width: 10%;
+    height: 10%;
+    text-align: center;
+}
+
+#customerTable tbody tr td img {
+    width: 50%;
+    height: 50%;
+}
+
+.dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+.dataTables {
+    border-radius: 0.5rem;
+}
+
+.legend {
+    width: auto;
+    border-bottom: none;
+
+}
