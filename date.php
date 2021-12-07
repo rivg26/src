@@ -11,12 +11,12 @@
 // $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 // echo $hashedPwd;
 
-session_start();
-echo $_SESSION['otpPhoneNumber'] .'<br>';
-echo $_SESSION['otp'].'<br>';
-echo $_SESSION['otpExpiration'].'<br>';
-echo $_SESSION['username'].'<br>';
-echo $_SESSION['forgotUsername'];
+// session_start();
+// echo $_SESSION['otpPhoneNumber'] .'<br>';
+// echo $_SESSION['otp'].'<br>';
+// echo $_SESSION['otpExpiration'].'<br>';
+// echo $_SESSION['username'].'<br>';
+// echo $_SESSION['forgotUsername'];
 
 // echo !pwdvalidate('!Gregorio0226');
 
@@ -42,4 +42,9 @@ echo $_SESSION['forgotUsername'];
 // 	}
 // 	return $pwdErr;
 // }
+
+require_once 'includes/functions.inc.php';
+require_once 'includes/dbh.inc.php';
+
+echo GenerateKey($conn);
 ?>

@@ -39,7 +39,7 @@
                 </div>
                 <form action="">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control shadow-none" id="forgotUsername" placeholder="ENTER USERNAME">
+                        <input type="text" class="form-control shadow-none" id="forgotUsername" placeholder="ENTER USERNAME" required>
                         <button class="btn btn-outline-secondary shadow-none" type="button" id="btnForgotPassword">FORGOT PASSWORD</button>
                         <div class="valid-feedback">
                             Looks good!
@@ -109,7 +109,12 @@
         });
 
         $(document).on('click', '#btnForgotPassword', function() {
-            if ($(".is-invalid")[0]) {
+            if(!$('#forgotUsername').val()){
+                $('#forgotUsername').removeClass('is-valid');
+                $('#forgotUsername').addClass('is-invalid');
+                $('#forgotUsernameFeedback').text('Please input username...');
+            }
+            else if ($(".is-invalid")[0]) {
                 $('#errorBox').show();
             } else {
                 $('#btnForgotPassword').prop('disabled',true);

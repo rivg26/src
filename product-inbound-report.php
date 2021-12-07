@@ -40,6 +40,7 @@
                         <th>Metric Tons</th>
                         <th>Plant Price</th>
                         <th>Final Price</th>
+                        <th>Encoder Name</th>
                         <th>Remarks</th>
                         <th>Actions</th>
                     </tr>
@@ -53,8 +54,9 @@
                         <td>3.2</td>
                         <td>900.00</td>
                         <td>1000.00</td>
+                        <td class="remarksWrapper">Ron Ivin V. Gregorio</td>
                         <td class="remarksWrapper">Wala lang</td>
-                        <td><button type="button" class="btn btn-warning shadow-none"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+                        <td><button type="button" class="btn btn-warning shadow-none mb-2"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
                     </tr>
                     <tr>
                         <td>19 Dec 2021</td>
@@ -64,30 +66,9 @@
                         <td>3.2</td>
                         <td>900.00</td>
                         <td>1000.00</td>
+                        <td class="remarksWrapper">Ron Ivin V. Gregorio</td>
                         <td class="remarksWrapper"> lorem </td>
-                        <td><button type="button" class="btn btn-warning shadow-none"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>01 Jan 2021</td>
-                        <td>PTR-123</td>
-                        <td>Petron 50kg</td>
-                        <td>10</td>
-                        <td>3.2</td>
-                        <td>900.00</td>
-                        <td>1000.00</td>
-                        <td class="remarksWrapper"> lorem </td>
-                        <td><button type="button" class="btn btn-warning shadow-none"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>03 Jan 2021</td>
-                        <td>PTR-123</td>
-                        <td>Petron 50kg</td>
-                        <td>11</td>
-                        <td>3.2</td>
-                        <td>900.00</td>
-                        <td>1000.00</td>
-                        <td class="remarksWrapper"> lorem </td>
-                        <td><button type="button" class="btn btn-warning shadow-none"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+                        <td><button type="button" class="btn btn-warning shadow-none mb-2"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
                     </tr>
 
 
@@ -101,6 +82,7 @@
                         <th>Metric Tons</th>
                         <th>Plant Price</th>
                         <th>Final Price</th>
+                        <th>Encoder Name</th>
                         <th>Remarks</th>
                         <th>Actions</th>
                     </tr>
@@ -115,6 +97,9 @@
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function() {
+
+        
+
         // var today = new Date().toLocaleString();
         var today = new Date();
         // today.toLocaleDateString("en-US", options);
@@ -137,16 +122,16 @@
                     className: "text-end"
                 },
                 {
-                    targets: [1, 2, 7],
+                    targets: [1, 2, 7, 8],
                     className: "text-justify"
                 },
                 {
-                    targets: [0],
+                    targets: [0, 9],
                     className: "text-center"
                 },
                 {
                     orderable: false,
-                    targets: [8]
+                    targets: [9]
                 }
             ],
             dom: 'B<"searchBar">frtip',

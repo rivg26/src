@@ -1,5 +1,5 @@
 <?php require_once 'head.php' ?>
-<div class="container">
+<div class="container" style="position: relative;">
     <div class="shadow p-5 mb-5 bg-body rounded">
         <div class="text-center">
             <h5 class="display-4 mb-5 mt-3">View Delivery</h5>
@@ -32,5 +32,6 @@
             <button class="btn btn-lg shadow-none rippleButton ripple no-printme">CANCEL</button>
         </div>
     </div>
+    <?php require_once 'loader.php' ?>
 </div>
 <?php require_once 'footer.php' ?>

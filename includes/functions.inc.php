@@ -8,14 +8,14 @@ function validateData($data)
     return $data;
 }
 
-function CheckKeys($Conn, $RandStr)
+function CheckKeys($conn, $RandStr)
 {
 
-    $Sql = 'SELECT * FROM inbound_table';
-    $Result = mysqli_query($Conn, $Sql);
+    $sql = 'SELECT * FROM employee_table';
+    $result = mysqli_query($conn, $sql);
 
-    while ($Row = mysqli_fetch_assoc($Result)) {
-        if ($Row['invoice_number'] === $RandStr) {
+    while ($Row = mysqli_fetch_assoc($result)) {
+        if ($Row['emp_number'] === $RandStr) {
             return $KeyExists = true;
             break;
         } else {
@@ -24,13 +24,13 @@ function CheckKeys($Conn, $RandStr)
     }
 }
 
-function GenerateKey($Conn)
+function GenerateKey($conn)
 {
     $KeyLength = 8;
     $Str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     $RandStr = substr(str_shuffle($Str), 0, $KeyLength);
 
-    $CheckKey = CheckKeys($Conn, $RandStr);
+    $CheckKey = CheckKeys($conn, $RandStr);
     while ($CheckKey === true) {
         $RandStr = substr(str_shuffle($Str), 0, $KeyLength);
     }
@@ -52,3 +52,14 @@ function itexmo($number, $message, $apicode, $passwd)
     return file_get_contents($url, false, $context);
 }
 
+//price-update-add
+
+function printProductOption($conn)
+{
+    $sql = 'SELECT * FROM `product_table`';
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo '<option value="'. $row['product_id']. '">'.$row['product_name'].'</option>';
+    }
+}

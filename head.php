@@ -18,9 +18,9 @@
     <link rel="stylesheet" href="css/admin-main.css">
     <link rel="stylesheet" href="css/sidebar-themes.css">
     <link rel="stylesheet" href="css/admin-component.css">
-   
+
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" />
-    
+
 </head>
 
 <body>
@@ -71,12 +71,25 @@
                                 </ul>
                             </div> -->
                         </li>
-                        <li>
-                            <a href="" class="adminNav" link="sales-report" >
+                        <li class="sidebar-dropdown">
+                            <a href="#" >
                                 <i class="fa fa-shopping-cart"></i>
                                 <span class="menu-text">Sales Management</span>
                                 <!-- <span class="badge badge-pill badge-danger">3</span> -->
                             </a>
+                            <div class="sidebar-submenu">
+                                <ul>
+                                    <li>
+                                        <a class="adminNav" link="sales-add" href="">Add Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a class="adminNav" link="sales-report" href="">Sales Report</a>
+                                    </li>
+                                    <li>
+                                        <a class="adminNav" link="price-update-report" href="">Price Update Report</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                         <li class="sidebar-dropdown">
                             <a href="#">
@@ -105,7 +118,7 @@
                         </li>
                         <li>
                             <a href="" class="adminNav" link="customer-report">
-                            <i class="fas fa-users"></i>
+                                <i class="fas fa-users"></i>
                                 <span class="menu-text">Customer Management</span>
                             </a>
                         </li>

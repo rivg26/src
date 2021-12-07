@@ -102,7 +102,6 @@ jQuery(function ($) {
     $('.sidebar-content').addClass('desktop');
   }
 });
-
 $(document).on('click', '.adminNav', function () {
   $("#loader").fadeIn();
   var self = this;
@@ -138,6 +137,12 @@ $(document).on('click', '.adminNav', function () {
         break;
       case 'sales-report':
         var component = 'sales-report.php';
+        break;
+      case 'sales-add':
+        var component = 'sales-add.php';
+        break;
+      case 'price-update-report':
+        var component = 'price-update-report.php';
         break;
       case 'inventory-report':
         var component = 'inventory-report.php';

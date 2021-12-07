@@ -52,7 +52,7 @@ if (isset($_SESSION['forgotUsername'])) {
                     <div class="mb-3">
                         <label for="newPassword" class="form-label">New Password</label>
                         <div class="input-group mb-3 show_hide_password0">
-                            <input type="password" class="form-control shadow-none" id="newPassword" placeholder="ENTER NEW PASSWORD">
+                            <input type="password" class="form-control shadow-none" id="newPassword" placeholder="ENTER NEW PASSWORD" required>
                             <span class="input-group-text shadow-none"><a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a></span>
                             <div class="valid-feedback">
                                 Looks good!
@@ -65,7 +65,7 @@ if (isset($_SESSION['forgotUsername'])) {
                     <div class="mb-3">
                         <label for="newPassword1" class="form-label">Confirm New Password</label>
                         <div class="input-group mb-3 show_hide_password1">
-                            <input type="password" class="form-control shadow-none" id="newPassword1" placeholder="CONFIRM NEW PASSWORD">
+                            <input type="password" class="form-control shadow-none" id="newPassword1" placeholder="CONFIRM NEW PASSWORD" required>
                             <span class="input-group-text shadow-none"><a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a></span>
                             <div class="valid-feedback">
                                 Looks good!
@@ -97,8 +97,26 @@ if (isset($_SESSION['forgotUsername'])) {
 <script>
     $(document).ready(function() {
 
-        $(document).on('click', '#btnSubmitNewPassword', function() {
-            if ($('.is-invalid')[0]) {
+        $(document).on('click', '#btnSubmitNewPassword', function(e) {
+            e.preventDefault();
+            if (!$('#newPassword').val() || !$('#newPassword1').val()) {
+                if (!$('#newPassword').val() && !$('#newPassword1').val()) {
+                    $('#newPassword').removeClass('is-valid');
+                    $('#newPassword').addClass('is-invalid');
+                    $('#newPasswordFeedback').text('Please input new password...');
+                    $('#newPassword1').removeClass('is-valid');
+                    $('#newPassword1').addClass('is-invalid');
+                    $('#newPassword1Feedback').text('Please input confirm new password...');
+                } else if (!$('#newPassword').val()) {
+                    $('#newPassword').removeClass('is-valid');
+                    $('#newPassword').addClass('is-invalid');
+                    $('#newPasswordFeedback').text('Please input new password...');
+                } else {
+                    $('#newPassword1').removeClass('is-valid');
+                    $('#newPassword1').addClass('is-invalid');
+                    $('#newPassword1Feedback').text('Please input confirm new password...');
+                }
+            } else if ($('.is-invalid')[0]) {
                 $('#errorBox').show();
             } else {
                 $('#btnSubmitNewPassword').prop('disabled', true);

@@ -71,16 +71,18 @@
         </div>
 
         <div class="text-center mt-5">
-            <button class="btn btn-lg shadow-none rippleButton ripple" onClick="hello();">SUBMIT</button>
-            <button class="btn btn-lg shadow-none rippleButton ripple" >Cancel</button>
+            <button class="btn btn-lg shadow-none rippleButton ripple">SUBMIT</button>
+            <button class="btn btn-lg shadow-none rippleButton ripple">Cancel</button>
         </div>
     </div>
     <?php require_once 'loader.php' ?>
 </div>
 
 <script>
-    function hello() {
-        console.log('hello');
-    }
+    $(document).ready(function() {
+       
+
+
+    });
 </script>
 <?php require_once 'footer.php' ?>

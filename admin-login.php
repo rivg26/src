@@ -29,7 +29,7 @@
                             <form>
                                 <div class="mb-3">
                                     <label for="adminUsername" class="form-label">Username</label>
-                                    <input type="text" class="form-control shadow-none " id="adminUsername" placeholder="ENTER USERNAME">
+                                    <input type="text" class="form-control shadow-none " id="adminUsername" placeholder="ENTER USERNAME" required>
                                     <div class="valid-feedback">
                                         Looks good!
                                     </div>
@@ -40,7 +40,7 @@
                                 <div class="mb-3">
                                     <label for="adminPassword" class="form-label">Password</label>
                                     <div class="input-group mb-3 show_hide_password0">
-                                        <input type="password" class="form-control shadow-none " id="adminPassword" placeholder="ENTER PASSWORD">
+                                        <input type="password" class="form-control shadow-none " id="adminPassword" placeholder="ENTER PASSWORD" required>
                                         <span class="input-group-text shadow-none" type="button"><a href=""><i class="fa fa-eye-slash" aria-hidden="true"></i></a></span>
                                         <div id="adminPasswordFeedback" class="invalid-feedback">
                                             Invalid Password...
@@ -83,10 +83,28 @@
 
         $(document).on('click', '#btnLogin', function(e) {
             e.preventDefault();
-            if ($(".is-invalid")[0]) {
+            if (!$('#adminUsername').val() || !$('#adminPassword').val()) {
+                if (!$('#adminUsername').val() && !$('#adminPassword').val()) {
+                    $('#adminUsername').removeClass('is-valid');
+                    $('#adminUsername').addClass('is-invalid');
+                    $('#adminUsernameFeedback').text('Please input username...');
+                    $('#adminPassword').removeClass('is-valid');
+                    $('#adminPassword').addClass('is-invalid');
+                    $('#adminPasswordFeedback').text('Please input password...');
+                } else if (!$('#adminUsername').val()) {
+                    $('#adminUsername').removeClass('is-valid');
+                    $('#adminUsername').addClass('is-invalid');
+                    $('#adminUsernameFeedback').text('Please input username...');
+                }
+                else{
+                    $('#adminPassword').removeClass('is-valid');
+                    $('#adminPassword').addClass('is-invalid');
+                    $('#adminPasswordFeedback').text('Please input password...');
+                }
+            } else if ($(".is-invalid")[0]) {
                 $('#errorBox').show();
             } else {
-                $('#btnLogin').prop('disabled',true);
+                $('#btnLogin').prop('disabled', true);
                 let datastring = {
                     "username": $('#adminUsername').val(),
                     "password": $('#adminPassword').val(),
@@ -102,16 +120,14 @@
 
                         if (data.status) {
                             window.location.href = "admin-otp.php";
-                        }
-                        else if(data.message === 'accLock'){
+                        } else if (data.message === 'accLock') {
                             $('#errorBox').text('Your Account is Locked. You already reach the maximum attempts. To retrieve account, please click forgot password');
                             $('#errorBox').show();
-                            $('#btnLogin').prop('disabled',true);
-                        }
-                        else {
+                            $('#btnLogin').prop('disabled', true);
+                        } else {
                             $('#adminPassword').removeClass('is-valid');
                             $('#adminPassword').addClass('is-invalid');
-                            $('#btnLogin').prop('disabled',false);
+                            $('#btnLogin').prop('disabled', false);
                         }
 
                     },
