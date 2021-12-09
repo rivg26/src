@@ -46,5 +46,10 @@
 require_once 'includes/functions.inc.php';
 require_once 'includes/dbh.inc.php';
 
-echo GenerateKey($conn);
+// $data = getPriceUpdateData($conn, 'PUN-AfwgC42x');
+
+// echo $data[0]['price_final_price'];
+
+echo json_encode(GenerateKey($conn, 'SELECT * FROM price_table;', 'PUN-', 'price_pun') );
+// echo GenerateKey($conn, 'SELECT * FROM price_table;', 'PUN-', 'price_pun');
 ?>

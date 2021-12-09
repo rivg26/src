@@ -125,6 +125,7 @@
                             $('#errorBox').show();
                             $('#btnLogin').prop('disabled', true);
                         } else {
+                            $('#adminPasswordFeedback').text('Incorrect Password...');
                             $('#adminPassword').removeClass('is-valid');
                             $('#adminPassword').addClass('is-invalid');
                             $('#btnLogin').prop('disabled', false);

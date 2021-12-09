@@ -1,3 +1,8 @@
+<?php
+    require_once 'includes/dbh.inc.php';
+    require_once 'includes/functions.inc.php';
+    session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,7 +43,7 @@
                     </div>
                     <div class="user-info">
                         <span class="user-name">Ron Ivin
-                            <strong>Gregorio</strong>
+                            <strong></strong>
                         </span>
                         <span class="user-role">Administrator</span>
 

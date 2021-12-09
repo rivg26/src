@@ -29,6 +29,15 @@
                     </optgroup>
                 </select>
             </div>
+            <div class="category-filter2">
+                <select id="categoryFilter2" class="form-control shadow-none">
+                    <optgroup label="Sort by Payment Status">
+                        <option value="">Show All</option>
+                        <option value='Pending'>Pending</option>
+                        <option value='Paid'>Paid</option>
+                    </optgroup>
+                </select>
+            </div>
             
             <table id="salesTable" class="tableDesign table table-striped table-hover align-middle shadow-none">
                 <thead class="align-middle">

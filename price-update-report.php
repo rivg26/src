@@ -23,8 +23,8 @@
                         <option value='<?php echo "Dec " . date("Y") ?>'>December</option>
                     </optgroup>
                     <optgroup label="Sort by Day">
-                        <option value="<?= date('d-m-y') ?>">Today</option>
-                        <option value="<?= date('d-m-y', strtotime("-1 days")) ?>">Yesterday</option>
+                        <option value="<?= date('d M Y', strtotime(date('Y-m-d'))) ?>" selected>Today</option>
+                        <option value="<?= date('d M Y', strtotime("-1 days")) ?>">Yesterday</option>
                     </optgroup>
                 </select>
             </div>
@@ -39,12 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>21 Nov 2021</td>
-                        <td>PTR-23</td>
-                        <td>Ron Ivin Gregorio</td>
-                        <td><button type="button" class="btn btn-warning shadow-none"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
-                    </tr>
+                   <?php priceUpdateReportTable($conn) ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -184,5 +179,10 @@
         });
 
         table.draw();
+
+        $(document).on('click','#btnPriceUpdateEdit', function(){
+            let rowId = $(this).attr('row.id');
+            window.location.href = "price-update-add.php?action=update&rowId=" + rowId;
+        });
     });
 </script>
