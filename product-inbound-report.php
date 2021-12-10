@@ -35,6 +35,7 @@
                     <tr>
                         <th>Date Inbound</th>
                         <th>Invoice Number</th>
+                        <th>PU Number</th>
                         <th>Product Name</th>
                         <th>Quantity</th>
                         <th>Metric Tons</th>
@@ -49,6 +50,7 @@
                     <tr>
                         <td>20 Nov 2021</td>
                         <td>PTR-123</td>
+                        <td></td>
                         <td>Petron 50kg</td>
                         <td>11</td>
                         <td>3.2</td>
@@ -61,6 +63,7 @@
                     <tr>
                         <td>19 Dec 2021</td>
                         <td>PTR-123</td>
+                        <td></td>
                         <td>Petron 50kg</td>
                         <td>10</td>
                         <td>3.2</td>
@@ -77,6 +80,7 @@
                     <tr>
                         <th>Date Inbound</th>
                         <th>Invoice Number</th>
+                        <th>PU Number</th>
                         <th>Product Name</th>
                         <th>Quantity</th>
                         <th>Metric Tons</th>
@@ -118,20 +122,20 @@
             "bAutoWidth": true,
             lengthMenu: [5, 10, 25, 50, 100, 200],
             "columnDefs": [{
-                    targets: [3, 4, 5, 6],
+                    targets: [4, 5, 6, 7],
                     className: "text-end"
                 },
                 {
-                    targets: [1, 2, 7, 8],
+                    targets: [1, 2, 3, 8, 9],
                     className: "text-justify"
                 },
                 {
-                    targets: [0, 9],
+                    targets: [0, 10],
                     className: "text-center"
                 },
                 {
                     orderable: false,
-                    targets: [9]
+                    targets: [10]
                 }
             ],
             dom: 'B<"searchBar">frtip',

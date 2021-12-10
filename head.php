@@ -109,12 +109,12 @@
                                     <li>
                                         <a class="adminNav" link="product-report" href="">Product Inbound Report</a>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <a class="adminNav" link="defective-add" href="">Add Defective Product</a>
                                     </li>
                                     <li>
                                         <a class="adminNav" link="defective-report" href="">Defective Product Report</a>
-                                    </li>
+                                    </li> -->
                                     <li>
                                         <a class="adminNav" link="inventory-report" href="">Total Inventory Report</a>
                                     </li>

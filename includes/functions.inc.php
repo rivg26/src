@@ -105,3 +105,13 @@ function getPriceUpdateData($conn, $pun)
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }
+
+function getPunInbound($conn)
+{
+    $sql = "SELECT price_pun FROM price_table JOIN employee_table ON employee_table.emp_id = price_table.price_emp_id WHERE price_date IN (SELECT MAX(price_date) FROM price_table ) GROUP BY price_pun;";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        return $row;
+    }
+}

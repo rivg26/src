@@ -11,12 +11,12 @@
 // $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 // echo $hashedPwd;
 
-// session_start();
-// echo $_SESSION['otpPhoneNumber'] .'<br>';
-// echo $_SESSION['otp'].'<br>';
-// echo $_SESSION['otpExpiration'].'<br>';
-// echo $_SESSION['username'].'<br>';
-// echo $_SESSION['forgotUsername'];
+session_start();
+echo $_SESSION['otpPhoneNumber'] .'<br>';
+echo $_SESSION['otp'].'<br>';
+echo $_SESSION['otpExpiration'].'<br>';
+echo $_SESSION['username'].'<br>';
+echo $_SESSION['forgotUsername'];
 
 // echo !pwdvalidate('!Gregorio0226');
 
@@ -50,6 +50,7 @@ require_once 'includes/dbh.inc.php';
 
 // echo $data[0]['price_final_price'];
 
-echo json_encode(GenerateKey($conn, 'SELECT * FROM price_table;', 'PUN-', 'price_pun') );
+// echo json_encode(GenerateKey($conn, 'SELECT * FROM price_table;', 'PUN-', 'price_pun') );
+// var_dump(getPunInbound($conn)) ;
 // echo GenerateKey($conn, 'SELECT * FROM price_table;', 'PUN-', 'price_pun');
 ?>

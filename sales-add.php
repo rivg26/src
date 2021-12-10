@@ -345,7 +345,7 @@
 <?php require_once 'footer.php' ?>
 
 <script src="js/magnify.js"></script>
-<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<script src="//code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script>
     $(document).ready(function() {
         $('.zoom').magnify();
