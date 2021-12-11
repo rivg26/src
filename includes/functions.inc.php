@@ -53,13 +53,19 @@ function itexmo($number, $message, $apicode, $passwd)
 
 //price-update-add
 
-function printProductOption($conn)
+function printProductOption($conn,$productId)
 {
     $sql = 'SELECT * FROM `product_table`';
     $result = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($result)) {
-        echo '<option value="'. $row['product_id']. '">'.$row['product_name'].'</option>';
+        $selected = "";
+        for($x = 1; $x <= 8; $x++){
+            if($productId === $x && $row['product_id'] === "$x"){
+                $selected = "selected";
+            }
+        }
+        echo '<option value="'. $row['product_id']. '" '.$selected.'>'.$row['product_name'].'</option>';
     }
 }
 
@@ -114,4 +120,53 @@ function getPunInbound($conn)
     while ($row = mysqli_fetch_assoc($result)) {
         return $row;
     }
+}
+
+
+
+function productInboundTable($conn)
+{
+    $sql = "SELECT `pin_id`, `pin_invoice`, product_table.product_name, pin_pun, CONCAT(employee_table.emp_firstname ,' ', employee_table.emp_middlename, ' ', employee_table.emp_lastname) AS pin_employee_name, pin_date, pin_total_quantity, pin_total_plant_price, pin_total_final_price, pin_metric_tons, pin_product_option, pin_remarks FROM `product_inbound_table` JOIN product_table ON product_table.product_id = pin_product_id JOIN employee_table ON employee_table.emp_id = pin_encoder_id;";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.date('d M Y', strtotime($row['pin_date'])).'</td>
+            <td>'.$row['pin_invoice'].'</td>
+            <td>'.$row['pin_pun'].'</td>
+            <td>'.$row['product_name'].'</td>
+            <td>'.$row['pin_total_quantity'].'</td>
+            <td>'.$row['pin_metric_tons'].'</td>
+            <td>'.$row['pin_total_plant_price'].'</td>
+            <td>'.$row['pin_total_final_price'].'</td>
+            <td class="remarksWrapper">'.$row['pin_employee_name'].'</td>
+            <td class="remarksWrapper">'.$row['pin_remarks'].'</td>
+            <td><button type="button" class="btn btn-warning shadow-none mb-2" row.id="'.$row['pin_id'].'" id = "btnProductInboundEdit"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+        </tr>';
+    }
+}
+
+
+function getProductInboundData($conn, $pinId)
+{
+    $sql = "SELECT * FROM `product_inbound_table` WHERE pin_id = ?";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../price-update-add.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "i", $pinId);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    } 
+    else{
+        return false;
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
 }

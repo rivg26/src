@@ -24,8 +24,8 @@
                         <option value='<?php echo "Dec " . date("Y") ?>'>December</option>
                     </optgroup>
                     <optgroup label="Sort by Day">
-                        <option value="<?= date('d-m-y') ?>">Today</option>
-                        <option value="<?= date('d-m-y', strtotime("-1 days")) ?>">Yesterday</option>
+                        <option value="<?= date('d M Y', strtotime(date('Y-m-d'))) ?>" selected>Today</option>
+                        <option value="<?= date('d M Y', strtotime("-1 days")) ?>">Yesterday</option>
                     </optgroup>
                 </select>
             </div>
@@ -47,34 +47,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>20 Nov 2021</td>
-                        <td>PTR-123</td>
-                        <td></td>
-                        <td>Petron 50kg</td>
-                        <td>11</td>
-                        <td>3.2</td>
-                        <td>900.00</td>
-                        <td>1000.00</td>
-                        <td class="remarksWrapper">Ron Ivin V. Gregorio</td>
-                        <td class="remarksWrapper">Wala lang</td>
-                        <td><button type="button" class="btn btn-warning shadow-none mb-2"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
-                    </tr>
-                    <tr>
-                        <td>19 Dec 2021</td>
-                        <td>PTR-123</td>
-                        <td></td>
-                        <td>Petron 50kg</td>
-                        <td>10</td>
-                        <td>3.2</td>
-                        <td>900.00</td>
-                        <td>1000.00</td>
-                        <td class="remarksWrapper">Ron Ivin V. Gregorio</td>
-                        <td class="remarksWrapper"> lorem </td>
-                        <td><button type="button" class="btn btn-warning shadow-none mb-2"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
-                    </tr>
-
-
+                    <?= productInboundTable($conn); ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -102,7 +75,15 @@
 <script>
     $(document).ready(function() {
 
-        
+        $(document).on('click', '#btnProductInboundEdit', function() {
+            let rowId = $(this).attr('row.id');
+            $("#loader").fadeIn();
+            window.setTimeout(function() {
+                $("#loader").fadeOut();
+                window.location.href = "product-inbound-add.php?rowId=" + rowId;
+            }, 2000);
+
+        });
 
         // var today = new Date().toLocaleString();
         var today = new Date();

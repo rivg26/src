@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="css/admin-login.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <title>Document</title>
+    <link rel="shortcut icon" type="image/png" href="assets/logo/favicon.ico" />
+    <title>LOG IN | PAREDES PETRON SYSTEM</title>
 </head>
 
 <body>
@@ -20,7 +21,7 @@
                 <div class="col-sm-12 col-md-12 col-lg-5 img-Container">
                     <div class="img-Wrapper">
                         <img src="assets/admin-img/petron4.png" alt="" class="img-Banner">
-                    </div>
+                    </div>    
                 </div>
                 <div class="d-flex flex-column align-items-center justify-content-center col-sm-12 col-md-12 col-lg-7">
                     <div class="shadow p-5 mb-5 bg-body rounded wrapper">

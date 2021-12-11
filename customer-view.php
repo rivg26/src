@@ -1,5 +1,5 @@
 <?php require_once 'head.php' ?>
-<div class="container">
+<div class="container" style="position: relative;">
 
     <div class="row shadow p-5 mb-4 bg-body rounded  mt-3">
         <div class="text-center">
@@ -9,22 +9,51 @@
             <legend class="float-none w-auto">Personal Information</legend>
             <div class="row">
                 <div class="col-md-5 mb-3">
-                    <label for="exampleInputEmail1" class="form-label">First Name</label>
-                    <input type="text" class="form-control shadow-none" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <label for="customerFirstName" class="form-label">First Name*</label>
+                    <input type="text" class="form-control shadow-none" id="customerFirstName" placeholder="first name" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div id="customerFirstNameFeedback" class="invalid-feedback">
+                        Please input First Name....
+                    </div>
                 </div>
                 <div class="col-md-5 mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Last Name</label>
-                    <input type="text" class="form-control shadow-none" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <label for="customerLastName" class="form-label">Last Name*</label>
+                    <input type="text" class="form-control shadow-none" id="customerLastName" placeholder="last name" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div id="customerLastNameFeedback" class="invalid-feedback">
+                        Please input Last Name....
+                    </div>
                 </div>
                 <div class="col-md-2 mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Middle Initial</label>
-                    <input type="text" class="form-control shadow-none" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <label for="customerMiddleName" class="form-label">Middle Initial*</label>
+                    <input type="text" class="form-control shadow-none" id="customerMiddleName" placeholder="M.I." maxlength="3" onkeypress="return /^[a-zA-Z\s.]*$/.test(event.key)">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div id="customerMiddleNameFeedback" class="invalid-feedback">
+                        Please input Middle Initial....
+                    </div>
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-md-3">
-                    <label for="exampleInputEmail1" class="form-label">Phone Number</label>
-                    <input type="text" class="form-control shadow-none" id="exampleInputEmail1" maxlength="11" aria-describedby="emailHelp">
+                    <label for="customerPhoneNumber" class="form-label">Phone Number*</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">+63</span>
+                        <input type="text" class="form-control shadow-none" id="customerPhoneNumber" maxlength="10" onkeypress="return /^[0-9]*$/.test(event.key)">
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div id="customerPhoneNumberFeedback" class="invalid-feedback">
+                            Please input Phone Number....
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </fieldset>
@@ -32,132 +61,208 @@
             <legend class="float-none w-auto">Address</legend>
             <div class="row mb-3">
                 <div class="col-md-6 mb-3">
-                    <label for="exampleInputEmail1" class="form-label">House/Unit No.*</label>
-                    <input type="text" class="form-control shadow-none" id="exampleInputEmail1" placeholder="house/unit no.">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Street/Bldg.*</label>
-                    <input type="text" class="form-control shadow-none" id="exampleInputEmail1" placeholder="street bldg.">
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-3 mb-3">
-                    <label for="region" class="form-label">Region*</label>
-                    <select class="form-select shadow-none" id="region" name="region"></select>
+                    <label for="customerUnit" class="form-label">House/Unit No.*</label>
+                    <input type="text" class="form-control shadow-none" id="customerUnit" placeholder="house/unit no." onkeypress="return /^[a-zA-Z\s0-9.,-]*$/.test(event.key)">
                     <div class="valid-feedback">
                         Looks good!
                     </div>
-                    <div id="regionInvalidFeedback" class="invalid-feedback">
-                        Please Select Region...
+                    <div id="customerUnitFeedback" class="invalid-feedback">
+                        Please input House/Unit No....
                     </div>
                 </div>
-                <div class="col-md-3 mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Province*</label>
-                    <select class="form-select shadow-none" id="province" name="province"></select>
-
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Municipality/City*</label>
-                    <select class="form-select shadow-none" id="city" name="city" ></select>
-
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Barangay*</label>
-                    <select class="form-select shadow-none" id="barangay" name="barangay"></select>
+                <div class="col-md-6 mb-3">
+                    <label for="customerStreet" class="form-label">Street/Bldg.*</label>
+                    <input type="text" class="form-control shadow-none" id="customerStreet" placeholder="street bldg." onkeypress="return /^[a-zA-Z\s0-9.,-]*$/.test(event.key)">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div id="customerStreetFeedback" class="invalid-feedback">
+                        Please input Street/Bldg...
+                    </div>
                 </div>
             </div>
-
+            <div class="row mb-3">
+                <div class="col-md-4 mb-3">
+                    <label for="customerBarangay" class="form-label">Barangay*</label>
+                    <input type="text" class="form-control shadow-none" id="customerBarangay" placeholder="barangay" onkeypress="return /^[a-zA-Z\s0-9]*$/.test(event.key)">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div id="customerBarangayFeedback" class="invalid-feedback">
+                        Please input Barangay...
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="customerCity" class="form-label">Municipality/City*</label>
+                    <input type="text" class="form-control shadow-none" id="customerCity" placeholder="municipality/city" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div id="customerCityFeedback" class="invalid-feedback">
+                        Please input Municipality/City...
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="customerProvince" class="form-label">Province*</label>
+                    <input type="text" class="form-control shadow-none" id="customerProvince" placeholder="province" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                    <div id="customerProvinceFeedback" class="invalid-feedback">
+                        Please input Province...
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
-                    <label for="floatingTextarea2" class="form-label">Landmark</label>
-                    <textarea class="form-control shadow-none" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                    <label for="customerLandmark" class="form-label">Landmark</label>
+                    <textarea class="form-control shadow-none" placeholder="landmark" id="customerLandmark" style="height: 100px" onkeypress="return /^[a-zA-Z\s0-9.,()]*$/.test(event.key)"></textarea>
                 </div>
             </div>
         </fieldset>
+
+
+        <div class="text-center mt-5">
+            <button type="button" class="btn btn-lg shadow-none rippleButton ripple" data-bs-toggle="modal" data-bs-target="#customerModal" id="btnCustomerSubmit">Submit</button>
+            <button type="button" class="btn btn-lg shadow-none rippleButton ripple" id="btnLocation" >Location</button>
+        </div>
+
+
+        <div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn shadow-none rippleButton ripple" id="customerSubmit">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <input type="hidden" id="hiddenProvince"></input>
-    <input type="hidden" id="hiddenCity"></input>
-    <input type="hidden" id="hiddenBarangay"></input>
+    <?php require_once 'loader.php' ?>
 </div>
 <?php require_once 'footer.php' ?>
-<script src="https://f001.backblazeb2.com/file/buonzz-assets/jquery.ph-locations-v1.0.0.js"></script>
 <script>
     $(document).ready(function() {
 
-        var my_handlers = {
-
-            fill_provinces: function() {
-
-                var region_code = $(this).val();
-                $('#province').ph_locations('fetch_list', [{
-                    "region_code": region_code
-                }]);
-
-            },
-
-            fill_cities: function() {
-
-                var province_code = $(this).val();
-                $('#city').ph_locations('fetch_list', [{
-                    "province_code": province_code
-                }]);
-                let selected_caption = $("#province option:selected").text();
-
-                // the hidden field will contain the name of the region, not the code
-                $('#hiddenProvince').val(selected_caption);
-
-            },
+        $(document).on('click', '#customerSubmit', function(){
+            
+        });
 
 
-            fill_barangays: function() {
+        const popupCenter = ({
+            url,
+            title,
+            w,
+            h
+        }) => {
+            // Fixes dual-screen position                             Most browsers      Firefox
+            const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+            const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
 
-                var city_code = $(this).val();
-                $('#barangay').ph_locations('fetch_list', [{
-                    "city_code": city_code
-                }]);
+            const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+            const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
 
-                let selected_caption = $("#city option:selected").text();
-                $('#hiddenCity').val(selected_caption)
+            const systemZoom = width / window.screen.availWidth;
+            const left = (width - w) / 2 / systemZoom + dualScreenLeft
+            const top = (height - h) / 2 / systemZoom + dualScreenTop
+            const newWindow = window.open(url, title,
+                `
+                scrollbars=yes,
+                width=${w / systemZoom}, 
+                height=${h / systemZoom}, 
+                top=${top}, 
+                left=${left}
+                `
+                        )
+
+            if (window.focus) newWindow.focus();
+        }
+        $(document).on('click','#btnLocation', function(){
+            popupCenter({url: 'maps.php?location= Sm Bacoor', title: 'Paredes Petron Location', w: 900, h: 500});  
+        });
+        $(document).on('keyup', '#customerFirstName', function() {
+            validation('#customerFirstName');
+        });
+        $(document).on('keyup', '#customerLastName', function() {
+            validation('#customerLastName');
+        });
+        $(document).on('keyup', '#customerMiddleName', function() {
+            validation('#customerMiddleName');
+        });
+        $(document).on('keyup', '#customerUnit', function() {
+            validation('#customerUnit');
+        });
+        $(document).on('keyup', '#customerStreet', function() {
+            validation('#customerStreet');
+        });
+        $(document).on('keyup', '#customerBarangay', function() {
+            validation('#customerBarangay');
+        });
+        $(document).on('keyup', '#customerCity', function() {
+            validation('#customerCity');
+        });
+        $(document).on('keyup', '#customerProvince', function() {
+            validation('#customerProvince');
+        });
+        $(document).on('keyup', '#customerPhoneNumber', function() {
+            $('#customerPhoneNumberFeedback').text('Please input Phone Number....');
+            if (!$(this).val() || $(this).val() === "") {
+                $(this).removeClass('is-valid');
+                $(this).addClass('is-invalid');
+            } else {
+                let datastring = {
+                    "phoneNumber": $('#customerPhoneNumber').val(),
+                    "sendPhoneNumber": "phoneSent"
+                };
+                console.log(datastring);
+                $.ajax({
+                    url: 'includes/customer-view.inc.php',
+                    type: 'POST',
+                    data: datastring,
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status) {
+                            $('#customerPhoneNumber').removeClass('is-invalid');
+                            $('#customerPhoneNumber').addClass('is-valid');
+                        } else {
+                            $('#customerPhoneNumberFeedback').text('Invalid Phone Number....');
+                            $('#customerPhoneNumber').removeClass('is-valid');
+                            $('#customerPhoneNumber').addClass('is-invalid');
+                        }
+
+                    },
+                    fail: function(xhr, textStatus, errorThrown) {
+                        alert(errorThrown);
+                        alert(xhr);
+                        alert(textStatus);
+                    },
+                    catch: function(error) {
+                        alert(error);
+                    }
+
+                });
             }
-        };
-
-        $(function() {
-            $('#region').on('change', my_handlers.fill_provinces);
-            $('#province').on('change', my_handlers.fill_cities);
-            $('#city').on('change', my_handlers.fill_barangays);
-
-            $('#region').ph_locations({
-                'location_type': 'regions'
-            });
-            $('#province').ph_locations({
-                'location_type': 'provinces'
-            });
-            $('#city').ph_locations({
-                'location_type': 'cities'
-            });
-            $('#barangay').ph_locations({
-                'location_type': 'barangays'
-            });
-
-            $('#region').ph_locations('fetch_list');
         });
 
-        $(function() {
 
-            $('#barangay').on('change', function() {
+        function validation(id) {
+            if (!$(id).val() || $(id).val() === "") {
+                $(id).removeClass('is-valid');
+                $(id).addClass('is-invalid');
+            } else {
+                $(id).removeClass('is-invalid');
+                $(id).addClass('is-valid');
+            }
+        }
 
-                // we are getting the text() here, not val()
-                var selected_caption = $("#barangay option:selected").text();
 
-                // the hidden field will contain the name of the region, not the code
-                $('#hiddenBarangay').val(selected_caption);
 
-            }).ph_locations('fetch_list');
-
-        });
-
-        // $(document).on('change','#region',function(){
-        //     alert($('#region').val())
-        // });
     });
 </script>

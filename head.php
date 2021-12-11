@@ -7,11 +7,10 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Responsive sidebar template with sliding effect and dropdown menu based on bootstrap 3">
-    <title>Sidebar template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAREDES PETRON SYSTEM</title>
 
     <!-- using online links -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -23,8 +22,7 @@
     <link rel="stylesheet" href="css/admin-main.css">
     <link rel="stylesheet" href="css/sidebar-themes.css">
     <link rel="stylesheet" href="css/admin-component.css">
-
-    <link rel="shortcut icon" type="image/png" href="img/favicon.png" />
+    <link rel="shortcut icon" type="image/png" href="assets/logo/favicon.ico" />
 
 </head>
 
@@ -43,7 +41,7 @@
                     </div>
                     <div class="user-info">
                         <span class="user-name">Ron Ivin
-                            <strong></strong>
+                            <strong>Gregorio</strong>
                         </span>
                         <span class="user-role">Administrator</span>
 

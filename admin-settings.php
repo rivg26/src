@@ -22,14 +22,16 @@
         <a href="#" data-bg="bg2" class="theme theme-bg selected"></a>
         <a href="#" data-bg="bg3" class="theme theme-bg"></a>
         <a href="#" data-bg="bg4" class="theme theme-bg"></a>
+        
     </div>
     <div class="form-group col-md-12">
         <div class="custom-control custom-switch">
             <input type="checkbox" class="custom-control-input" id="toggle-bg" checked>
             <label class="custom-control-label" for="toggle-bg">Background image</label>
         </div>
+        
     </div>
-
+    
 </div>
 <hr>
 <?php require_once 'footer.php' ?>

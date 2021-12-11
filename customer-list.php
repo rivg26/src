@@ -99,7 +99,7 @@
                     action: function(e, dt, node, config) {
                         $("#loader").fadeIn(function() {
                             $("#loader").fadeOut();
-                            window.location.href = "defective-add.php";
+                            window.location.href = "customer-view.php";
                         });
 
                     },

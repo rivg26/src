@@ -42,13 +42,46 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
         insertProductInbound($conn,$pinInvoice,$pinProductId,$pinPun,$pinEcoderId,$pinDate,$pinQuantity,$pinTotalQuantity,$pinTotalPlantPrice,$pinTotalFinalPrice,$pinMetricTons,$pinProductOption,$pinRemarks);
         echo json_encode([
-            'status' => true,
-            'message' => $pinRemarks
+            'status' => true
+            // 'message' => $pinRemarks
+        ]);
+    }
+    
+    if(isset($_POST['updateProduct'])){
+        $pinInvoice = validateData($_POST['pinInvoice']);
+        $pinProductId = validateData($_POST['pinProduct']);
+        $pinPun = validateData($_POST['pinPun']);
+        $pinEcoderId = $_SESSION['empId'];
+        $pinDate = validateData($_POST['pinDate']);
+        $pinQuantity = validateData($_POST['pinQuantity']);
+        $pinTotalQuantity = $pinQuantity;
+        $pinTotalPlantPrice = validateData($_POST['pinTPlantPrice']);
+        $pinTotalFinalPrice =  validateData($_POST['pinTFinalPrice']);
+        $pinMetricTons = validateData($_POST['pinMetricTon']);
+        $pinProductOption = validateData($_POST['pinProductOption']);
+        $pinRemarks = validateData($_POST['pinRemarks']);
+        updateProductInbound($conn,$pinInvoice,$pinProductId,$pinPun,$pinEcoderId,$pinDate,$pinQuantity,$pinTotalQuantity,$pinTotalPlantPrice,$pinTotalFinalPrice,$pinMetricTons,$pinProductOption,$pinRemarks);
+        echo json_encode([
+            'status' => true
         ]);
     }
 
 }
 
+
+function updateProductInbound($conn,$pinInvoice,$pinProductId,$pinPun,$pinEcoderId,$pinDate,$pinQuantity,$pinTotalQuantity,$pinTotalPlantPrice,$pinTotalFinalPrice,$pinMetricTons,$pinProductOption,$pinRemarks)
+{
+    $sql = "UPDATE `product_inbound_table` SET pin_invoice = ?, pin_product_id = ?, pin_pun = ?, pin_encoder_id = ?, pin_date = ?, pin_quantity = ?, pin_total_quantity = ?, pin_total_plant_price = ?, pin_total_final_price = ?, pin_metric_tons = ?, pin_product_option = ?, pin_remarks = ? WHERE pin_invoice = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../product-inbound-add.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "sisisiidddsss", $pinInvoice,$pinProductId,$pinPun,$pinEcoderId,$pinDate,$pinQuantity,$pinTotalQuantity,$pinTotalPlantPrice,$pinTotalFinalPrice,$pinMetricTons,$pinProductOption,$pinRemarks, $pinInvoice);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}
 
 function insertProductInbound($conn,$pinInvoice,$pinProductId,$pinPun,$pinEcoderId,$pinDate,$pinQuantity,$pinTotalQuantity,$pinTotalPlantPrice,$pinTotalFinalPrice,$pinMetricTons,$pinProductOption,$pinRemarks)
 {

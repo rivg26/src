@@ -39,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                   <?php priceUpdateReportTable($conn) ?>
+                    <?php priceUpdateReportTable($conn) ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -180,9 +180,13 @@
 
         table.draw();
 
-        $(document).on('click','#btnPriceUpdateEdit', function(){
+        $(document).on('click', '#btnPriceUpdateEdit', function() {
             let rowId = $(this).attr('row.id');
-            window.location.href = "price-update-add.php?action=update&rowId=" + rowId;
+            $("#loader").fadeIn();
+            window.setTimeout(function() {
+                $("#loader").fadeOut();
+                window.location.href = "price-update-add.php?action=update&rowId=" + rowId;
+            }, 2000);
         });
     });
 </script>
