@@ -154,10 +154,10 @@ if (isset($_GET['rowId'])) {
             </div>
         </div>
         <div class="text-center alert alert-danger my-4" style="display: none;" id="errorBox">
-            Please fill all the fields...
+        <i class="fas fa-times-circle"></i> Please fill all the fields...
         </div>
         <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
-            Submission Success!
+        <i class="fas fa-check-circle"></i> Submission Success!
         </div>
 
         <div class="text-center mt-4">

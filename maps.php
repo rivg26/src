@@ -13,11 +13,12 @@ else{
 <html>
 
 <head>
-    <title>Locator</title>
+    <title>Paredes Petron LPG | Map Locator</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="https://www.gstatic.com/external_hosted/handlebars/v4.7.6/handlebars.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="assets/logo/favicon.ico" />
     <style>
         html,
         body {

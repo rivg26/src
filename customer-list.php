@@ -23,8 +23,8 @@
                         <option value='<?php echo "Dec " . date("Y") ?>'>December</option>
                     </optgroup>
                     <optgroup label="Sort by Day">
-                        <option value="<?= date('d-m-y') ?>">Today</option>
-                        <option value="<?= date('d-m-y', strtotime("-1 days")) ?>">Yesterday</option>
+                        <option value="<?= date('d M Y', strtotime(date('Y-m-d'))) ?>">Today</option>
+                        <option value="<?= date('d M Y', strtotime("-1 days")) ?>">Yesterday</option>
                     </optgroup>
                 </select>
             </div>
@@ -33,32 +33,71 @@
                 <thead class="align-middle">
                     <tr>
                         <th>Date</th>
+                        <th>Customer Number</th>
                         <th>Customer Name</th>
                         <th>Phone Number</th>
                         <th>Address</th>
+                        <th>Encoder Name</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>02 Dec 2021</td>
-                        <td>Ron Ivin V. Gregorio</td>
-                        <td>09264102938</td>
-                        <td class="remarksWrapper">Block 1 Lot 20 Phase 4 Ecotrend Subd. Ligas 3 Bacoor City, Cavite</td>
-                        <td><button type="button" class="btn btn-warning shadow-none"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
-                    </tr>
-
+                    <?= customerTable($conn); ?>
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>Date</th>
+                        <th>Customer Number</th>
                         <th>Customer Name</th>
                         <th>Phone Number</th>
                         <th>Address</th>
+                        <th>Encoder Name</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
             </table>
+
+            <div class="modal fade" id="customerSendModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Send Text to Customer</h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3 col-5">
+                                <label for="customerUnit" class="form-label">Customer Phone Number</label>
+                                <input type="text" class="form-control shadow-none" id="customerListPhoneNumber" readonly>
+                            </div>
+                            <div class="form-floating">
+                                <textarea class="form-control shadow-none" maxlength="400" id="customerText" style="height: 100px"></textarea>
+                                <label for="customerText">text message</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn shadow-none rippleButton ripple" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#customerConfirmation">Send Text</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="customerConfirmation" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to send text messages?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="customerUpdate">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <?php require_once 'loader.php' ?>
     </div>
@@ -66,6 +105,54 @@
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function() {
+        $(document).on('click', '#customerUpdate', function() {
+            let datastring = {
+                'btnCustomerUpdate': $('#customerUpdate').val(),
+                'customerListPhoneNumber': $('#customerListPhoneNumber').val(),
+                'customerText': $('#customerText').val()
+            };
+            console.log(datastring);
+            $.ajax({
+                url: 'includes/customer-list.inc.php',
+                type: 'POST',
+                data: datastring,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status) {
+                        $('textarea').prop('disabled', true);
+                        // $('#customerUpdate').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                        $('#customerUpdate').prop('disabled', true);
+                        $('#customerUpdate').text('Message Sent');
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    }
+
+
+                },
+                fail: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    alert(xhr);
+                    alert(textStatus);
+                },
+                catch: function(error) {
+                    alert(error);
+                }
+
+            });
+        });
+        $(document).on('click', '#btnSendText', function() {
+            $('#customerListPhoneNumber').val($(this).attr('row.id'));
+        });
+
+        $(document).on('click', '#btnEditCustomer', function() {
+            let rowId = $(this).attr('row.id');
+            $("#loader").fadeIn();
+            window.setTimeout(function() {
+                $("#loader").fadeOut();
+                window.location.href = "customer-view.php?rowId=" + rowId;
+            }, 2000);
+        });
         $('#customerReportTable').DataTable({
             "searching": true,
             "bPaginate": true,
@@ -79,22 +166,22 @@
                     className: "text-end"
                 },
                 {
-                    targets: [1, 3],
+                    targets: [2, 3, 4, 5],
                     className: "text-justify"
                 },
                 {
-                    targets: [0, 2, 4],
+                    targets: [0, 1, 6],
                     className: "text-center"
                 },
                 {
                     orderable: false,
-                    targets: [4]
+                    targets: [6]
                 }
             ],
             dom: 'B<"searchBar">frtip',
             buttons: [{
                     text: '<i class="fas fa-folder-plus"></i>',
-                    titleAttr: 'NEW INBOUND',
+                    titleAttr: 'Customer List',
                     className: 'btn-warning me-3 shadow-none rounded',
                     action: function(e, dt, node, config) {
                         $("#loader").fadeIn(function() {
@@ -108,7 +195,7 @@
                 {
                     text: '<i class="fas fa-file-excel"></i>',
                     extend: 'excel',
-                    title: 'Defective Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
+                    title: 'Customer List_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
                     className: 'btn-success me-3 shadow-none rounded',
                     titleAttr: 'EXCEL',
                     exportOptions: {
@@ -122,10 +209,10 @@
                     orientation: 'portrait',
                     pageSize: 'LEGAL',
                     className: 'btn-danger me-3 shadow-none rounded',
-                    filename: 'Defective Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    header: 'Defective Report',
+                    filename: 'Customer List_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
+                    header: 'Customer List',
                     messageTop: 'Date: ' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    title: 'Defective Report',
+                    title: 'Customer List',
                     exportOptions: {
                         columns: 'th:not(:last-child):visible',
                     }
@@ -136,7 +223,7 @@
                     extend: 'print',
                     titleAttr: 'PRINT',
                     className: 'btn-info me-3 shadow-none rounded',
-                    title: 'Defective Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
+                    title: 'Customer List_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
                     exportOptions: {
                         columns: 'th:not(:last-child):visible',
                     }

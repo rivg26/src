@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
            $fp[$x] = validateData($_POST['fp'][$x]);
            $product[$x] = validateData($_POST['product'][$x]);
            $pt[$x] = validateData($_POST['pt'][$x]);
-
+           date_default_timezone_set('Asia/Hong_Kong');
            insertPrices($conn,$pun,$_SESSION['empId'],$product[$x],date('Y-m-d H:i:s'),$pp[$x],$fp[$x],$pt[$x]);
         }
         echo json_encode([

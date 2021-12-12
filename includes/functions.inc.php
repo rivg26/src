@@ -170,3 +170,48 @@ function getProductInboundData($conn, $pinId)
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }
+
+
+
+function customerTable($conn)
+{
+    $sql = "SELECT `customer_number`, CONCAT(employee_table.emp_firstname, ' ', employee_table.emp_middlename, ' ', employee_table.emp_lastname) AS 'customer_employee_name', CONCAT( `customer_first_name`, ' ', `customer_middle_name`, ' ', `customer_last_name`) as 'customer_fullname', `customer_phone_number`, `customer_date`, CONCAT(customer_address_table.cus_address_unit, ' ', customer_address_table.cus_address_street, ' ', customer_address_table.cus_address_barangay, ' ', customer_address_table.cus_address_city, ' ', customer_address_table.cus_address_province) as 'customer_full_address' FROM `customer_table` JOIN employee_table ON employee_table.emp_id = customer_encoder_id JOIN customer_address_table ON customer_address_table.cus_customer_number = customer_number;";
+    
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.date('d M Y', strtotime($row['customer_date'])).'</td>
+            <td>'.$row['customer_number'].'</td>
+            <td>'.$row['customer_fullname'].'</td>
+            <td>'.$row['customer_phone_number'].'</td>
+            <td class="remarksWrapper">'.$row['customer_full_address'].'</td>
+            <td class="remarksWrapper">'.$row['customer_employee_name'].'</td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id="'.$row['customer_number'].'" id="btnEditCustomer"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-info shadow-none" row.id="'.$row['customer_phone_number'].'" id="btnSendText" data-bs-toggle="modal" data-bs-target="#customerSendModal" ><i class="fas fa-envelope-open-text"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+        </tr>';
+    }
+}
+
+function getCustomerData($conn, $customerId)
+{
+    $sql = "SELECT `customer_number`, `customer_first_name`, `customer_middle_name`, `customer_last_name`, `customer_phone_number`, customer_address_table.cus_address_unit, customer_address_table.cus_address_street, customer_address_table.cus_address_barangay, customer_address_table.cus_address_city, customer_address_table.cus_address_province, customer_address_table.cus_address_landmark FROM `customer_table` JOIN customer_address_table ON customer_address_table.cus_customer_number = customer_number WHERE `cus_customer_number` = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../funtions.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "s", $customerId);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    } 
+    else{
+        return false;
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}
