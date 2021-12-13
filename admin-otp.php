@@ -1,14 +1,13 @@
 <?php
-    session_start();
-    if(isset($_SESSION['otpPhoneNumber'])){
-        $phoneNumber = $_SESSION['otpPhoneNumber'];
-        if(isset($_SESSION['redirect'])){
-            $redirect = $_SESSION['redirect'];
-        }
+session_start();
+if (isset($_SESSION['otpPhoneNumber'])) {
+    $phoneNumber = $_SESSION['otpPhoneNumber'];
+    if (isset($_SESSION['redirect'])) {
+        $redirect = $_SESSION['redirect'];
     }
-    else{
-        header('location: admin-login.php');
-    }
+} else {
+    header('location: admin-login.php');
+}
 
 ?>
 
@@ -56,7 +55,7 @@
                     <div class="input-group mb-3">
                         <input type="hidden" id="phoneNum" value="<?= $phoneNumber ?>">
                         <input type="hidden" id="redirect" value="<?= $redirect ?>">
-                        <input type="text" class="form-control shadow-none" id="otpCode" placeholder="ENTER OTP PIN" maxlength="6" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>
+                        <input type="text" class="form-control shadow-none" id="otpCode" placeholder="ENTER OTP PIN" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1');" required>
                         <button class="btn btn-outline-secondary shadow-none" type="button" onClick="getCode();" id="btnGetCode">GET CODE</button>
                     </div>
                     <div class="mb-3 mt-5">
@@ -98,8 +97,14 @@
                     success: function(data) {
 
                         if (data.status) {
-                           let redirect = $('#redirect').val();
-                           window.location.href = redirect;
+                            let redirect = $('#redirect').val();
+                            $('#otpCode').removeClass('is-invalid');
+                            $('#otpCode').addClass('is-valid');
+                            $('#btnGoBack').prop('disabed',true);
+                            $('#btnGoBack').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                            window.setTimeout(function() {
+                                window.location.href = redirect;
+                            }, 2000);
 
                         } else {
                             $('#otpCode').removeClass('is-valid');
@@ -123,7 +128,7 @@
             }
         });
 
-        $(document).on('click', '#btnGoBack', function(){
+        $(document).on('click', '#btnGoBack', function() {
             window.location.href = 'includes/logout.inc.php';
         });
     });

@@ -210,6 +210,7 @@ if (isset($_GET['rowId'])) {
                 </div>
             </div>
         </div>
+        
     </div>
     <?php require_once 'loader.php' ?>
 </div>

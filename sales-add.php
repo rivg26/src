@@ -1,4 +1,7 @@
 <?php require_once 'head.php' ?>
+<?php
+
+?>
 <link rel="stylesheet" href="css/magnify.css">
 <link rel="stylesheet" href="css/sales-add.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
@@ -384,11 +387,45 @@
                 }
             ]
         });
+
+
+        var availableTags = [];
+
+        $(window).on('load', function() {
+
+            let datastring = {
+                "gettingCustomerName": "get"
+            };
+
+            $.ajax({
+                url: 'includes/sales-add.inc.php',
+                type: 'POST',
+                data: datastring,
+                dataType: 'json',
+                success: function(data) {
+
+                    if (data.status) {
+                        for(let x = 0; x < data.customerInfo.length; x++){
+                            var tags = data.customerInfo[x]['customer_phone_number'] + ' - ' + data.customerInfo[x]['customer_first_name'] + ' ' + data.customerInfo[x]['customer_middle_name'] + ' ' + data.customerInfo[x]['customer_last_name'];
+                            availableTags.push(tags);
+                        }
+                    }
+
+                },
+                fail: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    alert(xhr);
+                    alert(textStatus);
+                },
+                catch: function(error) {
+                    alert(error);
+                }
+
+            });
+
+
+        });
         $(function() {
-            var availableTags = [
-                "09264102938 - Ron Ivin V. Gregorio",
-                "09129129642 - Mary Jane Araza",
-            ];
             $("#tags").autocomplete({
                 source: availableTags
             });
