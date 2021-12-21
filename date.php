@@ -1,9 +1,35 @@
 <?php
+// var myTableArray = [];
+// $("#customerTable tr").each(function() {
+//     var arrayOfThisRow = [];
+//     var secondArray = [];
+//     var tableData = $(this).find('td:not(:nth-child(2)):not(:last-child):not(:first-child)');
+//     if (tableData.length > 0) {
+//         tableData.each(function() {
+//             // if($(this).text() === "DPR-13asdad"){
+//             //     $(this).val() === "hello";
+//             // }
 
+//             arrayOfThisRow.push($(this).text());
+
+//         });
+//         myTableArray.push(arrayOfThisRow);
+//     }
+
+//     for (let x = 0; x < myTableArray.length; x++) {
+//         for (let y = 0; y < 3; y++) {
+//             if (myTableArray[x][y] === 'PETRON GASUL 7 KILOS Compact-Valve Type ("de salpak")') {
+//                 myTableArray[x][y] = "hello";
+//             }
+//         }
+//     }
+// });
 
 // date_default_timezone_set('Asia/Hong_Kong');
-// echo date('d M Y', strtotime(date('Y-m-d'))); 
-// echo date('Y-m-d');
+// // echo date('d M Y', strtotime(date('Y-m-d'))); 
+// // echo date('Y-m-d');
+// $today = date('d M Y', strtotime(date('Y-m-d')));
+// echo $today;
 
 // Dateee Format
 
@@ -11,12 +37,12 @@
 // $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 // echo $hashedPwd;
 
-// session_start();
-// echo $_SESSION['otpPhoneNumber'] .'<br>';
-// echo $_SESSION['otp'].'<br>';
-// echo $_SESSION['otpExpiration'].'<br>';
-// echo $_SESSION['username'].'<br>';
-// echo $_SESSION['forgotUsername'];
+session_start();
+echo $_SESSION['otpPhoneNumber'] . '<br>';
+echo $_SESSION['otp'] . '<br>';
+echo $_SESSION['otpExpiration'] . '<br>';
+echo $_SESSION['username'] . '<br>';
+echo $_SESSION['forgotUsername'];
 
 // echo !pwdvalidate('!Gregorio0226');
 
@@ -61,29 +87,29 @@ require_once 'includes/dbh.inc.php';
 //     mysqli_stmt_close($stmt);
 // }
 
-function getCustomerName($conn)
-{
-    $sql = "SELECT * FROM `customer_table`";
-    $stmt = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("location: ../price-update-add.php?error=stmtfailed");
-        exit();
-    }
-    // mysqli_stmt_bind_param($stmt,);
-    mysqli_stmt_execute($stmt);
+// function getCustomerName($conn)
+// {
+//     $sql = "SELECT * FROM `customer_table`";
+//     $stmt = mysqli_stmt_init($conn);
+//     if (!mysqli_stmt_prepare($stmt, $sql)) {
+//         header("location: ../price-update-add.php?error=stmtfailed");
+//         exit();
+//     }
+//     // mysqli_stmt_bind_param($stmt,);
+//     mysqli_stmt_execute($stmt);
 
-    $resultData = mysqli_stmt_get_result($stmt);
+//     $resultData = mysqli_stmt_get_result($stmt);
     
-    while ($row = mysqli_fetch_assoc($resultData)) {
-         $rows [] = $row;
-    } 
-    return $rows;
+//     while ($row = mysqli_fetch_assoc($resultData)) {
+//          $rows [] = $row;
+//     } 
+//     return $rows;
 
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
-}
+//     mysqli_stmt_close($stmt);
+//     mysqli_close($conn);
+// }
 
-var_dump( getCustomerName($conn));
+// var_dump(  getPriceSaleData($conn));
 
 
 // $data = getPriceUpdateData($conn, 'PUN-AfwgC42x');
@@ -93,4 +119,3 @@ var_dump( getCustomerName($conn));
 // echo json_encode(GenerateKey($conn, 'SELECT * FROM price_table;', 'PUN-', 'price_pun') );
 // var_dump(getPunInbound($conn)) ;
 // echo GenerateKey($conn, 'SELECT * FROM price_table;', 'PUN-', 'price_pun');
-?>

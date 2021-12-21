@@ -215,3 +215,41 @@ function getCustomerData($conn, $customerId)
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }
+function getPriceSaleData($conn)
+{
+    $sql = "SELECT product_table.product_name, price_table.price_final_price, price_table.price_type FROM `price_table` JOIN product_table ON product_table.product_id = price_product_id WHERE price_pun = (SELECT price_pun FROM price_table JOIN employee_table ON employee_table.emp_id = price_table.price_emp_id WHERE price_date IN (SELECT MAX(price_date) FROM price_table ) GROUP BY price_pun);";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../funtions.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    while($row = mysqli_fetch_assoc($resultData)) {
+        $rows[] = $row;
+    } 
+    return $rows;
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}
+function getStocks($conn)
+{
+    $sql = "SELECT  product_table.product_name ,`pin_product_id`, SUM(`pin_quantity`) as 'total_quantity' FROM `product_inbound_table` JOIN product_table ON product_table.product_id = product_inbound_table.pin_product_id GROUP BY `pin_product_id`;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../funtions.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    while($row = mysqli_fetch_assoc($resultData)) {
+        $rows[] = $row;
+    } 
+    return $rows;
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}

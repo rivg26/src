@@ -1,4 +1,11 @@
 <?php require_once 'head.php' ?>
+<?php
+date_default_timezone_set('Asia/Hong_Kong');
+$today = date('d M Y', strtotime(date('Y-m-d')));
+$yesterday = date('d M Y', strtotime("-1 days"));
+$year = date("Y");
+
+?>
 <div class="row" style="position: relative;">
     <div class="shadow p-3 mb-5 bg-body rounded">
         <div class="text-center">
@@ -9,22 +16,22 @@
                 <select id="categoryFilter" class="form-control shadow-none">
                     <option value="">Show All</option>
                     <optgroup label="Sort by Months">
-                        <option value='<?php echo "Jan " . date("Y") ?>'>January</option>
-                        <option value='<?php echo "Feb " . date("Y") ?>'>February</option>
-                        <option value='<?php echo "Mar " . date("Y") ?>'>March</option>
-                        <option value='<?php echo "Apr " . date("Y") ?>'>April</option>
-                        <option value='<?php echo "May " . date("Y") ?>'>May</option>
-                        <option value='<?php echo "Jun " . date("Y") ?>'>June</option>
-                        <option value='<?php echo "Jul " . date("Y") ?>'>July</option>
-                        <option value='<?php echo "Aug " . date("Y") ?>'>August</option>
-                        <option value='<?php echo "Sep " . date("Y") ?>'>September</option>
-                        <option value='<?php echo "Oct " . date("Y") ?>'>October</option>
-                        <option value='<?php echo "Nov " . date("Y") ?>'>November</option>
-                        <option value='<?php echo "Dec " . date("Y") ?>'>December</option>
+                        <option value='<?php echo "Jan " . $year ?>'>January</option>
+                        <option value='<?php echo "Feb " . $year ?>'>February</option>
+                        <option value='<?php echo "Mar " . $year ?>'>March</option>
+                        <option value='<?php echo "Apr " . $year ?>'>April</option>
+                        <option value='<?php echo "May " . $year ?>'>May</option>
+                        <option value='<?php echo "Jun " . $year ?>'>June</option>
+                        <option value='<?php echo "Jul " . $year ?>'>July</option>
+                        <option value='<?php echo "Aug " . $year ?>'>August</option>
+                        <option value='<?php echo "Sep " . $year ?>'>September</option>
+                        <option value='<?php echo "Oct " . $year ?>'>October</option>
+                        <option value='<?php echo "Nov " . $year ?>'>November</option>
+                        <option value='<?php echo "Dec " . $year ?>'>December</option>
                     </optgroup>
                     <optgroup label="Sort by Day">
-                        <option value="<?= date('d M Y', strtotime(date('Y-m-d'))) ?>" selected>Today</option>
-                        <option value="<?= date('d M Y', strtotime("-1 days")) ?>">Yesterday</option>
+                        <option value="<?php echo $today ?>" selected>Today</option>
+                        <option value="<?php echo $yesterday ?>">Yesterday</option>
                     </optgroup>
                 </select>
             </div>
@@ -70,19 +77,18 @@
                     className: "text-end"
                 },
                 {
-                    targets: [1,2],
+                    targets: [1, 2],
                     className: "text-justify"
                 },
                 {
-                    targets: [0,3],
+                    targets: [0, 3],
                     className: "text-center"
                 },
                 {
                     orderable: false,
                     targets: [3]
                 }
-            ]
-            ,
+            ],
             dom: 'B<"searchBar">frtip',
             buttons: [{
                     text: '<i class="fas fa-folder-plus"></i>',
