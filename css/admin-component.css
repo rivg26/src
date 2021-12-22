@@ -115,11 +115,11 @@ to {transform:rotate(360deg);}
   display:block;
   position:absolute;
   left:calc(50% - 50px);top:calc(50% - 50px);
-  width:50px;height:50px;
+  width:5vw;height:5vw;
   border-style:solid;
   border-color:#fff;
   border-top-color:transparent;
-  border-width: 4px;
+  border-width: 6px;
   border-radius:50%;
   -webkit-animation: spin .8s linear infinite;
   animation: spin .8s linear infinite;

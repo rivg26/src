@@ -15,9 +15,15 @@ $stocks = getStocks($conn);
             <label for="tags" class="col-sm-1 col-form-label" style="font-size: 0.82rem;">Customer Name</label>
             <div class="col-sm-3">
                 <input type="text" class="form-control shadow-none" id="tags">
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+                <div id="tagsFeedback" class="invalid-feedback">
+                    Please Input Customer Name...
+                </div>
             </div>
             <input type="hidden" id="salesInvoice" value="<?= GenerateKey($conn, 'SELECT * FROM sales_table;', 'SINV-', 'sales_invoice') ?>">
-            <button class="col-sm-1 btn btn-success" data-toggle="tooltip" title="Add New Customer" data-bs-placement="right"><i class="fas fa-user-plus"></i> NEW</button>
+            <button class="col-sm-1 btn btn-success shadow-none" data-toggle="tooltip" title="Add New Customer" data-bs-placement="right"><i class="fas fa-user-plus"></i> NEW</button>
         </div>
         <fieldset class="border mt-5 p-5  g-5 bg-light">
             <legend class="float-none w-auto">CART</legend>
@@ -316,24 +322,6 @@ $stocks = getStocks($conn);
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- <tr>
-                            <td>PTR-123</td>
-                            <td><img src="assets/product-img/50kg.png" alt=""></td>
-                            <td>Petron 50kg</td>
-                            <td>Refill</td>
-                            <td>1</td>
-                            <td>10000</td>
-                            <td><button type="button" class="btn btn-danger shadow-none">Remove</button></td>
-                        </tr>
-                        <tr>
-                            <td>PTR-123</td>
-                            <td><img src="assets/product-img/11kg.png" alt=""></td>
-                            <td>Petron 11kg</td>
-                            <td>Refill</td>
-                            <td>1</td>
-                            <td>900</td>
-                            <td><button type="button" class="btn btn-danger shadow-none">Remove</button></td>
-                        </tr> -->
                     </tbody>
                     <tfoot>
                         <tr>
@@ -350,19 +338,39 @@ $stocks = getStocks($conn);
             </div>
 
             <div class="container px-4">
-                <div class="p-3 text-center">
-                    <p>
-                    <h6 class="display-6" style="font-weight: 400;">Total Price: <span id ="totalPriceOverall" style="font-weight: 100;">0</span></h6>
-                    </p>
+                <div class="p-3 d-flex flex-row align-items-center justify-content-evenly">
+                    <h6 class="display-6" style="font-weight: 400;">Total Price: <span id="totalPriceOverall" style="font-weight: 100;">0</span></h6>
+                    <h6 class="display-6" style="font-weight: 400;">Total Quantity: <span id="totalQuantityOverall" style="font-weight: 100;">0</span></h6>
                 </div>
-                <div class="p-3 text-end ">
-                    <button class="btn btn-lg shadow-none rippleButton ripple ms-3"><i class="fas fa-money-check"></i>
-                        CHECK OUT </button>
+                <div class="p-3 text-end mt-5">
+                    <button class="btn btn-lg shadow-none rippleButton ripple ms-3" data-bs-toggle="modal" data-bs-target="#salesModal" id="btnSalesSubmit" data-backdrop="false"><i class="fas fa-money-check"></i>Submit</button>
+                </div>
+                <div class="text-center alert alert-danger mt-5" style="display: none;" id="errorBox">
+                    Invalid Process...
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="salesModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to process sales?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="salesSubmit">Process Sales</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </fieldset>
     </div>
+    <input type="hidden" id="salesCustomerId">
     <?php require_once 'loader.php' ?>
 </div>
 <?php require_once 'footer.php' ?>
@@ -371,6 +379,9 @@ $stocks = getStocks($conn);
 <script src="//code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script>
     $(document).ready(function() {
+        function numberWithCommas(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
 
         for (let x = 1; x <= 8; x++) {
             $(document).on('change', '.getCheck' + x, {
@@ -382,8 +393,7 @@ $stocks = getStocks($conn);
             $(document).on('keyup', '#quantity' + x, {
                 "classx": x
             }, function() {
-                if ($(this).val() === "" || parseInt($(this).val()) === 0) {
-                    $('#quantityFeedback' + e.data.classx).text('Please input quantity...');
+                if (!$(this).val() || $(this).val() === "" || parseInt($(this).val()) === 0) {
                     $(this).removeClass('is-valid');
                     $(this).addClass('is-invalid');
                 } else {
@@ -423,6 +433,9 @@ $stocks = getStocks($conn);
                             $(this).children(":eq(5)").text(parseInt($(this).children(":eq(5)").text()) + parseInt($('#quantity' + e.data.classx).val()) * parseFloat($('#price' + e.data.classx).text()));
                             $('#stocks' + e.data.classx).html(parseInt($('#stocks' + e.data.classx).text()) - parseInt($('#quantity' + e.data.classx).val()));
                             $('#totalPriceOverall').html(parseFloat($('#totalPriceOverall').text()) + (parseInt($('#quantity' + e.data.classx).val()) * parseFloat($('#price' + e.data.classx).text())));
+                            $('#totalQuantityOverall').html(parseInt($('#totalQuantityOverall').html()) + parseInt($('#quantity' + e.data.classx).val()));
+                            $('#quantity' + e.data.classx).val("");
+                            $('#quantity' + e.data.classx).removeClass('is-valid');
                             $("#loader").fadeOut();
                             checker = true;
                         }
@@ -453,8 +466,13 @@ $stocks = getStocks($conn);
 
                         $('#totalPriceOverall').html(parseFloat($('#totalPriceOverall').text()) + (parseInt($('#quantity' + e.data.classx).val()) * parseFloat($('#price' + e.data.classx).text())));
 
+                        $('#totalQuantityOverall').html(parseInt($('#totalQuantityOverall').html()) + parseInt($('#quantity' + e.data.classx).val()));
+
                         customerTable.row.add($('<tr class = "item" ><td>' + $('#salesInvoice').val() + '</td>' + '<td><img src="' + image + '" alt=""></td><td class = "tdProduct">' + $('#product' + e.data.classx).text() + '</td><td>' + $('.getCheck' + e.data.classx + ':checked').next().text() + '</td><td class = "tdQuantity">' + $('#quantity' + e.data.classx).val() + '</td><td class = "tdPrice">' + price + '</td>' + '<td><button type="button" class="btn btn-danger shadow-none deleteRow">Remove</button></td></tr>')).draw();
-                        
+
+                        $('#quantity' + e.data.classx).val("");
+                        $('#quantity' + e.data.classx).removeClass('is-valid');
+
                         $("#loader").fadeOut();
                     }
 
@@ -464,17 +482,89 @@ $stocks = getStocks($conn);
                 "classx": x
             }, function(e) {
                 e.preventDefault();
-                $("#loader").fadeIn();
                 if ($(this).parents('tr').children().eq(2).text() === $('#product' + e.data.classx).text()) {
+                    $("#loader").fadeIn();
                     $('#stocks' + e.data.classx).html(parseInt($(this).parents('tr').children().eq(4).text()) + parseInt($('#stocks' + e.data.classx).text()));
                     $('#totalPriceOverall').html(parseFloat($('#totalPriceOverall').text()) - parseFloat($(this).parents('tr').children().eq(5).text()));
+                    $('#totalQuantityOverall').html(parseInt($('#totalQuantityOverall').html()) - parseInt($(this).parents('tr').children().eq(4).text()));
                 }
-                customerTable.row($(this).parents('tr')).remove().draw();
                 $("#loader").fadeOut();
+                customerTable.row($(this).parents('tr')).remove().draw();
+
             });
         }
 
+        $(document).on('click', '#salesSubmit', function() {
+            if ($('#tags').val() === "" || !$('#tags').val()) {
+                $('#tagsFeedback').text('Please Input Customer Name...');
+                $('#tags').removeClass('is-valid');
+                $('#tags').addClass('is-invalid');
 
+            } else {
+                if ($('.is-invalid').val()) {
+                    $('#errorBox').show();
+                    $('#salesModal').modal('hide');
+                } else {
+                    let k = customerTable.rows().data().toArray();
+                    if (k.length <= 0) {
+                        $('#salesModal').modal('hide');
+                        $('#errorBox').show();
+                    } else {
+                        var firstArray = [];
+                        var secondArray = [];
+                        let h = customerTable.rows().data().toArray();
+                        for (let x = 0; x < h.length; x++) {
+                            firstArray = [];
+                            for (let y = 0; y < 7; y++) {
+                                if (!(y == 1 || y == 6 || y == 2)) {
+                                    firstArray.push(h[x][y]);
+                                } else {
+                                    if (y == 2) {
+                                        if (h[x][2] === 'PETRON GASUL 50 KILOS') {
+                                            firstArray.push('1');
+                                        }
+                                        if (h[x][2] === 'PETRON GASUL 22 KILOS') {
+                                            firstArray.push('2');
+                                        }
+                                        if (h[x][2] === 'PETRON GASUL 11 KILOS Compact-Valve Type ("de salpak")') {
+                                            firstArray.push('3');
+                                        }
+                                        if (h[x][2] === 'PETRON GASUL 11 KILOS POL Type ("de roskas")') {
+                                            firstArray.push('4');
+                                        }
+                                        if (h[x][2] === 'PETRON GASUL 7 KILOS Compact-Valve Type ("de salpak")') {
+                                            firstArray.push('5');
+                                        }
+                                        if (h[x][2] === 'PETRON GASUL 7 KILOS POL Type ("de roskas")') {
+                                            firstArray.push('6');
+                                        }
+                                        if (h[x][2] === 'PETRON GASUL 2.7 KILOS Compact-Valve Type ("de salpak")') {
+                                            firstArray.push('7');
+                                        }
+                                        if (h[x][2] === 'PETRON GASUL 2.7 KILOS POL Type ("de roskas")') {
+                                            firstArray.push('8');
+                                        }
+                                    }
+                                }
+
+                            }
+                            secondArray.push(firstArray);
+                        }
+
+                        let datastring = {
+                            "salesInvoice": $('#salesInvoice').val(),
+                            "customerId": $('#salesCustomerId').val(),
+                            "items": secondArray,
+                            "totalPriceOverall": $('#totalPriceOverall').val(),
+                            "totalQuantityOverall": $('#totalQuantityOverall').val()
+                        };
+                        console.log(datastring);
+                    }
+                }
+            }
+
+
+        });
 
         $('.zoom').magnify();
         var today = new Date().toLocaleString();
@@ -508,10 +598,15 @@ $stocks = getStocks($conn);
                 },
                 {
                     orderable: false,
-                    targets: [0, 1, 6]
+                    targets: [1, 6]
                 }
             ]
         });
+
+
+
+
+
 
 
         var availableTags = [];
@@ -556,12 +651,52 @@ $stocks = getStocks($conn);
             });
         });
         $(document).on('change', '#tags', function() {
+            let checker = $('#tags').val();
+            if (!checker || checker === "") {
+                $('#tagsFeedback').text('Please Input Customer Name...');
+                $('#tags').removeClass('is-valid');
+                $('#tags').addClass('is-invalid');
+            } else if (!checker.match(/-/g)) {
+                $('#tagsFeedback').text('Invalid Customer Name...');
+                $('#tags').removeClass('is-valid');
+                $('#tags').addClass('is-invalid');
 
-            let tagVal = $('#tags').val();
-            let phoneNumber = tagVal.substr(0, 10);
-            let name = tagVal.substr(14, tagVal.length);
-            console.log(phoneNumber)
-            console.log(name)
+            } else {
+                let tagVal = $('#tags').val();
+                let phoneNumber = tagVal.substr(0, 11);
+                let name = tagVal.substr(14, tagVal.length);
+                let datastring = {
+                    "gettingCustomerId": "getId",
+                    "customerPhone": phoneNumber,
+                    "customerName": name
+                };
+
+                $.ajax({
+                    url: 'includes/sales-add.inc.php',
+                    type: 'POST',
+                    data: datastring,
+                    dataType: 'json',
+                    success: function(data) {
+
+                        if (data.status) {
+                            $('#salesCustomerId').val(data.message);
+                            $('#tags').removeClass('is-invalid');
+                            $('#tags').addClass('is-valid');
+                        }
+
+                    },
+                    fail: function(xhr, textStatus, errorThrown) {
+                        alert(errorThrown);
+                        alert(xhr);
+                        alert(textStatus);
+                    },
+                    catch: function(error) {
+                        alert(error);
+                    }
+
+                });
+            }
+
         });
     });
 </script>
