@@ -388,7 +388,7 @@ if (isset($_GET['rowId'])) {
                 $('#pinModal').modal('hide');
                 $('#pinSubmit').prop('disabled', false);
             } else {
-                if ($('.is-invalid').val()) {
+                if ($('.is-invalid')[0]) {
                     $('#errorBox').hide();
                     $('#pinModal').modal('hide');
                     $('#pinSubmit').prop('disabled', false);
@@ -451,7 +451,7 @@ if (isset($_GET['rowId'])) {
                 $('#pinSubmit').prop('disabled', false);
             }
             else{
-                if ($('.is-invalid').val()) {
+                if ($('.is-invalid')[0]) {
                     $('#errorBox').hide();
                     $('#pinModal').modal('hide');
                     $('#pinUpdate').prop('disabled', false);

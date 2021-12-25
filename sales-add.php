@@ -346,7 +346,10 @@ $stocks = getStocks($conn);
                     <button class="btn btn-lg shadow-none rippleButton ripple ms-3" data-bs-toggle="modal" data-bs-target="#salesModal" id="btnSalesSubmit" data-backdrop="false"><i class="fas fa-money-check"></i>Submit</button>
                 </div>
                 <div class="text-center alert alert-danger mt-5" style="display: none;" id="errorBox">
-                    Invalid Process...
+                    <i class="fas fa-times-circle"></i> Invalid Process...
+                </div>
+                <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
+                    <i class="fas fa-check-circle"></i> Submission Success!
                 </div>
             </div>
 
@@ -371,14 +374,39 @@ $stocks = getStocks($conn);
         </fieldset>
     </div>
     <input type="hidden" id="salesCustomerId">
+
+    <input type="hidden" id="hidStocks1" value="<?= $stocks[0]['total_quantity'] ?> ">
+    <input type="hidden" id="hidStocks2" value="<?= $stocks[1]['total_quantity'] ?> ">
+    <input type="hidden" id="hidStocks3" value="<?= $stocks[2]['total_quantity'] ?> ">
+    <input type="hidden" id="hidStocks4" value="<?= $stocks[3]['total_quantity'] ?> ">
+    <input type="hidden" id="hidStocks5" value="<?= $stocks[4]['total_quantity'] ?> ">
+    <input type="hidden" id="hidStocks6" value="<?= $stocks[5]['total_quantity'] ?> ">
+    <input type="hidden" id="hidStocks7" value="<?= $stocks[6]['total_quantity'] ?> ">
+    <input type="hidden" id="hidStocks8" value="<?= $stocks[7]['total_quantity'] ?> ">
+
     <?php require_once 'loader.php' ?>
 </div>
 <?php require_once 'footer.php' ?>
 
 <script src="js/magnify.js"></script>
 <script src="//code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+
 <script>
     $(document).ready(function() {
+        var time = new Date().getTime();
+        $(document.body).bind("mousemove keypress", function(e) {
+            time = new Date().getTime();
+        });
+
+        function refresh() {
+            if (new Date().getTime() - time >= 60000)
+                window.location.reload(true);
+            else
+                setTimeout(refresh, 10000);
+        }
+
+        setTimeout(refresh, 10000);
+
         function numberWithCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
@@ -495,20 +523,25 @@ $stocks = getStocks($conn);
         }
 
         $(document).on('click', '#salesSubmit', function() {
+            $('#salesSubmit').prop('disabled', true);
             if ($('#tags').val() === "" || !$('#tags').val()) {
                 $('#tagsFeedback').text('Please Input Customer Name...');
                 $('#tags').removeClass('is-valid');
                 $('#tags').addClass('is-invalid');
+                $('#salesModal').modal('hide');
+                $('#salesSubmit').prop('disabled', false);
 
             } else {
-                if ($('.is-invalid').val()) {
+                if ($('.is-invalid')[0]) {
                     $('#errorBox').show();
                     $('#salesModal').modal('hide');
+                    $('#salesSubmit').prop('disabled', false);
                 } else {
                     let k = customerTable.rows().data().toArray();
                     if (k.length <= 0) {
                         $('#salesModal').modal('hide');
                         $('#errorBox').show();
+                        $('#salesSubmit').prop('disabled', false);
                     } else {
                         var firstArray = [];
                         var secondArray = [];
@@ -555,10 +588,55 @@ $stocks = getStocks($conn);
                             "salesInvoice": $('#salesInvoice').val(),
                             "customerId": $('#salesCustomerId').val(),
                             "items": secondArray,
-                            "totalPriceOverall": $('#totalPriceOverall').val(),
-                            "totalQuantityOverall": $('#totalQuantityOverall').val()
+                            "totalPriceOverall": $('#totalPriceOverall').text(),
+                            "totalQuantityOverall": $('#totalQuantityOverall').text(),
+                            "salesSubmit": $('#salesSubmit').val(),
+                            "allItems": [$('#hidStocks1').val(), $('#hidStocks2').val(), $('#hidStocks3').val(), $('#hidStocks4').val(), $('#hidStocks5').val(), $('#hidStocks6').val(), $('#hidStocks7').val(), $('#hidStocks8').val()]
                         };
-                        console.log(datastring);
+                        console.log(datastring)
+                        $.ajax({
+                            url: 'includes/sales-add.inc.php',
+                            type: 'POST',
+                            data: datastring,
+                            dataType: 'json',
+                            error: function(request, error) {
+                                console.log(error);
+                            },
+                            success: function(data) {
+
+                                if (data) {
+                                    $('input').prop('disabled', true);
+                                    $('buttons').prop('disabled', true);
+                                    $('#salesModal').modal('hide');
+                                    $('#errorBox').hide();
+                                    $('#successBox').show();
+                                    $('#btnSalesSubmit').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                                    window.setTimeout(function() {
+                                        window.location.href = 'sales-report.php';
+                                    }, 2000);
+                                } else {
+                                    $('input').prop('disabled', true);
+                                    $('buttons').prop('disabled', true);
+                                    $('#salesModal').modal('hide');
+                                    $('#errorBox').show();
+                                    $('#btnSalesSubmit').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                                    window.setTimeout(function() {
+                                        location.reload();
+                                    }, 2000);
+                                }
+
+                            },
+                            fail: function(xhr, textStatus, errorThrown) {
+                                alert(errorThrown);
+                                alert(xhr);
+                                alert(textStatus);
+                            },
+                            catch: function(error) {
+                                alert(error);
+                            }
+
+                        });
+
                     }
                 }
             }
