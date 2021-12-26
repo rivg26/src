@@ -421,13 +421,14 @@ $stocks = getStocks($conn);
             $(document).on('keyup', '#quantity' + x, {
                 "classx": x
             }, function() {
-                if (!$(this).val() || $(this).val() === "" || parseInt($(this).val()) === 0) {
-                    $(this).removeClass('is-valid');
-                    $(this).addClass('is-invalid');
-                } else {
-                    $(this).removeClass('is-invalid');
-                    $(this).addClass('is-valid');
-                }
+                $(this).removeClass('is-invalid');
+                // if (!$(this).val() || $(this).val() === "" || parseInt($(this).val()) === 0) {
+                //     $(this).removeClass('is-valid');
+                //     $(this).addClass('is-invalid');
+                // } else {
+                //     $(this).removeClass('is-invalid');
+                //     $(this).addClass('is-valid');
+                // }
             });
             $(document).on('click', '#cart' + x, {
                 "classx": x
@@ -459,6 +460,7 @@ $stocks = getStocks($conn);
                         if ($('#product' + e.data.classx).text() === dProduct && $('.getCheck' + e.data.classx + ':checked').next().text() === dOption) {
                             $(this).children(":eq(4)").text(parseInt(dQuantity) + parseInt($('#quantity' + e.data.classx).val()));
                             $(this).children(":eq(5)").text(parseInt($(this).children(":eq(5)").text()) + parseInt($('#quantity' + e.data.classx).val()) * parseFloat($('#price' + e.data.classx).text()));
+                            $('#quantity' + e.data.classx).attr({'max': parseInt($('#stocks' + e.data.classx).text()) - parseInt($('#quantity' + e.data.classx).val())});
                             $('#stocks' + e.data.classx).html(parseInt($('#stocks' + e.data.classx).text()) - parseInt($('#quantity' + e.data.classx).val()));
                             $('#totalPriceOverall').html(parseFloat($('#totalPriceOverall').text()) + (parseInt($('#quantity' + e.data.classx).val()) * parseFloat($('#price' + e.data.classx).text())));
                             $('#totalQuantityOverall').html(parseInt($('#totalQuantityOverall').html()) + parseInt($('#quantity' + e.data.classx).val()));
@@ -489,7 +491,7 @@ $stocks = getStocks($conn);
                             image = "assets/product-img/2.7kg.png";
                         }
                         var price = parseInt($('#quantity' + e.data.classx).val()) * parseFloat($('#price' + e.data.classx).text());
-
+                        $('#quantity' + e.data.classx).attr({'max': parseInt($('#stocks' + e.data.classx).text()) - parseInt($('#quantity' + e.data.classx).val())});
                         $('#stocks' + e.data.classx).html(parseInt($('#stocks' + e.data.classx).text()) - parseInt($('#quantity' + e.data.classx).val()));
 
                         $('#totalPriceOverall').html(parseFloat($('#totalPriceOverall').text()) + (parseInt($('#quantity' + e.data.classx).val()) * parseFloat($('#price' + e.data.classx).text())));
@@ -512,6 +514,7 @@ $stocks = getStocks($conn);
                 e.preventDefault();
                 if ($(this).parents('tr').children().eq(2).text() === $('#product' + e.data.classx).text()) {
                     $("#loader").fadeIn();
+                    $('#quantity' + e.data.classx).attr({'max': parseInt($(this).parents('tr').children().eq(4).text()) + parseInt($('#stocks' + e.data.classx).text())});
                     $('#stocks' + e.data.classx).html(parseInt($(this).parents('tr').children().eq(4).text()) + parseInt($('#stocks' + e.data.classx).text()));
                     $('#totalPriceOverall').html(parseFloat($('#totalPriceOverall').text()) - parseFloat($(this).parents('tr').children().eq(5).text()));
                     $('#totalQuantityOverall').html(parseInt($('#totalQuantityOverall').html()) - parseInt($(this).parents('tr').children().eq(4).text()));

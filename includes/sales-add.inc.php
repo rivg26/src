@@ -98,7 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             }
             session_start();
             insertSales($conn, $salesInvoice,$customerId, $date, $totalQuantityOverall, $totalPriceOverall, "pending", $_SESSION['empId']);
-            insertDelivery($conn, $salesInvoice, $date, "to be deliver");
+            insertDelivery($conn, $salesInvoice, $date, "to be delivered");
             echo json_encode([
                 'status' => true
             ]);

@@ -103,6 +103,7 @@ if (isset($_GET['rowId'])) {
                 </div>
             </div>
         </fieldset>
+
         <fieldset class="border mt-5 p-5  g-5 bg-light">
             <legend class="float-none w-auto">Address</legend>
             <div class="row mb-3">
@@ -166,6 +167,38 @@ if (isset($_GET['rowId'])) {
                 </div>
             </div>
         </fieldset>
+        
+        <fieldset class="border mt-5 p-5  g-5 bg-light no-printme">
+        <legend class="float-none w-auto">Purchase History</legend>
+
+            <table id="customerHistoryTable" class="tableDesign table table-striped table-hover align-middle shadow-none">
+                <thead class="align-middle">
+                    <tr>
+                        <th>Purchase Date</th>
+                        <th>Sales Invoice</th>
+                        <th>Customer Name</th>
+                        <th>Total Quantity</th>
+                        <th>Total Amount</th>
+                        <th>Payment Status</th>
+                        <th>Encoder Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <?= customerHistoryTable($conn,$_GET['rowId']) ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Purchase Date</th>
+                        <th>Sales Invoice</th>
+                        <th>Customer Name</th>
+                        <th>Total Quantity</th>
+                        <th>Total Amount</th>
+                        <th>Payment Status</th>
+                        <th>Encoder Name</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </fieldset>
 
 
         <div class="text-center mt-5 no-printme">
@@ -217,6 +250,81 @@ if (isset($_GET['rowId'])) {
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function() {
+        $('#customerHistoryTable').DataTable({
+            "searching": true,
+            "bPaginate": true,
+            "lengthChange": true,
+            "bFilter": true,
+            "bInfo": false,
+            "bAutoWidth": true,
+            lengthMenu: [5, 10, 25, 50, 100, 200],
+            "columnDefs": [{
+                    targets: [3,4],
+                    className: "text-end"
+                },
+                {
+                    targets: [1,6],
+                    className: "text-justify"
+                },
+                {
+                    targets: [0,2,5],
+                    className: "text-center"
+                },
+            ]
+            ,
+            dom: 'B<"searchBar">frtip',
+            buttons: [
+                {
+                    text: '<i class="fas fa-file-excel"></i>',
+                    extend: 'excel',
+                    title: 'Customer History Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
+                    className: 'btn-success me-3 shadow-none rounded',
+                    titleAttr: 'EXCEL',
+                    exportOptions: {
+                        columns: ':visible',
+                    }
+                },
+                {
+                    text: '<i class="fas fa-file-pdf"></i>',
+                    extend: 'pdf',
+                    titleAttr: 'PDF',
+                    orientation: 'portrait',
+                    pageSize: 'LEGAL',
+                    className: 'btn-danger me-3 shadow-none rounded',
+                    filename: 'Customer History Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
+                    header: 'Customer History Report',
+                    messageTop: 'Date: ' + moment().format('MMMM Do YYYY, h:mm:ss a'),
+                    title: 'Customer History Report',
+                    exportOptions: {
+                        columns: ':visible',
+                    }
+
+                },
+                {
+                    text: '<i class="fas fa-print"></i>',
+                    extend: 'print',
+                    titleAttr: 'PRINT',
+                    className: 'btn-info me-3 shadow-none rounded',
+                    title: 'Customer History Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
+                    exportOptions: {
+                        columns: ':visible',
+                    }
+
+                },
+                {
+                    extend: 'colvis',
+                    className: 'btn-dark me-3 shadow-none rounded-3',
+                    text: '<i class="fas fa-columns"></i>',
+                    titleAttr: 'COLUMNS VISIBLITY'
+                },
+                {
+                    extend: 'pageLength',
+                    className: 'btn-dark shadow-none rounded-3',
+                    text: '<i class="fas fa-ruler-vertical"></i>',
+                    titleAttr: 'PAGE LENGTH'
+                }
+            ]
+        });
         $(document).on('click' , '#customerUpdate', function(){
             $('#customerUpdate').prop('disabled', true);
             $('input').each(function() {

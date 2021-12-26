@@ -209,5 +209,7 @@ to {transform:rotate(360deg);}
   table th{
     font-size: 0.8rem;
   }
-
+  #itemTableContainer{
+    margin-bottom: 15rem;
+  }
 }

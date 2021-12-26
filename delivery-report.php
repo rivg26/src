@@ -1,4 +1,13 @@
 <?php require_once 'head.php' ?>
+<?php
+
+date_default_timezone_set('Asia/Hong_Kong');
+$today = date('d M Y', strtotime(date('Y-m-d')));
+$yesterday = date('d M Y', strtotime("-1 days"));
+$year = date("Y");
+
+
+?>
 <div class="row" style="position:relative">
     <div class="shadow p-5 mb-5 bg-body rounded">
         <div class="text-center">
@@ -10,22 +19,22 @@
                 <select id="categoryFilter" class="form-control shadow-none">
                     <option value="">Show All</option>
                     <optgroup label="Sort by Months">
-                        <option value='<?php echo "Jan " . date("Y") ?>'>January</option>
-                        <option value='<?php echo "Feb " . date("Y") ?>'>February</option>
-                        <option value='<?php echo "Mar " . date("Y") ?>'>March</option>
-                        <option value='<?php echo "Apr " . date("Y") ?>'>April</option>
-                        <option value='<?php echo "May " . date("Y") ?>'>May</option>
-                        <option value='<?php echo "Jun " . date("Y") ?>'>June</option>
-                        <option value='<?php echo "Jul " . date("Y") ?>'>July</option>
-                        <option value='<?php echo "Aug " . date("Y") ?>'>August</option>
-                        <option value='<?php echo "Sep " . date("Y") ?>'>September</option>
-                        <option value='<?php echo "Oct " . date("Y") ?>'>October</option>
-                        <option value='<?php echo "Nov " . date("Y") ?>'>November</option>
-                        <option value='<?php echo "Dec " . date("Y") ?>'>December</option>
+                        <option value='<?php echo "Jan " . $year ?>'>January</option>
+                        <option value='<?php echo "Feb " . $year ?>'>February</option>
+                        <option value='<?php echo "Mar " . $year ?>'>March</option>
+                        <option value='<?php echo "Apr " . $year ?>'>April</option>
+                        <option value='<?php echo "May " . $year ?>'>May</option>
+                        <option value='<?php echo "Jun " . $year ?>'>June</option>
+                        <option value='<?php echo "Jul " . $year ?>'>July</option>
+                        <option value='<?php echo "Aug " . $year ?>'>August</option>
+                        <option value='<?php echo "Sep " . $year ?>'>September</option>
+                        <option value='<?php echo "Oct " . $year ?>'>October</option>
+                        <option value='<?php echo "Nov " . $year ?>'>November</option>
+                        <option value='<?php echo "Dec " . $year ?>'>December</option>
                     </optgroup>
                     <optgroup label="Sort by Day">
-                        <option value="<?= date('d-m-y') ?>">Today</option>
-                        <option value="<?= date('d-m-y', strtotime("-1 days")) ?>">Yesterday</option>
+                        <option value="<?= $today ?>" selected>Today</option>
+                        <option value="<?= $year ?>">Yesterday</option>
                     </optgroup>
                 </select>
             </div>
@@ -35,27 +44,21 @@
                     <tr>
                         <th>Delivery Date</th>
                         <th>Sales Invoice</th>
-                        <th>Transaction ID</th>
+                        <th>Customer Name</th>
                         <th>Delivery Status</th>
                         <th>Action</th>
 
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>21 Nov 2021</td>
-                        <td>PTR-23</td>
-                        <td>TR-32</td>
-                        <td>To be delivered</td>
-                        <td><button type="button" class="btn btn-warning shadow-none"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
-                    </tr>
+                   <?= deliveryTable($conn); ?>
 
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>Delivery Date</th>
                         <th>Sales Invoice</th>
-                        <th>Transaction ID</th>
+                        <th>Customer Name</th>
                         <th>Delivery Status</th>
                         <th>Action</th>
                     </tr>
@@ -68,6 +71,45 @@
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function() {
+
+        const popupCenter = ({
+            url,
+            title,
+            w,
+            h
+        }) => {
+            // Fixes dual-screen position                             Most browsers      Firefox
+            const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+            const dualScreenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+
+            const width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+            const height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+            const systemZoom = width / window.screen.availWidth;
+            const left = (width - w) / 2 / systemZoom + dualScreenLeft
+            const top = (height - h) / 2 / systemZoom + dualScreenTop
+            const newWindow = window.open(url, title,
+                `
+                scrollbars=yes,
+                width=${w / systemZoom}, 
+                height=${h / systemZoom}, 
+                top=${top}, 
+                left=${left}
+                `
+            )
+
+            if (window.focus) newWindow.focus();
+        }
+        $(document).on('click', '#viewLocation', function() {
+            $location = $(this).attr('row.location');
+            popupCenter({
+                url: 'maps.php?location= ' + $location,
+                title: 'Paredes Petron Location',
+                w: 900,
+                h: 500
+            });
+        });
+
         $('#deliveryTable').DataTable({
             "searching": true,
             "bPaginate": true,
@@ -95,19 +137,20 @@
                 }
             ],
             dom: 'B<"searchBar">frtip',
-            buttons: [{
-                    text: '<i class="fas fa-folder-plus"></i>',
-                    titleAttr: 'NEW INBOUND',
-                    className: 'btn-warning me-3 shadow-none rounded',
-                    action: function(e, dt, node, config) {
-                        $("#loader").fadeIn(function() {
-                            $("#loader").fadeOut();
-                            window.location.href = "delivery-view.php";
-                        });
+            buttons: [
+                // {
+                //     text: '<i class="fas fa-folder-plus"></i>',
+                //     titleAttr: 'NEW INBOUND',
+                //     className: 'btn-warning me-3 shadow-none rounded',
+                //     action: function(e, dt, node, config) {
+                //         $("#loader").fadeIn(function() {
+                //             $("#loader").fadeOut();
+                //             window.location.href = "delivery-view.php";
+                //         });
 
-                    },
+                //     },
 
-                },
+                // },
                 {
                     text: '<i class="fas fa-file-excel"></i>',
                     extend: 'excel',

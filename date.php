@@ -233,29 +233,29 @@ require_once 'includes/dbh.inc.php';
 // }
 // header('Content-type: application/json');
 
-$totalQuantityDB = getAllProductQuantity($conn);
+// $totalQuantityDB = getAllProductQuantity($conn);
 
-$allCustomerItems = ['29 ', '3 ', '4 ', '3 ', '6 ', '3 ', '4 ', '4 '];
-// $param = false;
+// $allCustomerItems = ['29 ', '3 ', '4 ', '3 ', '6 ', '3 ', '4 ', '4 '];
+// // $param = false;
 
-for($x = 0; $x < count($totalQuantityDB); $x++){
-    if($totalQuantityDB[$x]['quantity'] == $allCustomerItems[$x]){
-        $param = false;
-        continue;
-    }
-    else{
-        $param = true;
-        break;
-    }
-}
+// for($x = 0; $x < count($totalQuantityDB); $x++){
+//     if($totalQuantityDB[$x]['quantity'] == $allCustomerItems[$x]){
+//         $param = false;
+//         continue;
+//     }
+//     else{
+//         $param = true;
+//         break;
+//     }
+// }
 
-// echo  count($totalQuantityDB);
-if($param){
-    echo "false";
-}
-else{
-    echo "true";
-}
+// // echo  count($totalQuantityDB);
+// if($param){
+//     echo "false";
+// }
+// else{
+//     echo "true";
+// }
 // $totalQuantityDB = getAllProductQuantity($conn);
 
 // // echo json_encode(getAllProductQuantity($conn), JSON_PRETTY_PRINT);
@@ -363,3 +363,7 @@ function getPinQuantity($conn, $productId)
     return $rows;
     mysqli_stmt_close($stmt);
 }
+
+
+?>
+

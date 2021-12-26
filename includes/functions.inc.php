@@ -137,9 +137,9 @@ function productInboundTable($conn)
             <td>'.$row['pin_pun'].'</td>
             <td>'.$row['product_name'].'</td>
             <td>'.$row['pin_total_quantity'].'</td>
-            <td>'.$row['pin_metric_tons'].'</td>
-            <td>'.$row['pin_total_plant_price'].'</td>
-            <td>'.$row['pin_total_final_price'].'</td>
+            <td>'.number_format($row['pin_metric_tons'],2).'</td>
+            <td>'.number_format($row['pin_total_plant_price'],2).'</td>
+            <td>'.number_format($row['pin_total_final_price'],2).'</td>
             <td class="remarksWrapper">'.$row['pin_employee_name'].'</td>
             <td class="remarksWrapper">'.$row['pin_remarks'].'</td>
             <td><button type="button" class="btn btn-warning shadow-none mb-2" row.id="'.$row['pin_id'].'" id = "btnProductInboundEdit"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
@@ -252,4 +252,99 @@ function getStocks($conn)
     return $rows;
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
+}
+
+function salesTable($conn)
+{
+    $sql = "SELECT `sales_id`,`sales_purchase_date` ,`sales_invoice`, CONCAT( customer_table.customer_first_name, ' ', customer_table.customer_middle_name, ' ', customer_table.customer_last_name) AS 'customer_name', `sales_total_quantity`, `sales_total_price`,`sales_status`, CONCAT(employee_table.emp_firstname, ' ' , employee_table.emp_middlename, ' ', employee_table.emp_lastname) as 'emp_name' FROM `sales_table` JOIN customer_table ON customer_table.customer_id =`sales_customer_id` JOIN employee_table ON employee_table.emp_id = `sales_encoder_id`;";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.date('d M Y', strtotime($row['sales_purchase_date'])).'</td>
+            <td>'.$row['sales_invoice'].'</td>
+            <td>'.$row['customer_name'].'</td>
+            <td>'.number_format($row['sales_total_quantity'],2).'</td>
+            <td>'.number_format($row['sales_total_price'],2).'</td>
+            <td>'.$row['sales_status'].'</td>
+            <td class="remarksWrapper">'.$row['emp_name'].'</td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['sales_invoice'].'" id ="btnViewSales"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+        </tr>';
+    }
+}
+function deliveryTable($conn)
+{
+    $sql = "SELECT `delivery_id`, `delivery_sales_invoice`, `delivery_date`, `delivery_status`, CONCAT(customer_table.customer_first_name, ' ', customer_table.customer_middle_name, ' ' , customer_table.customer_last_name) AS 'customer_name', CONCAT(customer_address_table.cus_address_unit,' ',customer_address_table.cus_address_street,' ',customer_address_table.cus_address_barangay,' ', customer_address_table.cus_address_city,' ',customer_address_table.cus_address_province) as 'customer_address' FROM `delivery_table` JOIN sales_table ON sales_table.sales_invoice = `delivery_sales_invoice` JOIN customer_table ON sales_table.sales_customer_id = customer_table.customer_id JOIN customer_address_table ON customer_address_table.cus_customer_number = customer_table.customer_number;";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.date('d M Y', strtotime($row['delivery_date'])).'</td>
+            <td>'.$row['delivery_sales_invoice'].'</td>
+            <td>'.$row['customer_name'].'</td>
+            <td>'.$row['delivery_status'].'</td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['delivery_sales_invoice'].'"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-info shadow-none" row.location= "'.$row['customer_address'].'" id ="viewLocation"><i class="fas fa-map-marked-alt"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+        </tr>';
+    }
+}
+
+function getSalesData($conn, $salesInvoice)
+{
+    $sql = "SELECT `sales_purchase_date`,`sales_invoice`, CONCAT(customer_table.customer_first_name,' ', customer_table.customer_middle_name, ' ', customer_table.customer_last_name) AS 'customer_name', CONCAT(employee_table.emp_firstname, ' ', employee_table.emp_middlename, ' ', employee_table.emp_lastname) AS 'emp_name', `sales_status`, `sales_total_quantity`, `sales_total_price` FROM `sales_table` JOIN customer_table ON customer_table.customer_id = `sales_customer_id` JOIN employee_table ON employee_table.emp_id = sales_encoder_id WHERE sales_invoice = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../funtions.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "s", $salesInvoice);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    } 
+    else{
+        return false;
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}
+
+function salesItemTable($conn,$salesInvoice)
+{
+    $sql = "SELECT `item_invoice`, product_table.product_name, `item_quantity` ,`item_price`,`item_option` FROM `item_table` JOIN product_table ON product_table.product_id = `item_product_id` WHERE `item_invoice` = '$salesInvoice'";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.$row['item_invoice'].'</td>
+            <td>'.$row['product_name'].'</td>
+            <td>'.$row['item_option'].'</td>
+            <td>'.number_format($row['item_quantity'],2).'</td>
+            <td>'.number_format($row['item_price'],2).'</td>
+        </tr>';
+    }
+}
+
+function customerHistoryTable($conn,$customerId)
+{
+    $sql = "SELECT `sales_id`,`sales_purchase_date` ,`sales_invoice`, CONCAT( customer_table.customer_first_name, ' ', customer_table.customer_middle_name, ' ', customer_table.customer_last_name) AS 'customer_name', `sales_total_quantity`, `sales_total_price`,`sales_status`, CONCAT(employee_table.emp_firstname, ' ' , employee_table.emp_middlename, ' ', employee_table.emp_lastname) as 'emp_name' FROM `sales_table` JOIN customer_table ON customer_table.customer_id =`sales_customer_id` JOIN employee_table ON employee_table.emp_id = `sales_encoder_id` WHERE customer_number = '$customerId';";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.date('d M Y', strtotime($row['sales_purchase_date'])).'</td>
+            <td>'.$row['sales_invoice'].'</td>
+            <td>'.$row['customer_name'].'</td>
+            <td>'.number_format($row['sales_total_quantity'],2).'</td>
+            <td>'.number_format($row['sales_total_price'],2).'</td>
+            <td>'.$row['sales_status'].'</td>
+            <td class="remarksWrapper">'.$row['emp_name'].'</td>
+        </tr>';
+    }
 }
