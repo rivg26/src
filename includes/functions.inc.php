@@ -285,7 +285,7 @@ function deliveryTable($conn)
             <td>'.$row['delivery_sales_invoice'].'</td>
             <td>'.$row['customer_name'].'</td>
             <td>'.$row['delivery_status'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['delivery_sales_invoice'].'"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-info shadow-none" row.location= "'.$row['customer_address'].'" id ="viewLocation"><i class="fas fa-map-marked-alt"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button type="button" class="btn btn-success shadow-none" row.id = "'.$row['delivery_sales_invoice'].'"  data-bs-toggle="modal" data-bs-target="#deliveryModal" id= "btnDelivered" data-backdrop="false"><i class="fas fa-truck-loading" data-bs-toggle="tooltip" data-bs-placement="top" title="Delivered"></i></button> <button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['delivery_sales_invoice'].'"  data-bs-toggle="modal" data-bs-target="#cancelModal" id= "btnCancel" data-backdrop="false"><i class="fas fa-ban" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelled"></i></button> <button type="button" class="btn btn-info shadow-none" row.location= "'.$row['customer_address'].'" id ="viewLocation" data-bs-toggle="tooltip" data-bs-placement="top" title="View Location"><i class="fas fa-map-marked-alt"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
         </tr>';
     }
 }

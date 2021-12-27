@@ -106,6 +106,7 @@
 <script>
     $(document).ready(function() {
         $(document).on('click', '#customerUpdate', function() {
+            $('#customerUpdate').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
             let datastring = {
                 'btnCustomerUpdate': $('#customerUpdate').val(),
                 'customerListPhoneNumber': $('#customerListPhoneNumber').val(),
@@ -120,7 +121,7 @@
                 success: function(data) {
                     if (data.status) {
                         $('textarea').prop('disabled', true);
-                        // $('#customerUpdate').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                        
                         $('#customerUpdate').prop('disabled', true);
                         $('#customerUpdate').text('Message Sent');
                         window.setTimeout(function() {

@@ -607,7 +607,7 @@ $stocks = getStocks($conn);
                             },
                             success: function(data) {
 
-                                if (data) {
+                                if (data.status) {
                                     $('input').prop('disabled', true);
                                     $('buttons').prop('disabled', true);
                                     $('#salesModal').modal('hide');
@@ -647,9 +647,9 @@ $stocks = getStocks($conn);
 
         });
 
-        $('.zoom').magnify();
+        // $('.zoom').magnify();
         var today = new Date().toLocaleString();
-        $('[data-toggle="tooltip"]').tooltip();
+        // $('[data-toggle="tooltip"]').tooltip();
 
         // $("[type='number']").keypress(function(evt) {
         //     evt.preventDefault();

@@ -34,7 +34,7 @@ $year = date("Y");
                     </optgroup>
                     <optgroup label="Sort by Day">
                         <option value="<?= $today ?>" selected>Today</option>
-                        <option value="<?= $year ?>">Yesterday</option>
+                        <option value="<?= $yesterday ?>">Yesterday</option>
                     </optgroup>
                 </select>
             </div>
@@ -51,7 +51,7 @@ $year = date("Y");
                     </tr>
                 </thead>
                 <tbody>
-                   <?= deliveryTable($conn); ?>
+                    <?= deliveryTable($conn); ?>
 
                 </tbody>
                 <tfoot>
@@ -65,12 +65,176 @@ $year = date("Y");
                 </tfoot>
             </table>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deliveryModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Delivery Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="deliveryQuestionBox">
+                        Are you sure you it is delivered?
+                    </div>
+                    <div class="modal-body" id="deliverySuccessBox" style="display:none">
+                        <div class="text-center alert alert-success"><i class="fas fa-check-circle"></i>Delivery Status Updated...</div>
+                    </div>
+                    <div class="modal-body" id="deliveryErrorBox" style="display:none">
+                        <div class="text-center alert alert-danger"><i class="fas fa-times-circle"></i> Invalid Process...</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn shadow-none rippleButton ripple" id="btnDeliverySave">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmation Cancellation <i class="fas fa-question-circle link-warning"></i></h5>
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="cancelQuestionBox">
+                        Are you sure you want to cancel it?
+                    </div>
+                    <div class="modal-body" id="cancelSuccessBox" style="display:none">
+                        <div class="text-center alert alert-success"><i class="fas fa-check-circle"></i>Delivery Status Updated...</div>
+                    </div>
+                    <div class="modal-body" id="cancelErrorBox" style="display:none">
+                        <div class="text-center alert alert-danger"><i class="fas fa-times-circle"></i> Invalid Process...</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn shadow-none rippleButton ripple" id="btnDeliveryCancel">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="salesInvoiceValue">
+        <input type="hidden" id="statusValue">
         <?php require_once 'loader.php' ?>
     </div>
 </div>
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function() {
+
+        $(document).on('click', '#btnDelivered', function() {
+            let rowId = $(this).attr('row.id');
+            $('#salesInvoiceValue').val(rowId);
+            // let getStatus = deliveryTable.row($(this).closest('tr')).data();
+            // $('#statusValue').val(getStatus[3]);
+        });
+        $(document).on('click', '#btnCancel', function() {
+            let rowId = $(this).attr('row.id');
+            $('#salesInvoiceValue').val(rowId);
+            // let getStatus = deliveryTable.row($(this).closest('tr')).data();
+            // $('#statusValue').val(getStatus[3]);
+        });
+
+        $(document).on('click', '#btnDeliverySave', function() {
+            let datastring = {
+                "btnDeliverySave": $('#btnDeliverySave').val(),
+                "salesInvoice": $('#salesInvoiceValue').val()
+            };
+
+            $.ajax({
+                url: 'includes/delivery-report.inc.php',
+                type: 'POST',
+                data: datastring,
+                dataType: 'json',
+                error: function(request, error) {
+                    console.log(error);
+                },
+                success: function(data) {
+
+                    if (data.status) {
+                        $('button').prop('disabled', true);
+                        $('#deliveryQuestionBox').hide();
+                        $('#deliverySuccessBox').show();
+                        $('#btnDeliverySave').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                        window.setTimeout(function() {
+                            location.reload();
+                        }, 1200);
+                    } else {
+                        $('button').prop('disabled', true);
+                        $('#deliveryQuestionBox').hide();
+                        $('#deliveryErrorBox').show();
+                        $('#btnDeliverySave').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                        window.setTimeout(function() {
+                            location.reload();
+                        }, 1200);
+                    }
+
+                },
+                fail: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    alert(xhr);
+                    alert(textStatus);
+                },
+                catch: function(error) {
+                    alert(error);
+                }
+
+            });
+
+        });
+
+        $(document).on('click', '#btnDeliveryCancel', function(){
+           
+            let datastring = {
+                "btnDeliveryCancel": $('#btnDeliveryCancel').val(),
+                "salesInvoice": $('#salesInvoiceValue').val()
+            };
+            console.log(datastring)
+            $.ajax({
+                url: 'includes/delivery-report.inc.php',
+                type: 'POST',
+                data: datastring,
+                dataType: 'json',
+                error: function(request, error) {
+                    console.log(error);
+                },
+                success: function(data) {
+
+                    if (data.status) {
+                        $('button').prop('disabled', true);
+                        $('#cancelQuestionBox').hide();
+                        $('#cancelSuccessBox').show();
+                        $('#btnDeliveryCancel').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                        window.setTimeout(function() {
+                            location.reload();
+                        }, 1200);
+                        
+                    } else {
+                        $('button').prop('disabled', true);
+                        $('#cancelQuestionBox').hide();
+                        $('#cancelErrorBox').show();
+                        $('#btnDeliveryCancel').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                        window.setTimeout(function() {
+                            location.reload();
+                        }, 1200);
+                        
+                    }
+
+                },
+                fail: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    alert(xhr);
+                    alert(textStatus);
+                },
+                catch: function(error) {
+                    alert(error);
+                }
+
+            });
+            
+        });
+
+
+
 
         const popupCenter = ({
             url,
@@ -110,7 +274,7 @@ $year = date("Y");
             });
         });
 
-        $('#deliveryTable').DataTable({
+        var deliveryTable = $('#deliveryTable').DataTable({
             "searching": true,
             "bPaginate": true,
             "lengthChange": true,

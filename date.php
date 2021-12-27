@@ -200,7 +200,7 @@ require_once 'includes/dbh.inc.php';
 // for ($x = 0; $x < count($quantityCustomer); $x++) {
 
 //     (int)$quantityDB = getPinQuantity($conn, $quantityCustomer[$x][1]);
-    
+
 //     $newQuantity = 0;
 //     for ($y = 0; $y < count($quantityDB); $y++) {
 //         if ($newQuantity == 0) {
@@ -268,7 +268,7 @@ require_once 'includes/dbh.inc.php';
 //                 $param = false;
 //             } else {
 //                 $param = true;
-                
+
 //             }
 //             break;
 //         }
@@ -276,14 +276,14 @@ require_once 'includes/dbh.inc.php';
 //     if ($param) {
 //         continue;
 //     } else {
-        
+
 //         break;
 //     }
 // }
 
 // if ($param) {
 //     echo json_encode($param); 
-   
+
 // } 
 // else {
 //     for ($x = 0; $x < count($quantityCustomer); $x++) {
@@ -312,6 +312,73 @@ require_once 'includes/dbh.inc.php';
 //     echo json_encode($param); 
 // }
 
+$salesInvoice = "SINV-sk7nB1lP";
+
+$cancelledItems = getCancelledItems($conn, $salesInvoice);
+for ($x = 0; $x < count($cancelledItems); $x++) {
+    $data = getLatestQuantityOfItem($conn, $cancelledItems[$x]['item_product_id']);
+    // echo "ITEMS:".$cancelledItems[$x]['item_product_id'] . ' ' . $cancelledItems[$x]['item_quantity']. '<br>' ;
+    (int)$result = (int)$cancelledItems[$x]['item_quantity'] + (int)$data['pin_quantity'];
+    echo $data['pin_invoice']. '<br>' ;
+    updateProductQuantityCancelled($conn, $result , $data['pin_invoice']);
+    // echo $result. ' ' . $cancelledItems[$x]['item_product_id']  . ' ' .$data['pin_product_id']  . '<br>' ;
+    // echo "PIN:".$data['pin_invoice'] . ' ' .$data['pin_product_id'] . ' ' . $data['pin_quantity'] . '<br>' ;
+}
+
+function updateProductQuantityCancelled($conn, $pin_quantity, $pin_invoice)
+{
+    $sql = "UPDATE `product_inbound_table` SET  pin_quantity = ? WHERE pin_invoice = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../sales-add.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "is", $pin_quantity, $pin_invoice);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function getCancelledItems($conn, $salesInvoice)
+{
+    $sql = "SELECT `item_product_id`,`item_quantity` FROM `item_table` WHERE `item_invoice` = ?";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../delivery-report.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "s", $salesInvoice);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    while ($row = mysqli_fetch_assoc($resultData)) {
+        $rows[] = $row;
+    } 
+    return $rows;
+    mysqli_stmt_close($stmt);
+}
+
+function getLatestQuantityOfItem($conn,$productId)
+{
+    $sql = "SELECT `pin_invoice`,`pin_product_id`, `pin_quantity` FROM `product_inbound_table` WHERE `pin_product_id` = ? AND `pin_date` = (SELECT MAX(`pin_date`) FROM `product_inbound_table` WHERE `pin_product_id` = ? LIMIT 1) ORDER BY `pin_id` DESC LIMIT 1;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../delivery-report.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "ii", $productId, $productId);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    } 
+    else{
+        return false;
+    }
+    mysqli_stmt_close($stmt);
+}
 
 function getAllProductQuantity($conn)
 {
@@ -363,7 +430,23 @@ function getPinQuantity($conn, $productId)
     return $rows;
     mysqli_stmt_close($stmt);
 }
+function getDeliveryStatus($conn, $salesInvoice)
+{
+    $sql = "SELECT * FROM `delivery_table` WHERE `delivery_sales_invoice` = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../delivery-report.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "s", $salesInvoice);
+    mysqli_stmt_execute($stmt);
 
+    $resultData = mysqli_stmt_get_result($stmt);
 
-?>
-
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    } else {
+        return false;
+    }
+    mysqli_stmt_close($stmt);
+}

@@ -135,6 +135,7 @@ if (isset($_SESSION['otpPhoneNumber'])) {
 </script>
 <script>
     function getCode() {
+        $('#btnGetCode').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
         $('#errorBox').hide();
         $('#sentBox').hide();
         $('#otpCode').removeClass('is-invalid');
