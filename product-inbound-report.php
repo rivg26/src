@@ -129,7 +129,8 @@ $year = date("Y");
                 }
             ],
             dom: 'B<"searchBar">frtip',
-            buttons: [{
+            buttons: [
+                {
                     text: '<i class="fas fa-folder-plus"></i>',
                     titleAttr: 'NEW INBOUND',
                     className: 'btn-warning me-3 shadow-none rounded',

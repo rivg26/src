@@ -184,7 +184,7 @@ if (isset($_GET['rowId'])) {
                     </tr>
                 </thead>
                 <tbody>
-                  <?= customerHistoryTable($conn,$_GET['rowId']) ?>
+                  <?php echo isset($_GET['rowId'])? customerHistoryTable($conn,$_GET['rowId']) : ''; ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -333,7 +333,7 @@ if (isset($_GET['rowId'])) {
                     $(this).addClass("is-invalid");
 
                 } else {
-                    $(this).removeClass("is-valid");
+                    $(this).removeClass("is-invalid");
                     $(this).addClass("is-valid");
                 }
             });
@@ -398,7 +398,7 @@ if (isset($_GET['rowId'])) {
                     $(this).addClass("is-invalid");
 
                 } else {
-                    $(this).removeClass("is-valid");
+                    $(this).removeClass("is-invalid");
                     $(this).addClass("is-valid");
                 }
             });
