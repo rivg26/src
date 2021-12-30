@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     else if (($_FILES["uploadfile"]["size"] > 2000000)) {
         echo json_encode(['ok' => 0, 'error' => 'file_size']);
     }    // Validate image file dimension
-    else if ($width > "1980" || $height > "1080") {
+    else if ($width > "2048" || $height > "1600") {
         echo json_encode(['ok' => 0, 'error' => 'file_dimension']);
     } else {
         $target = 'assets/temp/' . basename($_FILES["uploadfile"]["name"]);

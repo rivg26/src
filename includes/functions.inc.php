@@ -348,3 +348,44 @@ function customerHistoryTable($conn,$customerId)
         </tr>';
     }
 }
+
+function employeeTable($conn)
+{
+    $sql = "SELECT emp_number, emp_firstname, emp_middlename, emp_lastname, emp_phonenumber, emp_email FROM `employee_table`";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.$row['emp_number'].'</td>
+            <td>'.ucfirst($row['emp_lastname']). ', ' . ucfirst($row['emp_firstname']). ' '. ucfirst(substr($row['emp_middlename'],0,1)) .'.'.'</td>
+            <td>'.$row['emp_phonenumber'].'</td>
+            <td>'.$row['emp_email'].'</td>
+            <td><button type="button" class="btn btn-warning shadow-none" id = "btnEditEmployee"  row.id ="'.$row['emp_number'].'"data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
+        </tr>';
+    }
+}
+
+
+function getEmployeeDataTable($conn, $empNumber)
+{
+    $sql = "SELECT * FROM `employee_table` JOIN emp_address_table ON emp_address_table.address_emp_number = emp_number WHERE emp_number = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../funtions.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "s", $empNumber);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    } 
+    else{
+        return false;
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}

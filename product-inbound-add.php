@@ -15,10 +15,11 @@ if (isset($_GET['rowId'])) {
     $totalFinalPrice = $data['pin_total_final_price'];
     $remarks = $data['pin_remarks'];
 } else {
+    date_default_timezone_set('Asia/Hong_Kong');
     $generate = GenerateKey($conn, 'SELECT * FROM `product_inbound_table`;', 'PINV-', 'pin_invoice');
     $pun = getPunInbound($conn);
     $punGen = $pun['price_pun'];
-    $date = "";
+    $date = date('Y-m-d');
     $product = "";
     $productOption = "";
     $quantity = "";
@@ -52,7 +53,7 @@ if (isset($_GET['rowId'])) {
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="pinDate" class="form-label">Date Inbound</label>
-                    <input type="date" class="form-control shadow-none" id="pinDate" value="<?= $date ?>">
+                    <input type="date" class="form-control shadow-none" id="pinDate" value="<?= $date ?>" readonly>
                     <div class="valid-feedback">
                         Looks good!
                     </div>

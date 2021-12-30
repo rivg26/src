@@ -2,8 +2,42 @@
 <?php
 
 if (isset($_GET['rowId'])) {
+    $data = getEmployeeDataTable($conn, $_GET['rowId']);
+    $generate = $data['emp_number'];
+    $firstName = $data['emp_firstname'];
+    $middleName = $data['emp_middlename'];
+    $lastName = $data['emp_lastname'];
+    $birthday = $data['emp_birthday'];
+    $gender = $data['emp_gender'];
+    $civilStatus = $data['emp_civilstatus'];
+    $education = $data['emp_education'];
+    $email = $data['emp_email'];
+    $phoneNumber = substr($data['emp_phonenumber'], 1);
+    $unit = $data['address_unit'];
+    $street = $data['address_street'];
+    $barangay = $data['address_barangay'];
+    $city = $data['address_city'];
+    $province = $data['address_province'];
+    $picPath = $data['emp_picpath'];
+    $checker = "row";
 } else {
     $generate = GenerateKey($conn, 'SELECT * FROM employee_table;', 'EMP-', 'emp_number');
+    $firstName = "";
+    $middleName = "";
+    $lastName = "";
+    $birthday = "";
+    $gender = "";
+    $civilStatus = "";
+    $education = "";
+    $email = "";
+    $phoneNumber = "";
+    $unit = "";
+    $street = "";
+    $barangay = "";
+    $city = "";
+    $province = "";
+    $defPath = "assets/admin-img/blank.png";
+    $checker = "";
 }
 
 ?>
@@ -37,9 +71,13 @@ if (isset($_GET['rowId'])) {
             <form action="includes/upload.inc.php" method="post" id="picupload" class="a-form" enctype="multipart/form-data">
                 <div class="position-absolute top-0 start-50 translate-middle d-flex flex-row justify-content-center ">
                     <div class="imageWrapper">
-                        <img src="assets/admin-img/blank.png" class="rounded-circle shadow printmeImg " id="imagesrc" alt="">
-                        <label for="files" class="alert alert-info m-0 p-0 w-25 text-center mt-3 no-printme" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Set Profile Picture"><i class="fas fa-upload"></i> UPLOAD</label>
-                        <input type="file" class="form-control form-control-sm mt-3 shadow-none visually-hidden uploadfile" id="files" name="uploadfile">
+                        <img src="<?= isset($_GET['rowId']) ?  $picPath : $defPath ?>" class="rounded-circle shadow printmeImg " id="imagesrc" alt="profile picture">
+                        <?php
+                        if (!isset($_GET['rowId'])) {
+                            echo '<label for="files" class="alert alert-info m-0 p-0 w-25 text-center mt-3 no-printme" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Set Profile Picture"><i class="fas fa-upload"></i> UPLOAD</label>
+                                <input type="file" class="form-control form-control-sm mt-3 shadow-none visually-hidden uploadfile" id="files" name="uploadfile">';
+                        }
+                        ?>
                     </div>
                 </div>
             </form>
@@ -61,7 +99,7 @@ if (isset($_GET['rowId'])) {
                         <div class="col-md-4">
                             <div class="mb-2">
                                 <label for="empFirstName" class="form-label">First Name*</label>
-                                <input type="text" class="form-control shadow-none" id="empFirstName" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
+                                <input type="text" class="form-control shadow-none" id="empFirstName" value="<?= $firstName ?>" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
                                 <div class="valid-feedback">
                                     Looks good!
                                 </div>
@@ -73,7 +111,7 @@ if (isset($_GET['rowId'])) {
                         <div class="col-md-4">
                             <div class="mb-2">
                                 <label for="empMiddleName" class="form-label">Middle Name*</label>
-                                <input type="text" class="form-control shadow-none" id="empMiddleName" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
+                                <input type="text" class="form-control shadow-none" id="empMiddleName" value="<?= $middleName ?>" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
                                 <div class="valid-feedback">
                                     Looks good!
                                 </div>
@@ -85,7 +123,7 @@ if (isset($_GET['rowId'])) {
                         <div class="col-md-4">
                             <div class="mb-2">
                                 <label for="empLastName" class="form-label">Last Name*</label>
-                                <input type="text" class="form-control shadow-none" id="empLastName" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
+                                <input type="text" class="form-control shadow-none" id="empLastName" value="<?= $lastName ?>" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
                                 <div class="valid-feedback">
                                     Looks good!
                                 </div>
@@ -99,7 +137,7 @@ if (isset($_GET['rowId'])) {
                         <div class="col-md-2">
                             <div class="mb-2">
                                 <label for="empBirthday" class="form-label">Birthday*</label>
-                                <input type="date" class="form-control shadow-none" id="empBirthday">
+                                <input type="date" class="form-control shadow-none" value="<?= $birthday ?>" id="empBirthday">
                                 <div class="valid-feedback">
                                     Looks good!
                                 </div>
@@ -118,10 +156,10 @@ if (isset($_GET['rowId'])) {
                             <div class="mb-2">
                                 <label for="empGender" class="form-label">Gender*</label>
                                 <select class="form-select shadow-none" id="empGender">
-                                    <option value="" selected>---Select Gender---</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="binary">Binary</option>
+                                    <option value="" <?= $gender == "" ? "selected" : '' ?>>---Select Gender---</option>
+                                    <option value="male" <?= $gender == "male" ? "selected" : '' ?>>Male</option>
+                                    <option value="female" <?= $gender == "female" ? "selected" : '' ?>>Female</option>
+                                    <option value="binary" <?= $gender == "binary" ? "selected" : '' ?>>Binary</option>
                                 </select>
                                 <div class="valid-feedback">
                                     Looks good!
@@ -135,11 +173,11 @@ if (isset($_GET['rowId'])) {
                             <div class="mb-2">
                                 <label for="empCivilStatus" class="form-label">Civil Status*</label>
                                 <select class="form-select shadow-none" id="empCivilStatus">
-                                    <option value="" selected>---Select Civil Status---</option>
-                                    <option value="single">Single</option>
-                                    <option value="married">Married</option>
-                                    <option value="widowed">Widowed</option>
-                                    <option value="divorce">Divorce</option>
+                                    <option value="" <?= $civilStatus == "" ? "selected" : '' ?>>---Select Civil Status---</option>
+                                    <option value="single" <?= $civilStatus == "single" ? "selected" : '' ?>>Single</option>
+                                    <option value="married" <?= $civilStatus == "married" ? "selected" : '' ?>>Married</option>
+                                    <option value="widowed" <?= $civilStatus == "widowed" ? "selected" : '' ?>>Widowed</option>
+                                    <option value="divorce" <?= $civilStatus == "divorce" ? "selected" : '' ?>>Divorce</option>
                                 </select>
                                 <div class="valid-feedback">
                                     Looks good!
@@ -153,12 +191,12 @@ if (isset($_GET['rowId'])) {
                             <div class="mb-2">
                                 <label for="empEducation" class="form-label">Educational Attainment*</label>
                                 <select class="form-select shadow-none" id="empEducation">
-                                    <option value="" selected>---Select---</option>
-                                    <option value="elementary">Elementary</option>
-                                    <option value="highschool">High School Graduate</option>
-                                    <option value="college grad">College Graduate</option>
-                                    <option value="college undergrad">College UnderGrad</option>
-                                    <option value="masteral">Masteral</option>
+                                    <option value="" <?= $education == "" ? "selected" : '' ?>>---Select---</option>
+                                    <option value="elementary" <?= $education == "elementary" ? "selected" : '' ?>>Elementary</option>
+                                    <option value="highschool" <?= $education == "highschool" ? "selected" : '' ?>>High School Graduate</option>
+                                    <option value="college grad" <?= $education == "college grad" ? "selected" : '' ?>>College Graduate</option>
+                                    <option value="college undergrad" <?= $education == "college undergrad" ? "selected" : '' ?>>College UnderGrad</option>
+                                    <option value="masteral" <?= $education == "masteral" ? "selected" : '' ?>>Masteral</option>
                                 </select>
                                 <div class="valid-feedback">
                                     Looks good!
@@ -175,7 +213,7 @@ if (isset($_GET['rowId'])) {
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="empUnit" class="form-label">House/Unit No.*</label>
-                            <input type="text" class="form-control shadow-none" id="empUnit" placeholder="house/unit no." onkeypress="return /^[a-zA-Z\s0-9.,-]*$/.test(event.key)">
+                            <input type="text" class="form-control shadow-none" value="<?= $unit ?>" id="empUnit" placeholder="house/unit no." onkeypress="return /^[a-zA-Z\s0-9.,-]*$/.test(event.key)">
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -185,7 +223,7 @@ if (isset($_GET['rowId'])) {
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="empStreet" class="form-label">Street/Bldg.*</label>
-                            <input type="text" class="form-control shadow-none" id="empStreet" placeholder="street bldg." onkeypress="return /^[a-zA-Z\s0-9.,-]*$/.test(event.key)">
+                            <input type="text" class="form-control shadow-none" value="<?= $street ?>" id="empStreet" placeholder="street bldg." onkeypress="return /^[a-zA-Z\s0-9.,-]*$/.test(event.key)">
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -197,7 +235,7 @@ if (isset($_GET['rowId'])) {
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="empProvince" class="form-label">Province*</label>
-                            <input type="text" class="form-control shadow-none" id="empProvince" placeholder="province" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
+                            <input type="text" class="form-control shadow-none" value="<?= $province ?>" id="empProvince" placeholder="province" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -207,7 +245,7 @@ if (isset($_GET['rowId'])) {
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="empCity" class="form-label">Municipality/City*</label>
-                            <input type="text" class="form-control shadow-none" id="empCity" placeholder="municipality/city" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
+                            <input type="text" class="form-control shadow-none" value="<?= $city ?>" id="empCity" placeholder="municipality/city" onkeypress="return /^[a-zA-Z\s]*$/.test(event.key)">
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -217,7 +255,7 @@ if (isset($_GET['rowId'])) {
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="empBarangay" class="form-label">Barangay*</label>
-                            <input type="text" class="form-control shadow-none" id="empBarangay" placeholder="barangay" onkeypress="return /^[a-zA-Z\s0-9]*$/.test(event.key)">
+                            <input type="text" class="form-control shadow-none" value="<?= $barangay ?>" id="empBarangay" placeholder="barangay" onkeypress="return /^[a-zA-Z\s0-9]*$/.test(event.key)">
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -231,7 +269,16 @@ if (isset($_GET['rowId'])) {
                             <label for="empPhoneNumber" class="form-label">Phone Number*</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="basic-addon1">+63</span>
-                                <input type="text" class="form-control shadow-none" id="empPhoneNumber" maxlength="10" placeholder="phonenumber" required onkeypress="return /^[0-9]*$/.test(event.key)">
+
+                                <?php
+                                if (isset($_GET['rowId'])) {
+                                    echo '<input type="text" class="form-control shadow-none" value="' . $phoneNumber . '" id="empUpdatePhoneNumber" maxlength="10" placeholder="phonenumber" required onkeypress="return /^[0-9]*$/.test(event.key)">';
+                                } else {
+                                    echo '<input type="text" class="form-control shadow-none" value="' . $phoneNumber . '" id="empPhoneNumber" maxlength="10" placeholder="phonenumber" required onkeypress="return /^[0-9]*$/.test(event.key)">';
+                                }
+
+                                ?>
+
                                 <div class="valid-feedback">
                                     Looks good!
                                 </div>
@@ -243,7 +290,14 @@ if (isset($_GET['rowId'])) {
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="empEmail" class="form-label">Email Address</label>
-                            <input type="email" class="form-control shadow-none" id="empEmail" placeholder="email address" onkeypress="return /^[a-zA-Z\s0-9@.!#$%&'*+-/=?^_`{|}~]*$/.test(event.key)">
+                            <?php
+                            if (isset($_GET['rowId'])) {
+                                echo '<input type="email" class="form-control shadow-none" value="' . $email . '" id="empUpdateEmail" placeholder="email address" >';
+                            } else {
+                                echo '<input type="email" class="form-control shadow-none" value="' . $email . '" id="empEmail" placeholder="email address" >';
+                            }
+
+                            ?>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
@@ -254,24 +308,29 @@ if (isset($_GET['rowId'])) {
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <input type="hidden" id="empPicPath" class="form-control">
+                            <input type="hidden" id="empPicPath">
+                            <input type="hidden" id="empChecker" value="<?= $checker ?>">
+                            <?php
+                            if (isset($_GET['rowId'])) {
+                                echo '<input type="hidden" id="empLastPhoneNumber" value="' . $phoneNumber . '">';
+                                echo '<input type="hidden" id="empLastEmail" value="' . $email . '">';
+                            }
+                            ?>
                         </div>
                     </div>
                 </fieldset>
                 <div class="d-flex justify-content-center flex-row mt-5">
-                    <p class="alert alert-danger p-3 w-50 text-center" id="errorBox" style="display: none;"></p>
+                    <p class="alert alert-danger p-3 w-50 text-center" id="errorBox" style="display: none;"><i class="fas fa-times-circle"></i> </p>
+                    <p class="alert alert-success p-3 w-50 text-center" id="successBox" style="display: none;"><i class="fas fa-check-circle"></i> Submission Success!</p>
                 </div>
             </div>
             <div class="text-center mt-5 no-printme">
                 <?php
-                if (isset($_GET['action'])) {
-                    if ($_GET['action'] === "adding") {
-                        echo '<button class="btn btn-lg shadow-none rippleButton ripple no-printme me-3"  data-bs-toggle="modal" data-bs-target="#empModal" id= "btnEmpSubmit" data-backdrop="false">SUBMIT</button>';
-                    } else {
-                        echo '<button class="btn btn-lg shadow-none rippleButton ripple no-printme mx-2" onclick="window.print();">Print</button>';
-                        echo '<button class="btn btn-lg shadow-none rippleButton ripple no-printme mx-2" id="empSubmit">SUBMIT</button>';
-                        echo  '<button class="btn btn-lg shadow-none rippleButton ripple no-printme mx-2">CANCEL</button>';
-                    }
+                if (isset($_GET['rowId'])) {
+                    echo '<button class="btn btn-lg shadow-none rippleButton ripple no-printme mx-2" onclick="window.print();">Print</button>';
+                    echo '<button class="btn btn-lg shadow-none rippleButton ripple no-printme mx-2" data-bs-toggle="modal" data-bs-target="#empModal" id="btnEmpUpdate" data-backdrop="false">UPDATE</button>';
+                } else {
+                    echo '<button class="btn btn-lg shadow-none rippleButton ripple no-printme me-3"  data-bs-toggle="modal" data-bs-target="#empModal" id= "btnEmpSubmit" data-backdrop="false">SUBMIT</button>';
                 }
                 ?>
 
@@ -293,7 +352,7 @@ if (isset($_GET['rowId'])) {
                             <?php
 
                             if (isset($_GET['rowId'])) {
-                                echo '<button type="button" class="btn shadow-none rippleButton ripple" id="pinUpdate">Save changes</button>';
+                                echo '<button type="button" class="btn shadow-none rippleButton ripple" id="empUpdate">Save changes</button>';
                             } else {
                                 echo '<button type="button" class="btn shadow-none rippleButton ripple" id="empSubmit">Save changes</button>';
                             }
@@ -311,6 +370,14 @@ if (isset($_GET['rowId'])) {
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function() {
+
+        $(window).on('load', function() {
+            if ($('#empChecker').val() === "row") {
+                var x = new Date($("#empBirthday").val());
+                var Cnow = new Date();
+                $('#empAge').val(Cnow.getFullYear() - x.getFullYear());
+            }
+        });
 
         $('.uploadfile').change(function(e) {
             var formData = new FormData($('#picupload')[0]);
@@ -336,7 +403,7 @@ if (isset($_GET['rowId'])) {
                         } else if (result.error == "file_size") {
                             alert('Image size exceeds 2MB');
                         } else if (result.error == "file_dimension") {
-                            alert('Image dimension should be within 1920 X 1080');
+                            alert('Image dimension should be within 2048 X 1600');
                         } else {
                             alert('Error encountered while trying to upload the picture!');
                         }
@@ -347,19 +414,19 @@ if (isset($_GET['rowId'])) {
         });
 
         $(document).on('click', '#empSubmit', function() {
-            // $('input').not('#empPicPath, #files').each(function() {
-            //     if ($(this).val().trim() === "") {
-            //         $(this).removeClass("is-valid");
-            //         $(this).addClass("is-invalid");
+            $('input').not('#empPicPath, #files , #empChecker').each(function() {
+                if ($(this).val().trim() === "") {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
 
-            //     }
-            // });
-            // $('select').each(function() {
-            //     if ($(this).val().trim() == "") {
-            //         $(this).removeClass("is-valid");
-            //         $(this).addClass("is-invalid");
-            //     }
-            // });
+                }
+            });
+            $('select').each(function() {
+                if ($(this).val().trim() == "") {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                }
+            });
             if ($('#empPicPath').val() == "") {
                 $('#errorBox').html('Please upload profile image...');
                 $('#errorBox').show();
@@ -368,7 +435,6 @@ if (isset($_GET['rowId'])) {
                 if ($('.is-invalid')[0]) {
                     $('#empModal').modal('hide');
                     $('#errorBox').hide();
-                    alert($('.is-invalid').html()[0])
                 } else {
                     let datastring = {
                         'empNumber': $('#empNumber').val(),
@@ -400,8 +466,16 @@ if (isset($_GET['rowId'])) {
                             console.log(error)
                         },
                         success: function(data) {
-                            if(data.status){
-                                alert(data.message)
+                            if (data.status) {
+                                $('#errorBox').hide();
+                                $('buttons').prop('disabled', true);
+                                $('input').prop('disabled', true);
+                                $('#successBox').show();
+                                $('#btnEmpSubmit').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                                $('#empModal').modal('hide');
+                                window.setTimeout(function() {
+                                    window.location.href = 'employee-list.php';
+                                }, 2000);
                             }
 
                         },
@@ -415,8 +489,86 @@ if (isset($_GET['rowId'])) {
                         }
 
                     });
-                        
+
                 }
+            }
+
+
+        });
+
+        $(document).on('click', '#empUpdate', function() {
+            $('#empUpdate').prop('disabled',true);
+            $('input').not('#empPicPath, #files , #empChecker, #empLastEmail, #empLastPhoneNumber').each(function() {
+                if ($(this).val().trim() === "") {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+
+                }
+            });
+            $('select').each(function() {
+                if ($(this).val().trim() == "") {
+                    $(this).removeClass("is-valid");
+                    $(this).addClass("is-invalid");
+                }
+            });
+            if ($('.is-invalid')[0]) {
+                $('#empUpdate').prop('disabled',false);
+                $('#empModal').modal('hide');
+                $('#errorBox').hide();
+            } else {
+                let datastring = {
+                    'empNumber': $('#empNumber').val(),
+                    'empFirstName': $('#empFirstName').val(),
+                    'empMiddleName': $('#empMiddleName').val(),
+                    'empLastName': $('#empLastName').val(),
+                    'empBirthday': $('#empBirthday').val(),
+                    'empGender': $('#empGender').val(),
+                    'empCivilStatus': $('#empCivilStatus').val(),
+                    'empEducation': $('#empEducation').val(),
+                    'empUnit': $('#empUnit').val(),
+                    'empStreet': $('#empStreet').val(),
+                    'empProvince': $('#empProvince').val(),
+                    'empCity': $('#empCity').val(),
+                    'empBarangay': $('#empBarangay').val(),
+                    'empPhoneNumber': $('#empUpdatePhoneNumber').val(),
+                    'empEmail': $('#empUpdateEmail').val(),
+                    'btnUpdate': $('#empUpdate').val()
+
+                };
+                console.log(datastring)
+                $.ajax({
+                    url: 'includes/employee-add.inc.php',
+                    type: 'POST',
+                    data: datastring,
+                    dataType: 'json',
+                    error: function(error) {
+                        console.log(error)
+                    },
+                    success: function(data) {
+                        if (data.status) {
+                            $('#errorBox').hide();
+                            $('buttons').prop('disabled', true);
+                            $('input').prop('disabled', true);
+                            $('#successBox').show();
+                            $('#btnEmpUpdate').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                            $('#empModal').modal('hide');
+                            window.setTimeout(function() {
+                                window.location.href = 'employee-list.php';
+                            }, 2000);
+                        }
+
+                    },
+                    fail: function(xhr, textStatus, errorThrown) {
+                        alert(errorThrown);
+                        alert(xhr);
+                        alert(textStatus);
+                    },
+                    catch: function(error) {
+                        alert(error);
+                    }
+
+                });
+
             }
 
 
@@ -546,6 +698,53 @@ if (isset($_GET['rowId'])) {
                 });
             }
         });
+        $(document).on('keyup', '#empUpdateEmail', function() {
+            if ($(this).val().trim() == "" || !$(this).val()) {
+                $('#empEmailInvalidFeedback').text('Please input email address...');
+                $(this).removeClass("is-valid").addClass("is-invalid");
+            } else if ($('#empUpdateEmail').val() == $('#empLastEmail').val()) {
+                $('#empUpdateEmail').removeClass("is-invalid").addClass("is-valid");
+            } else {
+
+                let datastring = {
+                    "validateEmail": "EmailTest",
+                    "empEmail": $('#empUpdateEmail').val()
+                }
+                console.log(datastring)
+                $.ajax({
+                    url: 'includes/employee-add.inc.php',
+                    type: 'POST',
+                    data: datastring,
+                    dataType: 'json',
+                    error: function(error) {
+                        console.log(error)
+                    },
+                    success: function(data) {
+                        if (data.status) {
+                            $('#empUpdateEmail').removeClass("is-invalid").addClass("is-valid");
+                        } else {
+                            if (data.message == "invalid") {
+                                $('#empEmailInvalidFeedback').text('Please input valid email address...');
+                                $('#empUpdateEmail').removeClass("is-valid").addClass("is-invalid");
+                            } else {
+                                $('#empEmailInvalidFeedback').text('Email already exist...');
+                                $('#empUpdateEmail').removeClass("is-valid").addClass("is-invalid");
+                            }
+                        }
+
+                    },
+                    fail: function(xhr, textStatus, errorThrown) {
+                        alert(errorThrown);
+                        alert(xhr);
+                        alert(textStatus);
+                    },
+                    catch: function(error) {
+                        alert(error);
+                    }
+
+                });
+            }
+        });
 
         $(document).on('change', '#empBirthday', function() {
             var x = new Date($("#empBirthday").val());
@@ -604,6 +803,54 @@ if (isset($_GET['rowId'])) {
                             }
                             $('#empPhoneNumber').removeClass('is-valid');
                             $('#empPhoneNumber').addClass('is-invalid');
+                        }
+
+                    },
+                    fail: function(xhr, textStatus, errorThrown) {
+                        alert(errorThrown);
+                        alert(xhr);
+                        alert(textStatus);
+                    },
+                    catch: function(error) {
+                        alert(error);
+                    }
+
+                });
+            }
+        });
+
+        $(document).on('keyup', '#empUpdatePhoneNumber', function() {
+            if (!$(this).val() || $(this).val().trim() === "") {
+                $('#empPhoneNumberInvalidFeedback').text('Please input phone number...');
+                $(this).removeClass('is-valid');
+                $(this).addClass('is-invalid');
+            } else if ($('#empUpdatePhoneNumber').val() == $('#empLastPhoneNumber').val()) {
+                $('#empUpdatePhoneNumber').removeClass('is-invalid').addClass('is-valid');
+            } else {
+                // '&empPhoneNumber='
+                let datastring = {
+                    "empPhoneNumber": $('#empUpdatePhoneNumber').val(),
+                    "validatePhone": "test"
+                };
+                console.log(datastring)
+                $.ajax({
+                    url: 'includes/employee-add.inc.php',
+                    type: 'POST',
+                    data: datastring,
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data.status) {
+                            $('#empUpdatePhoneNumber').removeClass('is-invalid');
+                            $('#empUpdatePhoneNumber').addClass('is-valid');
+                        } else {
+                            if (data.message == "invalid") {
+                                $('#empPhoneNumberInvalidFeedback').text('Invalid Phone Number...');
+
+                            } else {
+                                $('#empPhoneNumberInvalidFeedback').text('Phone Number already exist...');
+                            }
+                            $('#empUpdatePhoneNumber').removeClass('is-valid');
+                            $('#empUpdatePhoneNumber').addClass('is-invalid');
                         }
 
                     },

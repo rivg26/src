@@ -13,19 +13,11 @@
                         <th>Name</th>
                         <th>Phone Number</th>
                         <th>Email Address</th>
-                        <th>Address</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>EMP-121</td>
-                        <td>Gregorio, Ron Ivin</td>
-                        <td>09264102938</td>
-                        <td>gregorioron26@gmail.com</td>
-                        <td class="remarksWrapper">Block 1 Lot 20 Phase 4 Ecotrend Subd. Ligas 3 Bacoor City</td>
-                        <td><button type="button" class="btn btn-warning shadow-none"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
-                    </tr>
+                <?= employeeTable($conn); ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -33,7 +25,6 @@
                         <th>Name</th>
                         <th>Phone Number</th>
                         <th>Email Address</th>
-                        <th>Address</th>
                         <th>Actions</th>
                     </tr>
                 </tfoot>
@@ -48,6 +39,17 @@
 
 <script>
     $(document).ready(function() {
+
+        $(document).on('click','#btnEditEmployee', function(){
+            let rowId = $(this).attr('row.id');
+            $("#loader").fadeIn();
+            window.setTimeout(function() {
+                $("#loader").fadeOut();
+                window.location.href = "employee-add.php?rowId=" + rowId;
+            }, 2000);
+        });
+
+
         // var today = new Date().toLocaleString();
         var today = new Date();
         // today.toLocaleDateString("en-US", options);
@@ -67,12 +69,16 @@
             lengthMenu: [5, 10, 25, 50, 100, 200],
             "columnDefs": [
                 {
-                    targets: [0,1,2,3,5],
+                    targets: [1,3],
+                    className: "text-justify"
+                },
+                {
+                    targets: [0,2,4],
                     className: "text-center"
                 },
                 {
                     orderable: false,
-                    targets: [5]
+                    targets: [4]
                 }
             ],
             dom: 'Bfrtip',

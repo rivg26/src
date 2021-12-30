@@ -115,7 +115,7 @@ $(document).on('click', '.adminNav', function () {
         var component = 'product-inbound-report.php';
         break;
       case 'employee-add':
-        var component = 'employee-add.php?action=adding';
+        var component = 'employee-add.php';
         break;
       case 'employee-list':
         var component = 'employee-list.php';
