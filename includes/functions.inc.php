@@ -389,3 +389,64 @@ function getEmployeeDataTable($conn, $empNumber)
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }
+
+
+function expensesEmployeeSelect($conn,$empId)
+{
+    $sql = "SELECT emp_id, emp_firstname, emp_middlename, emp_lastname FROM `employee_table`";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $selected = "";
+        for($x = 1; $x <= 8; $x++){
+            if($empId === $x && $row['emp_id'] === "$x"){
+                $selected = "selected";
+            }
+        }
+       echo '<option value="'.$row['emp_id'].'" '.$selected.'>'.ucfirst($row['emp_lastname']). ', ' . ucfirst($row['emp_firstname']). ' '. ucfirst(substr($row['emp_middlename'],0,1)) .'.'.'</option>';
+    }
+}
+
+
+function expensesTable($conn)
+{
+    $sql = "SELECT t.expenses_id, t.expenses_invoice, t.expenses_date, t.expenses_amount, t.expenses_category, t.expenses_description, CONCAT(e1.emp_lastname, ' ', e1.emp_firstname, ' ', e1.emp_middlename) AS 'employee_name', CONCAT(e2.emp_lastname, ' ', e2.emp_firstname, ' ', e2.emp_middlename) AS 'encoder_name' FROM `expenses_table` t JOIN employee_table e1 ON e1.emp_id = t.expenses_employee_id JOIN employee_table e2 ON e2.emp_id = t.expenses_emp_encoder_id;";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.$row['expenses_date'].'</td>
+            <td>'.$row['expenses_invoice'].'</td>
+            <td>'.$row['employee_name'].'</td>
+            <td>'.$row['expenses_amount'].'</td>
+            <td>'.$row['expenses_category'].'</td>
+            <td class="remarksWrapper">'.$row['encoder_name'].'</td>
+            <td class="remarksWrapper">'.$row['expenses_description'].'</td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['expenses_id'].'" id="btnEditExpenses" data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit" ><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
+        </tr>';
+    }
+}
+
+function getExpensesData($conn,$expensesId)
+{
+    $sql = "SELECT * FROM `expenses_table` WHERE expenses_id = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../funtions.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "i", $expensesId);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    } 
+    else{
+        return false;
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}
