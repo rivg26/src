@@ -450,3 +450,63 @@ function getExpensesData($conn,$expensesId)
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }
+
+function viewInventoryTable($conn)
+{
+    $sql = "SELECT `inv_control_number`,`inv_date`,`inv_type`, CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ', SUBSTRING(employee_table.emp_middlename,1,1),'.') AS 'encoder_name' FROM `inventory_table` JOIN employee_table ON employee_table.emp_id = inv_emp_id GROUP BY `inv_control_number`;";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.date('d M Y', strtotime($row['inv_date'])).'</td>
+            <td>'.$row['inv_control_number'].'</td>
+            <td>'.$row['inv_type'].'</td>
+            <td>'.$row['encoder_name'].'</td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['inv_control_number'].'" id="btnViewInventory" data-bs-toggle="tooltip" data-bs-placement="top" title="View"><i class="fas fa-eye"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
+        </tr>';
+    }
+}
+
+function getInventoryData($conn,$controlNumber)
+{
+    $sql = "SELECT * FROM `inventory_table` WHERE inv_control_number = ? LIMIT 1;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../funtions.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "s", $controlNumber);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    } 
+    else{
+        return false;
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}
+
+function totalInventoryTable($conn,$controlNumber)
+{
+    $sql = "SELECT `inv_name`,`inv_weight`,`inv_quantity`,`inv_metric_tons`,`inv_plant_price`,`inv_total_price`,`inv_plant_value`,`inv_total_value` FROM `inventory_table` WHERE `inv_control_number` = '$controlNumber'";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.$row['inv_name'].'</td>
+            <td>'.$row['inv_weight'].'</td>
+            <td>'.$row['inv_quantity'].'</td>
+            <td>'.$row['inv_metric_tons'].'</td>
+            <td>'.$row['inv_plant_price'].'</td>
+            <td>'.$row['inv_total_price'].'</td>
+            <td>'.$row['inv_plant_value'].'</td>
+            <td>'.$row['inv_total_value'].'</td>
+        </tr>';
+    }
+}

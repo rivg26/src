@@ -114,7 +114,7 @@
                                         <a class="adminNav" link="defective-report" href="">Defective Product Report</a>
                                     </li> -->
                                     <li>
-                                        <a class="adminNav" link="inventory-report" href="">Total Inventory Report</a>
+                                        <a class="adminNav" link="inventory-report" href="">View Inventory Report</a>
                                     </li>
                                 </ul>
                             </div>

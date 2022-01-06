@@ -145,7 +145,7 @@ $(document).on('click', '.adminNav', function () {
         var component = 'price-update-report.php';
         break;
       case 'inventory-report':
-        var component = 'inventory-report.php';
+        var component = 'inventory-view-report.php';
         break;
       case 'customer-report':
         var component = 'customer-list.php';

@@ -1,53 +1,56 @@
 <?php require_once 'head.php' ?>
+<?php
+if (isset($_GET['rowId'])) {
+    $data = getInventoryData($conn,$_GET['rowId']);
+    $generate = $_GET['rowId'];
+    $date = $data['inv_date'];
+    $type = $data['inv_type'];
+} else {
+    date_default_timezone_set('Asia/Hong_Kong');
+    $date = date('Y-m-d');
+    $generate = GenerateKey($conn, 'SELECT * FROM `inventory_table`;', 'ICN-', 'inv_control_number');
+    $type = "";
+}
+?>
 <div class="row" style="position: relative;">
     <div class="shadow p-3 mb-5 bg-body rounded">
         <div class="text-center">
-            <h5 class="display-4 mb-5 mt-3">Inventory Report</h5>
+            <h5 class="display-4 mb-5 mt-3">Total Inventory Report</h5>
+        </div>
+        <div class="d-flex flex-row justify-content-between mb-5">
+            <div class="px-5 form-group col-3">
+                <label for="invDate" class="form-label">Date</label>
+                <input type="date" class="form-control shadow-none" id="invDate" value="<?= $date ?>" readonly required>
+            </div>
+            <div class="px-5 form-group col-3">
+                <label for="invInvoice" class="form-label">Inventory Control Number</label>
+                <input type="text" class="form-control shadow-none" id="invInvoice" value="<?= $generate ?>" readonly required>
+            </div>
         </div>
         <div class="">
+
             <div class="px-5">
-                <em>Please Select Date...</em>
+                <em><?= isset($_GET['rowId'])? "": "Please Select Type..." ?></em>
                 <div class="row mt-3">
-                    <div class="col-md-7 col-sm-12 col-xs-12 ">
-                        <!-- <div class="row ">
-                            <label for="fromDate" class="col-sm-1 col-form-label">From</label>
-                            <div class="col-sm-5">
-                                <input type="date" class="form-control shadow-none" id="fromDate">
-                                <div class="invalid-feedback" id="fromDateFeedback">Please Select Valid Date..</div>
-                            </div>
-                            <label for="endDate" class="col-sm-1 col-form-label">To</label>
-                            <div class="col-sm-5">
-                                <input type="date" class="form-control shadow-none" id='endDate'>
-                                <div class="invalid-feedback" id="endDateFeedback">Please Select Valid Date..</div>
-                            </div>
-                        </div> -->
+                    <div class="col-md-10 col-sm-12 col-xs-12 ">
                         <div class="row">
                             <label for="type" class="col-sm-1 col-form-label">Type</label>
                             <div class="col-sm-3">
-                                <select class="form-select shadow-none" id="type">
-                                    <option value="" selected disabled>---Select Type---</option>
-                                    <option value="NEW">NEW</option>
-                                    <option value="REFILL">REFILL</option>
+                                <select class="form-select shadow-none" id="type"  <?= isset($_GET['rowId'])? "disabled": "" ?> >
+                                    <option value="" <?= $type == ""? "selected": "" ?> disabled>---Select Type---</option>
+                                    <option value="NEW" <?= $type == "NEW"? "selected": "" ?>>NEW</option>
+                                    <option value="REFILL" <?= $type == "REFILL"? "selected": "" ?>>REFILL</option>
                                 </select>
                                 <div class="invalid-feedback" id="typeFeedback">Please Select Type..</div>
                             </div>
-                            <!-- <label for="type" class="col-sm-1 col-form-label">Calculate</label>
-                            <div class="col-sm-3">
-                                <select class="form-select shadow-none" id="calculate">
-                                    <option value="" selected disabled>---Select Calculate---</option>
-                                    <option value="remaining">Remaining Quantity</option>
-                                    <option value="total">Total Quantity</option>
-                                </select>
-                                <div class="invalid-feedback" id="calculateFeedback">Please Select Calculate..</div>
-                            </div> -->
                             <div class="col-sm-2">
-                                <button class="btn shadow-none rippleButton ripple" id="btnInventorySubmit">Submit</button>
+                                <?= isset($_GET['rowId'])? "": '<button class="btn shadow-none rippleButton ripple" id="btnInventorySubmit">Submit</button>' ?>   
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
+
         </div>
         <div class="table-responsive mb-5 mt-2 p-5">
 
@@ -66,16 +69,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr style="font-size: 0.9rem;">
-                        <td>Petron LPG Gasul 50kg Pol-Valve</td>
-                        <td>11</td>
-                        <td>9</td>
-                        <td>3.2</td>
-                        <td>800</td>
-                        <td>900</td>
-                        <td>20000</td>
-                        <td>30000</td>
-                    </tr> -->
+                <?= isset($_GET['rowId'])? totalInventoryTable($conn,$_GET['rowId']): "" ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -90,6 +84,40 @@
                     </tr>
                 </tfoot>
             </table>
+            <div class="text-center mb-5">
+            <?= isset($_GET['rowId'])? "": '<button class="btn btn-lg shadow-none rippleButton ripple" id="btnInventorySave" data-bs-toggle="modal" data-bs-target="#invModal" data-backdrop="false"> Save Table</button>' ?>   
+            </div>
+            <div class="text-center alert alert-danger my-4" style="display: none;" id="errorBox">
+                <i class="fas fa-times-circle"></i> Invalid Process...
+            </div>
+            <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
+                <i class="fas fa-check-circle"></i> Submission Success!
+            </div>
+        </div>
+
+        <div class="modal fade" id="invModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to Save?
+                    </div>
+                    <div class="modal-footer">
+                        <?php
+
+                        if (isset($_GET['rowId'])) {
+                            echo '<button type="button" class="btn shadow-none rippleButton ripple" id="invUpdate">Save changes</button>';
+                        } else {
+                            echo '<button type="button" class="btn shadow-none rippleButton ripple" id="invSave">Save changes</button>';
+                        }
+
+                        ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <?php require_once 'loader.php' ?>
@@ -98,27 +126,56 @@
 <script>
     $(document).ready(function() {
 
-        $(document).on('change', '#fromDate', function() {
-            var x = new Date($('#fromDate').val());
-            if ($('#fromDate').val() === "" || !$('#fromDate').val()) {
-                $('#fromDate').removeClass('is-valid').addClass('is-invalid');
-            } else if (x.getFullYear() < 2020) {
-                $('#fromDate').removeClass('is-valid').addClass('is-invalid');
-            } else {
-                $('#fromDate').removeClass('is-invalid').addClass('is-valid');
+        $(document).on('click', '#invSave', function() {
+            let tableData = inventoryTable.rows().data().toArray();
+            if (tableData.length <= 0) {
+                $('#errorBox').show();
+                $('#invModal').modal('hide');
+            } 
+            else if($('#type').val() === "" || !$('#type').val()){
+                $('#errorBox').show();
+                $('#invModal').modal('hide');
             }
+            else {
+                let datastring = {
+                    "btnInventorySave": "btn",
+                    "invDate": $('#invDate').val(),
+                    "invInvoice": $('#invInvoice').val(),
+                    "type": $('#type').val(),
+                    "tableData": tableData
+                }
+                console.log(datastring);
+
+                $.ajax({
+                    url: 'includes/inventory-report.inc.php',
+                    type: 'POST',
+                    data: datastring,
+                    dataType: 'json',
+                    error: function(error) {
+                        console.log(error);
+                    },
+                    success: function(data) {
+                        if (data) {
+                            $('#errorBox').hide();
+                            $('#btnInventorySave').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                            $('buttons').prop('disabled', true);
+                            $('input').prop('disabled', true);
+                            $('#invModal').modal('hide'); 
+                            $('#successBox').show();
+                            window.setTimeout(function() {
+                                // window.location.href = 'price-update-report.php';
+                                location.reload();
+                            }, 3000);
+                        } else {
+                            alert('error') 
+                        }
+                    }
+
+                });
+            }
+
         });
 
-        $(document).on('change', '#endDate', function() {
-            var x = new Date($('#endDate').val());
-            if ($('#endDate').val() === "" || !$('#endDate').val()) {
-                $('#endDate').removeClass('is-valid').addClass('is-invalid');
-            } else if (x.getFullYear() < 2020) {
-                $('#endDate').removeClass('is-valid').addClass('is-invalid');
-            } else {
-                $('#endDate').removeClass('is-invalid').addClass('is-valid');
-            }
-        });
         $(document).on('change', '#type', function() {
 
             if ($(this).val() === "" || !$(this).val()) {
@@ -126,21 +183,12 @@
             } else {
                 $(this).removeClass('is-invalid').addClass('is-valid');
             }
-        });
-        $(document).on('change', '#calculate', function() {
 
-            if ($(this).val() === "" || !$(this).val()) {
-                $(this).removeClass('is-valid').addClass('is-invalid');
-            } else {
-                $(this).removeClass('is-invalid').addClass('is-valid');
-            }
         });
 
         function getProductInbound() {
             let datastring = {
-                "btnInventorySubmit": "btn",
-                // "fromDate": $('#fromDate').val(),
-                // "endDate": $('#endDate').val()
+                "btnInventorySubmit": "btn"
             }
             console.log(datastring);
 
@@ -181,7 +229,6 @@
                 },
                 success: function(data) {
 
-                    // alert(firstResult[0]['product_name'] + ' ' + data[0]['price_plant_price']);
 
                     var arrayRow = [];
                     for (let x = 0; x < firstResult.length; x++) {
@@ -206,32 +253,12 @@
                             //////////////////////REMAINING QUANTITY///////////////////////////////////
                             var rowData = '<tr style="font-size: 1rem;" ><td>' + getInboundProduct + '</td><td>' + numberWithCommas(weight) + '</td><td>' + numberWithCommas(remainingQuantity) + '</td><td>' + numberWithCommas(parseFloat(metricTonsRQ).toFixed(3)) + '</td><td>' + numberWithCommas(plantPrice) + '</td><td>' + numberWithCommas(finalPrice) + '</td><td>' + numberWithCommas(parseFloat(plantInvValueRQ).toFixed(2)) + '</td><td>' + numberWithCommas(parseFloat(totalInvValueRQ).toFixed(2)) + '</td></tr>';
 
-
-                            // if ($('#calculate').val() == "total") {
-                            //     //////////////////////TOTAL QUANTITY///////////////////////////////////
-                            //     //For Metric Tons
-                            //     let metricTonsTQ = (parseFloat(totalQuantity) * parseFloat(weight) / 1000);
-                            //     let plantInvValueTQ = parseFloat(totalQuantity) * parseFloat(plantPrice);
-                            //     let totalInvValueTQ = parseFloat(totalQuantity) * parseFloat(finalPrice);
-                            //     //////////////////////TOTAL QUANTITY///////////////////////////////////
-                            //     var rowData = '<tr style="font-size: 1rem;" ><td>' + getInboundProduct + '</td><td>' + numberWithCommas(weight) + '</td><td>' + numberWithCommas(remainingQuantity) + '</td><td>' + numberWithCommas(totalQuantity) + '</td><td>' + numberWithCommas(parseFloat(metricTonsTQ).toFixed(3)) + '</td><td>' + numberWithCommas(plantPrice) + '</td><td>' + numberWithCommas(finalPrice) + '</td><td>' + numberWithCommas(parseFloat(plantInvValueTQ).toFixed(2)) + '</td><td>' + numberWithCommas(parseFloat(totalInvValueTQ).toFixed(2)) + '</td></tr>';
-                            // } else {
-                            //     //////////////////////TOTAL QUANTITY///////////////////////////////////
-                            //     //For Metric Tons
-                            //     let metricTonsRQ = (parseFloat(remainingQuantity) * parseFloat(weight) / 1000);
-                            //     let plantInvValueRQ = parseFloat(remainingQuantity) * parseFloat(plantPrice);
-                            //     let totalInvValueRQ = parseFloat(remainingQuantity) * parseFloat(finalPrice);
-                            //     //////////////////////REMAINING QUANTITY///////////////////////////////////
-                            //     var rowData = '<tr style="font-size: 1rem;" ><td>' + getInboundProduct + '</td><td>' + numberWithCommas(weight) + '</td><td>' + numberWithCommas(remainingQuantity) + '</td><td>' + numberWithCommas(totalQuantity) + '</td><td>' + numberWithCommas(parseFloat(metricTonsRQ).toFixed(3)) + '</td><td>' + numberWithCommas(plantPrice) + '</td><td>' + numberWithCommas(finalPrice) + '</td><td>' + numberWithCommas(parseFloat(plantInvValueRQ).toFixed(2)) + '</td><td>' + numberWithCommas(parseFloat(totalInvValueRQ).toFixed(2)) + '</td></tr>';
-
-                            // }
-
                         }
                         arrayRow.push(rowData);
                     }
 
                     for (let b = 0; b < arrayRow.length; b++) {
-                        inventoryTable.rows.add($(arrayRow[b])).order([1, 'desc']).draw();
+                        inventoryTable.rows.add($(arrayRow[b])).draw();
                     }
 
                 }
@@ -244,11 +271,6 @@
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
         $(document).on('click', '#btnInventorySubmit', function() {
-            // $('input').not('#inventoryTable_filter input').each(function() {
-            //     if ($(this).val() === "" || !$(this).val()) {
-            //         $(this).removeClass('is-valid').addClass('is-invalid');
-            //     }
-            // });
             $('select').each(function() {
                 if ($(this).val() === "" || !$(this).val()) {
                     $(this).removeClass('is-valid').addClass('is-invalid');
@@ -256,8 +278,9 @@
             });
 
             if ($('.is-invalid')[0]) {
-                alert('error')
+                $('#errorBox').show();
             } else {
+                $('#errorBox').hide();
                 inventoryTable.clear().draw();
                 getProductInbound()
             }
@@ -291,9 +314,9 @@
                 //     targets: []
                 // }
             ],
+            "order": [[ 1, "desc" ]],
             dom: 'Bfrtip',
-            buttons: [
-                {
+            buttons: [{
                     text: '<i class="fas fa-file-excel"></i>',
                     extend: 'excel',
                     title: 'Inventory Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
