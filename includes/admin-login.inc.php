@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $_SESSION['username'] = $username;
                 $_SESSION['otpPhoneNumber'] = $data['emp_phonenumber'];
                 $_SESSION['empId'] = $data['emp_id'];
+                $_SESSION['accRole'] = $data['acc_role'];
                 $_SESSION['redirect'] = 'dashboard.php';
                 echo json_encode([
                     'status' => true

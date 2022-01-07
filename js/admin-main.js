@@ -153,6 +153,9 @@ $(document).on('click', '.adminNav', function () {
       case 'dashboard':
         var component = 'dashboard.php';
         break;
+      case 'account-management':
+        var component = 'account-management-list.php';
+        break;
       default:
         var component = false;
 

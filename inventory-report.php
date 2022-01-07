@@ -163,8 +163,8 @@ if (isset($_GET['rowId'])) {
                             $('#invModal').modal('hide'); 
                             $('#successBox').show();
                             window.setTimeout(function() {
-                                // window.location.href = 'price-update-report.php';
-                                location.reload();
+                                window.location.href = 'inventory-view-report.php';
+                                
                             }, 3000);
                         } else {
                             alert('error') 

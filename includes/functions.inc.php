@@ -495,7 +495,7 @@ function totalInventoryTable($conn,$controlNumber)
 {
     $sql = "SELECT `inv_name`,`inv_weight`,`inv_quantity`,`inv_metric_tons`,`inv_plant_price`,`inv_total_price`,`inv_plant_value`,`inv_total_value` FROM `inventory_table` WHERE `inv_control_number` = '$controlNumber'";
     $result = mysqli_query($conn, $sql);
-
+    
     while ($row = mysqli_fetch_assoc($result)) {
         echo 
         '<tr>
@@ -507,6 +507,36 @@ function totalInventoryTable($conn,$controlNumber)
             <td>'.$row['inv_total_price'].'</td>
             <td>'.$row['inv_plant_value'].'</td>
             <td>'.$row['inv_total_value'].'</td>
+        </tr>';
+    }
+}
+
+
+function accountEmployeeSelect($conn)
+{
+    $sql = "SELECT emp_id, emp_firstname, emp_middlename, emp_lastname FROM `employee_table`";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo '<option value="'.$row['emp_id'].'" >'.ucfirst($row['emp_lastname']). ', ' . ucfirst($row['emp_firstname']). ' '. ucfirst(substr($row['emp_middlename'],0,1)) .'.'.'</option>';
+       
+    }
+}
+
+
+function accountManagementTable($conn)
+{
+    $sql = "SELECT `acc_id`, `acc_role`, `acc_username`, `acc_date_creation`, CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') as 'acc_emp_name' FROM `admin_account_table` JOIN employee_table ON employee_table.emp_id = acc_emp_id;";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo 
+        '<tr>
+            <td>'.date('d M Y', strtotime($row['acc_date_creation'])).'</td>
+            <td>'.$row['acc_emp_name'].'</td>
+            <td>'.$row['acc_username'].'</td>
+            <td>'.$row['acc_role'].'</td>
+            <td><button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
         </tr>';
     }
 }

@@ -79,12 +79,13 @@
 // $hashedPwd = password_hash($pwd, PASSWORD_DEFAULT);
 // echo $hashedPwd;
 
-// session_start();
-// echo $_SESSION['otpPhoneNumber'] . '<br>';
-// echo $_SESSION['otp'] . '<br>';
-// echo $_SESSION['otpExpiration'] . '<br>';
-// echo $_SESSION['username'] . '<br>';
-// echo $_SESSION['forgotUsername'];
+session_start();
+echo $_SESSION['otpPhoneNumber'] . '<br>';
+echo $_SESSION['otp'] . '<br>';
+echo $_SESSION['otpExpiration'] . '<br>';
+echo $_SESSION['username'] . '<br>';
+echo $_SESSION['accRole'];
+echo $_SESSION['forgotUsername'];
 
 // echo !pwdvalidate('!Gregorio0226');
 
@@ -314,16 +315,16 @@ require_once 'includes/dbh.inc.php';
 
 $salesInvoice = "SINV-sk7nB1lP";
 
-$cancelledItems = getCancelledItems($conn, $salesInvoice);
-for ($x = 0; $x < count($cancelledItems); $x++) {
-    $data = getLatestQuantityOfItem($conn, $cancelledItems[$x]['item_product_id']);
-    // echo "ITEMS:".$cancelledItems[$x]['item_product_id'] . ' ' . $cancelledItems[$x]['item_quantity']. '<br>' ;
-    (int)$result = (int)$cancelledItems[$x]['item_quantity'] + (int)$data['pin_quantity'];
-    echo $data['pin_invoice']. '<br>' ;
-    updateProductQuantityCancelled($conn, $result , $data['pin_invoice']);
-    // echo $result. ' ' . $cancelledItems[$x]['item_product_id']  . ' ' .$data['pin_product_id']  . '<br>' ;
-    // echo "PIN:".$data['pin_invoice'] . ' ' .$data['pin_product_id'] . ' ' . $data['pin_quantity'] . '<br>' ;
-}
+// $cancelledItems = getCancelledItems($conn, $salesInvoice);
+// for ($x = 0; $x < count($cancelledItems); $x++) {
+//     $data = getLatestQuantityOfItem($conn, $cancelledItems[$x]['item_product_id']);
+//     // echo "ITEMS:".$cancelledItems[$x]['item_product_id'] . ' ' . $cancelledItems[$x]['item_quantity']. '<br>' ;
+//     (int)$result = (int)$cancelledItems[$x]['item_quantity'] + (int)$data['pin_quantity'];
+//     echo $data['pin_invoice']. '<br>' ;
+//     updateProductQuantityCancelled($conn, $result , $data['pin_invoice']);
+//     // echo $result. ' ' . $cancelledItems[$x]['item_product_id']  . ' ' .$data['pin_product_id']  . '<br>' ;
+//     // echo "PIN:".$data['pin_invoice'] . ' ' .$data['pin_product_id'] . ' ' . $data['pin_quantity'] . '<br>' ;
+// }
 
 function updateProductQuantityCancelled($conn, $pin_quantity, $pin_invoice)
 {

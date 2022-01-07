@@ -521,7 +521,7 @@ if (isset($_GET['rowId'])) {
         });
         $(document).on('keyup', '#customerPhoneNumber', function() {
             $('#customerPhoneNumberFeedback').text('Please input Phone Number....');
-            if (!$(this).val() || $(this).val() === "") {
+            if (!$(this).val().trim() || $(this).val().trim() === "") {
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
             } else {
@@ -617,7 +617,7 @@ if (isset($_GET['rowId'])) {
 
 
         function validation(id) {
-            if (!$(id).val() || $(id).val() === "") {
+            if (!$(id).val().trim() || $(id).val().trim() === "") {
                 $(id).removeClass('is-valid');
                 $(id).addClass('is-invalid');
             } else {

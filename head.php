@@ -153,15 +153,18 @@
                                     <li>
                                         <a class="adminNav" link="expenses-report" href="">Expenses Report</a>
                                     </li>
+                                    <li>
+                                        <a class="adminNav" link="account-management" href="">Account Management</a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="#">
                                 <i class="fa fa-calendar"></i>
                                 <span class="menu-text">Calendar</span>
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
                 <!-- sidebar-menu  -->
