@@ -2,6 +2,13 @@
     require_once 'includes/dbh.inc.php';
     require_once 'includes/functions.inc.php';
     session_start();
+
+    if(isset($_SESSION['empId'])){
+        $data = getSessionEmployeeData($conn,$_SESSION['empId'] );
+    }
+    else{
+        header('location: admin-login.php');
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,14 +44,13 @@
                 <!-- sidebar-header  -->
                 <div class="sidebar-item sidebar-header d-flex flex-nowrap ">
                     <div class="user-pic">
-                        <img class="img-responsive img-rounded" src="img/me.jpg" alt="User picture">
+                        <img class="img-responsive img-rounded" src="<?= $data['emp_picpath'] ?>" alt="User picture">
                     </div>
                     <div class="user-info">
-                        <span class="user-name">Ron Ivin
-                            <strong>Gregorio</strong>
+                        <span class="user-name"><?= $data['emp_firstname'] ?>
+                            <strong><?= $data['emp_lastname'] ?></strong>
                         </span>
-                        <span class="user-role">Administrator</span>
-
+                        <span class="user-role"><?= ucfirst($_SESSION['accRole']) ?></span>
                     </div>
                 </div>
                 <!-- sidebar-menu  -->
@@ -153,9 +159,7 @@
                                     <li>
                                         <a class="adminNav" link="expenses-report" href="">Expenses Report</a>
                                     </li>
-                                    <li>
-                                        <a class="adminNav" link="account-management" href="">Account Management</a>
-                                    </li>
+                                    <?= isset($_SESSION['empId'])? '': '<li><a class="adminNav" link="account-management" href="">Account Management</a></li>' ?>
                                 </ul>
                             </div>
                         </li>

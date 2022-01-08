@@ -540,3 +540,27 @@ function accountManagementTable($conn)
         </tr>';
     }
 }
+
+
+function getSessionEmployeeData($conn, $empId)
+{
+    $sql = "SELECT * FROM `employee_table` WHERE emp_id = ? LIMIT 1;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../funtions.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt, "i", $empId);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    } 
+    else{
+        return false;
+    }
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}
