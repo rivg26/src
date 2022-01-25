@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $otp = rand(100000, 999999);
         $message = "Your OTP Pin: " . $otp . " sent via Petron Paredes LPG";
         $apicode = "ST-RONIV102938_YZMCN";
-        $passwd = "}prcryxu((";
+        $passwd = "l$3ap3176e";
         itexmo($number, $message, $apicode, $passwd);
         date_default_timezone_set("Asia/Hong_Kong");
         $datetime = date("Y-m-d H:i:s");

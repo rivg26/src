@@ -1,14 +1,13 @@
 <?php
-    require_once 'includes/dbh.inc.php';
-    require_once 'includes/functions.inc.php';
-    session_start();
+require_once 'includes/dbh.inc.php';
+require_once 'includes/functions.inc.php';
+session_start();
 
-    if(isset($_SESSION['empId'])){
-        $data = getSessionEmployeeData($conn,$_SESSION['empId'] );
-    }
-    else{
-        header('location: admin-login.php');
-    }
+if (isset($_SESSION['empId'])) {
+    $data = getSessionEmployeeData($conn, $_SESSION['empId']);
+} else {
+    header('location: admin-login.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,6 +28,7 @@
     <link rel="stylesheet" href="css/admin-main.css">
     <link rel="stylesheet" href="css/sidebar-themes.css">
     <link rel="stylesheet" href="css/admin-component.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" integrity="sha256-zsz1FbyNCtIE2gIB+IyWV7GbCLyKJDTBRz0qQaBSLxM=" crossorigin="anonymous">
     <link rel="shortcut icon" type="image/png" href="assets/logo/favicon.ico" />
 
 </head>
@@ -81,7 +81,7 @@
                             </div> -->
                         </li>
                         <li class="sidebar-dropdown">
-                            <a href="#" >
+                            <a href="#">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span class="menu-text">Sales Management</span>
                                 <!-- <span class="badge badge-pill badge-danger">3</span> -->
@@ -159,7 +159,7 @@
                                     <li>
                                         <a class="adminNav" link="expenses-report" href="">Expenses Report</a>
                                     </li>
-                                    <?= isset($_SESSION['empId'])? '': '<li><a class="adminNav" link="account-management" href="">Account Management</a></li>' ?>
+                                    <?= $_SESSION['accRole'] == "admin" ? '<li><a class="adminNav" link="account-management" href="">Account Management</a></li>' : '' ?>
                                 </ul>
                             </div>
                         </li>

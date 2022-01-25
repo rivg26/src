@@ -327,7 +327,7 @@ if (isset($_GET['rowId'])) {
         });
         $(document).on('click' , '#customerUpdate', function(){
             $('#customerUpdate').prop('disabled', true);
-            $('input').each(function() {
+            $('input').not('.dataTables_filter input').each(function() {
                 if ($(this).val().trim() === "") {
                     $(this).removeClass("is-valid");
                     $(this).addClass("is-invalid");

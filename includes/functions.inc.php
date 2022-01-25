@@ -564,3 +564,23 @@ function getSessionEmployeeData($conn, $empId)
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
 }
+
+function getDeliveryDate($conn)
+{
+    $sql = "SELECT delivery_table.delivery_sales_invoice, delivery_table.delivery_date, delivery_table.delivery_status, CONCAT(customer_table.customer_last_name, ', ', customer_table.customer_first_name, ' ', substr(customer_table.customer_last_name,1,1),'.') AS 'customer_name' FROM `sales_table` JOIN delivery_table ON delivery_table.delivery_sales_invoice = sales_invoice JOIN customer_table ON customer_table.customer_id = sales_customer_id ORDER BY delivery_date ASC;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../funtions.inc.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+
+    while ($row = mysqli_fetch_assoc($resultData)) {
+        $rows[] = $row;
+    }
+    return $rows;
+    mysqli_stmt_close($stmt);
+    mysqli_close($conn);
+}

@@ -80,12 +80,26 @@
 // echo $hashedPwd;
 
 session_start();
-echo $_SESSION['otpPhoneNumber'] . '<br>';
-echo $_SESSION['otp'] . '<br>';
-echo $_SESSION['otpExpiration'] . '<br>';
-echo $_SESSION['username'] . '<br>';
-echo $_SESSION['accRole'];
-echo $_SESSION['forgotUsername'];
+// echo $_SESSION['otpPhoneNumber'] . '<br>';
+// echo $_SESSION['otp'] . '<br>';
+// echo $_SESSION['otpExpiration'] . '<br>';
+// echo $_SESSION['username'] . '<br>';
+// echo $_SESSION['accRole'];
+// echo $_SESSION['forgotUsername'];
+
+$list=array();
+$month = date('m');
+$year = date('Y');
+
+for($d=1; $d<=31; $d++)
+{
+    $time=mktime(12, 0, 0, $month, $d, $year);          
+    if (date('m', $time)==$month)       
+        $list[]=date('Y-m-d', $time);
+}
+echo "<pre>";
+print_r($list);
+echo "</pre>";
 
 // echo !pwdvalidate('!Gregorio0226');
 
@@ -313,7 +327,7 @@ require_once 'includes/dbh.inc.php';
 //     echo json_encode($param); 
 // }
 
-$salesInvoice = "SINV-sk7nB1lP";
+// $salesInvoice = "SINV-sk7nB1lP";
 
 // $cancelledItems = getCancelledItems($conn, $salesInvoice);
 // for ($x = 0; $x < count($cancelledItems); $x++) {
