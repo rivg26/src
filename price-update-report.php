@@ -57,6 +57,33 @@ $year = date("Y");
                     </tr>
                 </tfoot>
             </table>
+
+            <div class="text-center alert alert-danger my-4" style="display: none;" id="errorBox">
+                <i class="fas fa-times-circle"></i> Unable to delete this data row...
+            </div>
+            <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
+                <i class="fas fa-check-circle"></i> Archive Success!
+            </div>
+
+            <input type="hidden" id="deleteRow">
+            <!-- Modal -->
+            <div class="modal fade" id="priceUpdateTableModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to archive?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="punTableArchive">Archive</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <?php require_once 'loader.php' ?>
     </div>
@@ -193,6 +220,57 @@ $year = date("Y");
                 $("#loader").fadeOut();
                 window.location.href = "price-update-add.php?action=update&rowId=" + rowId;
             }, 2000);
+        });
+
+        $(document).on('click', '#btnPriceUpdateArchive', function() {
+            let rowId = $(this).attr('row.id');
+            $('#deleteRow').val(rowId)
+
+        });
+
+        $(document).on('click', '#punTableArchive', function() {
+            let datastring = {
+                "punTableArchive": $('#punTableArchive').val(),
+                "rowId": $('#deleteRow').val()
+
+            }
+
+            $.ajax({
+                url: 'includes/archive-product-update.inc.php',
+                type: 'POST',
+                data: datastring,
+                dataType: 'json',
+                error: function(error) {
+                    console.log(error);
+                },
+                success: function(data) {
+                    if (data.status) {
+                        $('#priceUpdateTableModal').modal('hide');
+                        $('#errorBox').hide();
+                        $('#successBox').show();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        $('#priceUpdateTableModal').modal('hide');
+                        $('#errorBox').show();
+                        $('#successBox').hide();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                        
+                    }
+                },
+                fail: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    alert(xhr);
+                    alert(textStatus);
+                },
+                catch: function(error) {
+                    alert(error);
+                }
+
+            });
         });
     });
 </script>

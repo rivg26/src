@@ -156,6 +156,12 @@ $(document).on('click', '.adminNav', function () {
       case 'account-management':
         var component = 'account-management-list.php';
         break;
+      case 'archive-price-update':
+        var component = 'archive-price-update-report.php';
+        break;
+      case 'archive-sales':
+        var component = 'archive-sales-report.php';
+        break;
       default:
         var component = false;
 

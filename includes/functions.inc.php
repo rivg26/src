@@ -36,6 +36,53 @@ function GenerateKey($conn, $sql, $code, $rowKey)
     return $code . $RandStr;
 }
 
+
+function newCheckKeys($conn, $RandStr, $sql, $rowKey, $sql2, $rowKey2)
+{
+    
+    $result = mysqli_query($conn, $sql);
+    $check = true;
+    while ($Row = mysqli_fetch_assoc($result)) {
+        if ($Row[$rowKey] === $RandStr) {
+            return true;
+            break;
+        } else {
+            $check = false;
+        }
+    }
+
+
+    if(!$check){
+
+        $result2 = mysqli_query($conn,$sql2);
+
+        while($row = mysqli_fetch_assoc($result2)){
+            if($row[$rowKey2] === $RandStr){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
+
+}
+
+function newGenerateKey($conn, $sql, $code, $rowKey, $sql2, $rowKey2)
+{
+    $KeyLength = 8;
+    $Str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    $RandStr = substr(str_shuffle($Str), 0, $KeyLength);
+
+    $CheckKey = newCheckKeys($conn, $RandStr, $sql, $rowKey, $sql2, $rowKey2);
+    while ($CheckKey === true) {
+        $RandStr = substr(str_shuffle($Str), 0, $KeyLength);
+    }
+    return $code . $RandStr;
+}
+
+
+
 function itexmo($number, $message, $apicode, $passwd)
 {
     $url = 'https://www.itexmo.com/php_api/api.php';
@@ -74,7 +121,7 @@ function printProductOption($conn,$productId)
 
 function priceUpdateReportTable($conn)
 {
-    $sql = "SELECT price_date, price_pun, CONCAT(employee_table.emp_firstname,' ',employee_table.emp_middlename,' ',employee_table.emp_lastname) AS 'fullname' FROM `price_table` JOIN employee_table ON employee_table.emp_id = price_table.price_emp_id GROUP BY price_pun;";
+    $sql = "SELECT price_date, price_pun, CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') AS 'fullname' FROM `price_table` JOIN employee_table ON employee_table.emp_id = price_table.price_emp_id GROUP BY price_pun;";
     $result = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($result)) {
@@ -83,7 +130,7 @@ function priceUpdateReportTable($conn)
             <td>'.date('d M Y', strtotime($row['price_date'])).'</td>
             <td>'.$row['price_pun'].'</td>
             <td>'.$row['fullname'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none" id = "btnPriceUpdateEdit" row.id="'.$row['price_pun'].'"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none" row.id="'.$row['price_pun'].'"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button type="button" class="btn btn-warning shadow-none" id = "btnPriceUpdateEdit" row.id="'.$row['price_pun'].'" data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none" row.id="'.$row['price_pun'].'" data-bs-toggle="modal" data-bs-target="#priceUpdateTableModal" id = "btnPriceUpdateArchive"><i class="fas fa-archive" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button></td>
         </tr>';
     }
 }
@@ -126,23 +173,23 @@ function getPunInbound($conn)
 
 function productInboundTable($conn)
 {
-    $sql = "SELECT `pin_id`, `pin_invoice`, product_table.product_name, pin_pun, CONCAT(employee_table.emp_firstname ,' ', employee_table.emp_middlename, ' ', employee_table.emp_lastname) AS pin_employee_name, pin_date, pin_total_quantity, pin_total_plant_price, pin_total_final_price, pin_metric_tons, pin_product_option, pin_remarks FROM `product_inbound_table` JOIN product_table ON product_table.product_id = pin_product_id JOIN employee_table ON employee_table.emp_id = pin_encoder_id;";
+    $sql = "SELECT `pin_id`, `pin_invoice`, product_table.product_name, pin_pun,CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') AS pin_employee_name, pin_date, pin_total_quantity, pin_total_plant_price, pin_total_final_price, pin_metric_tons, pin_product_option, pin_remarks FROM `product_inbound_table` JOIN product_table ON product_table.product_id = pin_product_id JOIN employee_table ON employee_table.emp_id = pin_encoder_id;";
     $result = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($result)) {
         echo 
         '<tr>
             <td>'.date('d M Y', strtotime($row['pin_date'])).'</td>
-            <td>'.$row['pin_invoice'].'</td>
-            <td>'.$row['pin_pun'].'</td>
-            <td>'.$row['product_name'].'</td>
+            <td style= "font-size: 1.1rem">'.$row['pin_invoice'].'</td>
+            <td style= "font-size: 1.1rem">'.$row['pin_pun'].'</td>
+            <td style= "font-size: 1.1rem">'.$row['product_name'].'</td>
             <td>'.$row['pin_total_quantity'].'</td>
             <td>'.number_format($row['pin_metric_tons'],2).'</td>
             <td>'.number_format($row['pin_total_plant_price'],2).'</td>
             <td>'.number_format($row['pin_total_final_price'],2).'</td>
             <td class="remarksWrapper">'.$row['pin_employee_name'].'</td>
             <td class="remarksWrapper">'.$row['pin_remarks'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none mb-2" row.id="'.$row['pin_id'].'" id = "btnProductInboundEdit"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button type="button" class="btn btn-warning shadow-none mb-2" row.id="'.$row['pin_id'].'" id = "btnProductInboundEdit" data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-archive" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button></td>
         </tr>';
     }
 }
@@ -188,9 +235,10 @@ function customerTable($conn)
             <td>'.$row['customer_phone_number'].'</td>
             <td class="remarksWrapper">'.$row['customer_full_address'].'</td>
             <td class="remarksWrapper">'.$row['customer_employee_name'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none" row.id="'.$row['customer_number'].'" id="btnEditCustomer"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-info shadow-none" row.id="'.$row['customer_phone_number'].'" id="btnSendText" data-bs-toggle="modal" data-bs-target="#customerSendModal" ><i class="fas fa-envelope-open-text"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id="'.$row['customer_number'].'" id="btnEditCustomer"><i class="fas fa-edit"></i></button>  <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-archive"></i></button></td>
         </tr>';
     }
+    // <button type="button" class="btn btn-info shadow-none" row.id="'.$row['customer_phone_number'].'" id="btnSendText" data-bs-toggle="modal" data-bs-target="#customerSendModal" ><i class="fas fa-envelope-open-text"></i></button>
 }
 
 function getCustomerData($conn, $customerId)
@@ -256,10 +304,22 @@ function getStocks($conn)
 
 function salesTable($conn)
 {
-    $sql = "SELECT `sales_id`,`sales_purchase_date` ,`sales_invoice`, CONCAT( customer_table.customer_first_name, ' ', customer_table.customer_middle_name, ' ', customer_table.customer_last_name) AS 'customer_name', `sales_total_quantity`, `sales_total_price`,`sales_status`, CONCAT(employee_table.emp_firstname, ' ' , employee_table.emp_middlename, ' ', employee_table.emp_lastname) as 'emp_name' FROM `sales_table` JOIN customer_table ON customer_table.customer_id =`sales_customer_id` JOIN employee_table ON employee_table.emp_id = `sales_encoder_id`;";
+    $sql = "SELECT `sales_id`,`sales_purchase_date` ,`sales_invoice`, CONCAT( customer_table.customer_first_name, ' ', customer_table.customer_middle_name, ' ', customer_table.customer_last_name) AS 'customer_name', `sales_total_quantity`, `sales_total_price`,`sales_status`,  CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') as 'emp_name' FROM `sales_table` JOIN customer_table ON customer_table.customer_id =`sales_customer_id` JOIN employee_table ON employee_table.emp_id = `sales_encoder_id`;";
     $result = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($result)) {
+        if($row['sales_status'] == "pending"){
+            $color = "alert alert-warning";
+            $icon = '<i class="fas fa-pencil-alt"></i>';
+        }
+        elseif($row['sales_status'] == "paid"){
+            $color = "alert alert-success";
+            $icon = '<i class="fas fa-donate"></i>';
+        }
+        else{
+            $color = "alert alert-danger";
+            $icon = '<i class="fas fa-ban"></i>';
+        }
         echo 
         '<tr>
             <td>'.date('d M Y', strtotime($row['sales_purchase_date'])).'</td>
@@ -267,9 +327,9 @@ function salesTable($conn)
             <td>'.$row['customer_name'].'</td>
             <td>'.number_format($row['sales_total_quantity'],2).'</td>
             <td>'.number_format($row['sales_total_price'],2).'</td>
-            <td>'.$row['sales_status'].'</td>
+            <td> <div class = "'.$color.' my-3">'.$icon.' '.$row['sales_status'].'</div></td>
             <td class="remarksWrapper">'.$row['emp_name'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['sales_invoice'].'" id ="btnViewSales"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['sales_invoice'].'" id ="btnViewSales" data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit" ><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none" row.id = "'.$row['sales_invoice'].'" data-bs-toggle="modal" data-bs-target="#salesTableArchiveModal"  id ="btnArchiveSales" ><i class="fas fa-archive" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button></td>
         </tr>';
     }
 }
@@ -279,13 +339,25 @@ function deliveryTable($conn)
     $result = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($result)) {
+        if($row['delivery_status'] == "to be delivered"){
+            $color = "alert alert-warning";
+            $icon = '<i class="fas fa-truck-loading"></i>';
+        }
+        elseif($row['delivery_status'] == "delivered"){
+            $color = "alert alert-success";
+            $icon = '<i class="fas fa-truck"></i>';
+        }
+        else{
+            $color = "alert alert-danger";
+            $icon = '<i class="fas fa-ban"></i>';
+        }
         echo 
         '<tr>
             <td>'.date('d M Y', strtotime($row['delivery_date'])).'</td>
             <td>'.$row['delivery_sales_invoice'].'</td>
             <td>'.$row['customer_name'].'</td>
-            <td>'.$row['delivery_status'].'</td>
-            <td><button type="button" class="btn btn-success shadow-none" row.id = "'.$row['delivery_sales_invoice'].'"  data-bs-toggle="modal" data-bs-target="#deliveryModal" id= "btnDelivered" data-backdrop="false"><i class="fas fa-truck-loading" data-bs-toggle="tooltip" data-bs-placement="top" title="Delivered"></i></button> <button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['delivery_sales_invoice'].'"  data-bs-toggle="modal" data-bs-target="#cancelModal" id= "btnCancel" data-backdrop="false"><i class="fas fa-ban" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelled"></i></button> <button type="button" class="btn btn-info shadow-none" row.location= "'.$row['customer_address'].'" id ="viewLocation" data-bs-toggle="tooltip" data-bs-placement="top" title="View Location"><i class="fas fa-map-marked-alt"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
+            <td><div class="'.$color.' my-3"> '.$icon.' '.$row['delivery_status'].'</div></td>
+            <td><button type="button" class="btn btn-success shadow-none" row.id = "'.$row['delivery_sales_invoice'].'"  data-bs-toggle="modal" data-bs-target="#deliveryModal" id= "btnDelivered" data-backdrop="false"><i class="fas fa-truck-loading" data-bs-toggle="tooltip" data-bs-placement="top" title="Delivered"></i></button> <button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['delivery_sales_invoice'].'"  data-bs-toggle="modal" data-bs-target="#cancelModal" id= "btnCancel" data-backdrop="false"><i class="fas fa-ban" data-bs-toggle="tooltip" data-bs-placement="top" title="Cancelled"></i></button> <button type="button" class="btn btn-info shadow-none" row.location= "'.$row['customer_address'].'" id ="viewLocation" data-bs-toggle="tooltip" data-bs-placement="top" title="View Location"><i class="fas fa-map-marked-alt"></i></button> </td>
         </tr>';
     }
 }

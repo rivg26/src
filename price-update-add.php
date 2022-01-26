@@ -5,7 +5,7 @@
         $generate = $_GET['rowId'];
     }
     else{  
-        $generate = GenerateKey($conn, 'SELECT * FROM price_table;', 'PUN-', 'price_pun');
+        $generate = newGenerateKey($conn, 'SELECT * FROM price_table', 'PUN-', 'price_pun' , 'SELECT * FROM archive_price_table', 'a_price_pun');
     }
     
 

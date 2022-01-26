@@ -163,12 +163,36 @@ if (isset($_SESSION['empId'])) {
                                 </ul>
                             </div>
                         </li>
-                        <!-- <li>
+                        <li class="header-menu">
+                            <span></span>
+                        </li>
+                        <li class="header-menu">
+                            <span></span>
+                        </li>
+                        <li class="header-menu">
+                            <span></span>
+                        </li>
+                        <li class="header-menu">
+                            <span>Archive</span>
+                        </li>
+                        <li class="sidebar-dropdown">
                             <a href="#">
-                                <i class="fa fa-calendar"></i>
-                                <span class="menu-text">Calendar</span>
+                                <i class="fas fa-file-archive"></i>
+                                <span class="menu-text">Manage Archive</span>
                             </a>
-                        </li> -->
+                            <div class="sidebar-submenu">
+                                <ul>
+                                    <li>
+                                        <a class="adminNav" link="archive-price-update" href="">Price Update Report Archive</a>
+                                    </li>
+                                    <li>
+                                        <a class="adminNav" link="archive-sales" href="">Sales Report Archive</a>
+                                    </li>
+
+
+                                </ul>
+                            </div>
+                        </li>
                     </ul>
                 </div>
                 <!-- sidebar-menu  -->
@@ -245,10 +269,11 @@ if (isset($_SESSION['empId'])) {
                     </div>
                 </div>
                 <div>
-                    <a href="#">
+                    <a href="" id="btnLogout" data-bs-toggle="modal" data-bs-target="#logoutModal">
                         <i class="fa fa-power-off"></i>
                     </a>
                 </div>
+
                 <div class="pinned-footer">
                     <a href="#">
                         <i class="fas fa-ellipsis-h"></i>
@@ -256,6 +281,24 @@ if (isset($_SESSION['empId'])) {
                 </div>
             </div>
         </nav>
+
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to logout? 
+                    </div>
+
+                    <div class="modal-footer">
+                        <a href="includes/logout.inc.php" class="btn shadow-none rippleButton ripple" id="punTableDelete">Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- page-content  -->
         <main class="page-content pt-2">
             <div id="overlay" class="overlay"></div>

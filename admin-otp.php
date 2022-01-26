@@ -84,47 +84,49 @@ if (isset($_SESSION['otpPhoneNumber'])) {
                 $('#otpCode').addClass('is-invalid');
                 $('#sentBox').hide();
             } else {
-                $('#errorBox').css('display', 'none');
-                let datastring = {
-                    "otpCode": $('#otpCode').val()
-                }
-                console.log(datastring);
-                $.ajax({
-                    url: 'includes/admin-otp.inc.php',
-                    type: 'POST',
-                    data: datastring,
-                    dataType: 'json',
-                    success: function(data) {
+                if (parseInt($('#otpCode').val().length) == 6) {
+                    $('#errorBox').css('display', 'none');
+                    let datastring = {
+                        "otpCode": $('#otpCode').val()
+                    }
+                    console.log(datastring);
+                    $.ajax({
+                        url: 'includes/admin-otp.inc.php',
+                        type: 'POST',
+                        data: datastring,
+                        dataType: 'json',
+                        success: function(data) {
 
-                        if (data.status) {
-                            let redirect = $('#redirect').val();
-                            $('#otpCode').removeClass('is-invalid');
-                            $('#otpCode').addClass('is-valid');
-                            $('#btnGoBack').prop('disabed',true);
-                            $('#btnGoBack').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
-                            window.setTimeout(function() {
-                                window.location.href = redirect;
-                            }, 2000);
+                            if (data.status) {
+                                let redirect = $('#redirect').val();
+                                $('#otpCode').removeClass('is-invalid');
+                                $('#otpCode').addClass('is-valid');
+                                $('#btnGoBack').prop('disabed', true);
+                                $('#btnGoBack').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+                                window.setTimeout(function() {
+                                    window.location.href = redirect;
+                                }, 2000);
 
-                        } else {
-                            $('#otpCode').removeClass('is-valid');
-                            $('#otpCode').addClass('is-invalid');
-                            $('#errorBox').css('display', 'block');
-                            $('#errorBox').text(data.message);
-                            $('#sentBox').hide();
+                            } else {
+                                $('#otpCode').removeClass('is-valid');
+                                $('#otpCode').addClass('is-invalid');
+                                $('#errorBox').css('display', 'block');
+                                $('#errorBox').text(data.message);
+                                $('#sentBox').hide();
+                            }
+
+                        },
+                        fail: function(xhr, textStatus, errorThrown) {
+                            alert(errorThrown);
+                            alert(xhr);
+                            alert(textStatus);
+                        },
+                        catch: function(error) {
+                            alert(error);
                         }
 
-                    },
-                    fail: function(xhr, textStatus, errorThrown) {
-                        alert(errorThrown);
-                        alert(xhr);
-                        alert(textStatus);
-                    },
-                    catch: function(error) {
-                        alert(error);
-                    }
-
-                });
+                    });
+                }
             }
         });
 

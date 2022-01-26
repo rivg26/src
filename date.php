@@ -1,4 +1,6 @@
 <?php
+// require_once 'includes/functions.inc.php';
+require_once 'includes/dbh.inc.php';
 // var myTableArray = [];
 // $("#customerTable tr").each(function() {
 //     var arrayOfThisRow = [];
@@ -81,25 +83,83 @@
 
 session_start();
 // echo $_SESSION['otpPhoneNumber'] . '<br>';
-// echo $_SESSION['otp'] . '<br>';
+echo $_SESSION['otp'] . '<br>';
 // echo $_SESSION['otpExpiration'] . '<br>';
 // echo $_SESSION['username'] . '<br>';
 // echo $_SESSION['accRole'];
 // echo $_SESSION['forgotUsername'];
 
-$list=array();
-$month = date('m');
-$year = date('Y');
+// $list=array();
+// $month = date('m');
+// $year = date('Y');
 
-for($d=1; $d<=31; $d++)
+// for($d=1; $d<=31; $d++)
+// {
+//     $time=mktime(12, 0, 0, $month, $d, $year);          
+//     if (date('m', $time)==$month)       
+//         $list[]=date('Y-m-d', $time);
+// }
+// echo "<pre>";
+// print_r($list);
+// echo "</pre>";
+
+
+
+
+
+
+
+// echo newGenerateKey($conn, 'SELECT * FROM price_table', 'PUN-', 'price_pun' , 'SELECT * FROM archive_price_table', 'a_price_pun');
+
+
+
+function newCheckKeys($conn, $RandStr, $sql, $rowKey, $sql2, $rowKey2)
 {
-    $time=mktime(12, 0, 0, $month, $d, $year);          
-    if (date('m', $time)==$month)       
-        $list[]=date('Y-m-d', $time);
+    
+    $result = mysqli_query($conn, $sql);
+    $check = true;
+    while ($Row = mysqli_fetch_assoc($result)) {
+        if ($Row[$rowKey] === $RandStr) {
+            return true;
+            break;
+        } else {
+            $check = false;
+        }
+    }
+
+
+    if(!$check){
+
+        $result2 = mysqli_query($conn,$sql2);
+
+        while($row = mysqli_fetch_assoc($result2)){
+            if($row[$rowKey2] === $RandStr){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
+
 }
-echo "<pre>";
-print_r($list);
-echo "</pre>";
+
+function newGenerateKey($conn, $sql, $code, $rowKey, $sql2, $rowKey2)
+{
+    $KeyLength = 8;
+    $Str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    $RandStr = substr(str_shuffle($Str), 0, $KeyLength);
+
+    $CheckKey = newCheckKeys($conn, $RandStr, $sql, $rowKey, $sql2, $rowKey2);
+    while ($CheckKey === true) {
+        $RandStr = substr(str_shuffle($Str), 0, $KeyLength);
+    }
+    return $code . $RandStr;
+}
+
+
+
+
 
 // echo !pwdvalidate('!Gregorio0226');
 
@@ -126,8 +186,7 @@ echo "</pre>";
 // 	return $pwdErr;
 // }
 
-require_once 'includes/functions.inc.php';
-require_once 'includes/dbh.inc.php';
+
 
 // echo insertCustomerAddress($conn,"cus-123","asd","asd","asd","asd","asd","asd");
 // function insertCustomerAddress($conn,$customerNumber,$customerUnit,$customerStreet,$customerBarangay,$customerCity,$customerProvince,$customerLandmark)
