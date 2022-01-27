@@ -2,7 +2,7 @@
 <div class="row p-3" style="position: relative;">
     <div class="shadow p-3 mb-5 bg-body rounded">
         <div class="text-center">
-            <h5 class="display-4 mb-5 mt-3">Customer List</h5>
+            <h5 class="display-4 mb-5 mt-3">Customer List Archive</h5>
         </div>
         <div class="table-responsive my-5 p-5">
             <div class="category-filter">
@@ -29,20 +29,37 @@
                 </select>
             </div>
 
-            <table id="customerReportTable" class="tableDesign table table-striped table-hover align-middle shadow-none">
+            <table id="archiveCustomerReportTable" class="tableDesign table table-striped table-hover align-middle shadow-none">
                 <thead class="align-middle">
                     <tr>
                         <th>Date</th>
                         <th>Customer Number</th>
                         <th>Customer Name</th>
                         <th>Phone Number</th>
-                        <th>Address</th>
                         <th>Encoder Name</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?= customerTable($conn); ?>
+                    <?php
+                    $sql = "SELECT a_customer_id, `a_customer_number`, CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') AS 'customer_employee_name', CONCAT( `a_customer_first_name`, ' ', `a_customer_middle_name`, ' ', `a_customer_last_name`) as 'customer_fullname', `a_customer_phone_number`, `a_customer_date` FROM `archive_customer_table` JOIN employee_table ON employee_table.emp_id = a_customer_encoder_id ;";
+
+                    $result = mysqli_query($conn, $sql);
+
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo
+                        '<tr>
+                             <td>' . date('d M Y', strtotime($row['a_customer_date'])) . '</td>
+                             <td>' . $row['a_customer_number'] . '</td>
+                             <td>' . $row['customer_fullname'] . '</td>
+                             <td>' . $row['a_customer_phone_number'] . '</td>
+                             <td class="remarksWrapper">' . $row['customer_employee_name'] . '</td>
+                             <td><button type="button" class="btn btn-danger shadow-none" data-bs-toggle="modal" data-bs-target="#customerDeleteModal" row.id="' . $row['a_customer_number'] . '" id="btnDeleteCustomer" ><i class="fas fa-trash-alt"  data-bs-toggle="tooltip" data-bs-placement="top"  title="Delete Permanently"></i></button></td>
+                         </tr>';
+                    }
+
+                    // <button type="button" class="btn btn-warning shadow-none" row.id="' . $row['a_customer_number'] . '" id="btnRestoreCustomer"  data-bs-toggle="modal" data-bs-target="#customerRestoreModal"  ><i class="fas fa-undo" data-bs-toggle="tooltip" data-bs-placement="top" title="Restore"></i></button>
+                    ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -50,63 +67,22 @@
                         <th>Customer Number</th>
                         <th>Customer Name</th>
                         <th>Phone Number</th>
-                        <th>Address</th>
                         <th>Encoder Name</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
             </table>
 
-            <div class="modal fade" id="customerSendModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Send Text to Customer</h5>
-                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3 col-5">
-                                <label for="customerUnit" class="form-label">Customer Phone Number</label>
-                                <input type="text" class="form-control shadow-none" id="customerListPhoneNumber" readonly>
-                            </div>
-                            <div class="form-floating">
-                                <textarea class="form-control shadow-none" maxlength="400" id="customerText" style="height: 100px"></textarea>
-                                <label for="customerText">text message</label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn shadow-none rippleButton ripple" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#customerConfirmation">Send Text</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="customerConfirmation" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
-                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to send text messages?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn shadow-none rippleButton ripple" id="customerUpdate">Send</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="text-center alert alert-danger my-4" style="display: none;" id="errorBox">
                 <i class="fas fa-times-circle"></i> Unable to delete this data row...
             </div>
             <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
-                <i class="fas fa-check-circle"></i> Archive Success!
+                <i class="fas fa-check-circle"></i> <span id="successText">Archive Success!</span>
             </div>
-            <input type="hidden" id="rowId">
+            <input type="hidden" id="deleteRowId">
 
-            <div class="modal fade" id="customerArchiveModal" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="customerRestoreModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -114,10 +90,26 @@
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to archive?
+                            Are you sure you want to restore?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn shadow-none rippleButton ripple" id="customerArchive">Archive</button>
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="customerRestore">Restore</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="customerDeleteModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete? <em> It will be permanently deleted</em>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="customerDelete">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -131,13 +123,11 @@
 <script>
     $(document).ready(function() {
 
-        $(document).on('click', '#customerArchive', function(){
+        $(document).on('click', '#customerDelete', function() {
             let datastring = {
-                "customerArchive": $('#customerArchive').val(),
-                "rowId": $('#rowId').val()
-            };
-
-            
+                "customerDelete": $('#customerDelete').val(),
+                "deleteRowId": $('#deleteRowId').val()
+            }
             $.ajax({
                 url: 'includes/archive-customer-list.inc.php',
                 type: 'POST',
@@ -148,20 +138,21 @@
                 },
                 success: function(data) {
                     if (data.status) {
-                        $('#customerArchiveModal').modal('hide');
+                        $('#customerDeleteModal').modal('hide');
                         $('#errorBox').hide();
+                        $('#successText').text('Successfully Deleted...');
                         $('#successBox').show();
                         window.setTimeout(function() {
                             window.location.reload();
                         }, 1000);
                     } else {
-                        $('#customerArchiveModal').modal('hide');
+                        $('#customerDeleteModal').modal('hide');
                         $('#errorBox').show();
                         $('#successBox').hide();
                         window.setTimeout(function() {
                             window.location.reload();
                         }, 1000);
-                        
+
                     }
                 },
                 fail: function(xhr, textStatus, errorThrown) {
@@ -174,38 +165,39 @@
                 }
 
             });
-        });
 
-        $(document).on('click', '#btnArchiveCustomer', function(){
-            let rowId = $(this).attr('row.id');
-            $('#rowId').val(rowId);
-            
         });
-        $(document).on('click', '#customerUpdate', function() {
-            $('#customerUpdate').html("<span class='spinner-border spinner-border-sm ' id = 'loading' role='status' aria-hidden='true'></span>");
+        $(document).on('click', '#customerRestore', function() {
             let datastring = {
-                'btnCustomerUpdate': $('#customerUpdate').val(),
-                'customerListPhoneNumber': $('#customerListPhoneNumber').val(),
-                'customerText': $('#customerText').val()
-            };
-            console.log(datastring);
+                "customerRestore": $('#customerRestore').val(),
+                "deleteRowId": $('#deleteRowId').val()
+            }
             $.ajax({
-                url: 'includes/customer-list.inc.php',
+                url: 'includes/archive-customer-list.inc.php',
                 type: 'POST',
                 data: datastring,
                 dataType: 'json',
+                error: function(error) {
+                    console.log(error);
+                },
                 success: function(data) {
                     if (data.status) {
-                        $('textarea').prop('disabled', true);
-                        
-                        $('#customerUpdate').prop('disabled', true);
-                        $('#customerUpdate').text('Message Sent');
+                        $('#customerRestoreModal').modal('hide');
+                        $('#errorBox').hide();
+                        $('#successText').text('Restore Complete...');
+                        $('#successBox').show();
                         window.setTimeout(function() {
                             window.location.reload();
                         }, 1000);
+                    } else {
+                        $('#customerRestoreModal').modal('hide');
+                        $('#errorBox').show();
+                        $('#successBox').hide();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+
                     }
-
-
                 },
                 fail: function(xhr, textStatus, errorThrown) {
                     alert(errorThrown);
@@ -217,20 +209,21 @@
                 }
 
             });
-        });
-        $(document).on('click', '#btnSendText', function() {
-            $('#customerListPhoneNumber').val($(this).attr('row.id'));
+
         });
 
-        $(document).on('click', '#btnEditCustomer', function() {
+
+        $(document).on('click', '#btnRestoreCustomer', function() {
             let rowId = $(this).attr('row.id');
-            $("#loader").fadeIn();
-            window.setTimeout(function() {
-                $("#loader").fadeOut();
-                window.location.href = "customer-view.php?rowId=" + rowId;
-            }, 2000);
+            $('#deleteRowId').val(rowId);
         });
-        $('#customerReportTable').DataTable({
+        $(document).on('click', '#btnDeleteCustomer', function() {
+            let rowId = $(this).attr('row.id');
+            $('#deleteRowId').val(rowId);
+        });
+
+
+        var table = $('#archiveCustomerReportTable').DataTable({
             "searching": true,
             "bPaginate": true,
             "lengthChange": true,
@@ -243,89 +236,24 @@
                     className: "text-end"
                 },
                 {
-                    targets: [2, 3, 4, 5],
+                    targets: [2, 4],
                     className: "text-justify"
                 },
                 {
-                    targets: [0, 1, 6],
+                    targets: [0, 1, 3, 5],
                     className: "text-center"
                 },
                 {
                     orderable: false,
-                    targets: [6]
+                    targets: [5]
                 }
             ],
-            dom: 'B<"searchBar">frtip',
-            buttons: [{
-                    text: '<i class="fas fa-folder-plus"></i>',
-                    titleAttr: 'Customer List',
-                    className: 'btn-warning me-3 shadow-none rounded',
-                    action: function(e, dt, node, config) {
-                        $("#loader").fadeIn(function() {
-                            $("#loader").fadeOut();
-                            window.location.href = "customer-view.php";
-                        });
-
-                    },
-
-                },
-                {
-                    text: '<i class="fas fa-file-excel"></i>',
-                    extend: 'excel',
-                    title: 'Customer List_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    className: 'btn-success me-3 shadow-none rounded',
-                    titleAttr: 'EXCEL',
-                    exportOptions: {
-                        columns: 'th:not(:last-child):visible',
-                    }
-                },
-                {
-                    text: '<i class="fas fa-file-pdf"></i>',
-                    extend: 'pdf',
-                    titleAttr: 'PDF',
-                    orientation: 'portrait',
-                    pageSize: 'LEGAL',
-                    className: 'btn-danger me-3 shadow-none rounded',
-                    filename: 'Customer List_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    header: 'Customer List',
-                    messageTop: 'Date: ' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    title: 'Customer List',
-                    exportOptions: {
-                        columns: 'th:not(:last-child):visible',
-                    }
-
-                },
-                {
-                    text: '<i class="fas fa-print"></i>',
-                    extend: 'print',
-                    titleAttr: 'PRINT',
-                    className: 'btn-info me-3 shadow-none rounded',
-                    title: 'Customer List_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    exportOptions: {
-                        columns: 'th:not(:last-child):visible',
-                    }
-
-                },
-                {
-                    extend: 'colvis',
-                    className: 'btn-dark me-3 shadow-none rounded-3',
-                    text: '<i class="fas fa-columns"></i>',
-                    titleAttr: 'COLUMNS VISIBLITY'
-                },
-                {
-                    extend: 'pageLength',
-                    className: 'btn-dark shadow-none rounded-3',
-                    text: '<i class="fas fa-ruler-vertical"></i>',
-                    titleAttr: 'PAGE LENGTH'
-                }
-            ]
         });
 
-        var table = $('#customerReportTable').DataTable();
-        $("#customerReportTable_filter.dataTables_filter").append($("#categoryFilter"));
+        $("#archiveCustomerReportTable_filter.dataTables_filter").append($("#categoryFilter"));
 
         var categoryIndex = 0;
-        $("#customerReportTable th").each(function(i) {
+        $("#archiveCustomerReportTable th").each(function(i) {
             if ($($(this)).html() == "Date") {
                 categoryIndex = i;
                 return false;

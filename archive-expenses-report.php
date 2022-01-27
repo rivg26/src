@@ -11,7 +11,7 @@ $year = date("Y");
 <div class="row p-3" style="position: relative;">
     <div class="shadow p-3 mb-5 bg-body rounded">
         <div class="text-center">
-            <h5 class="display-4 mb-5 mt-3">Expenses Report</h5>
+            <h5 class="display-4 mb-5 mt-3">Expenses Report Archive</h5>
         </div>
 
         <div class="table-responsive my-5 p-5">
@@ -39,7 +39,7 @@ $year = date("Y");
                 </select>
             </div>
 
-            <table id="expensesTable" class="tableDesign table table-striped table-hover align-middle shadow-none">
+            <table id="archiveExpensesTable" class="tableDesign table table-striped table-hover align-middle shadow-none">
                 <thead class="align-middle">
                     <tr>
                         <th>Date</th>
@@ -53,7 +53,26 @@ $year = date("Y");
                     </tr>
                 </thead>
                 <tbody>
-                <?= expensesTable($conn) ?>
+                    <?php
+                    $sql = "SELECT t.a_expenses_id, t.a_expenses_invoice, t.a_expenses_date, t.a_expenses_amount, t.a_expenses_category, t.a_expenses_description, CONCAT(e1.emp_lastname, ', ', e1.emp_firstname, ' ', SUBSTR(e1.emp_middlename,1,1), '.') AS 'employee_name', CONCAT(e2.emp_lastname, ', ', e2.emp_firstname, ' ', SUBSTR(e2.emp_middlename,1,1), '.') AS 'encoder_name' FROM `archive_expenses_table` t JOIN employee_table e1 ON e1.emp_id = t.a_expenses_employee_id JOIN employee_table e2 ON e2.emp_id = t.a_expenses_emp_encoder_id;
+                    ";
+                    $result = mysqli_query($conn, $sql);
+
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo
+                        '<tr>
+                            <td>' . $row['a_expenses_date'] . '</td>
+                            <td>' . $row['a_expenses_invoice'] . '</td>
+                            <td>' . $row['employee_name'] . '</td>
+                            <td>' . $row['a_expenses_amount'] . '</td>
+                            <td>' . $row['a_expenses_category'] . '</td>
+                            <td class="remarksWrapper">' . $row['encoder_name'] . '</td>
+                            <td class="remarksWrapper">' . $row['a_expenses_description'] . '</td>
+                            <td> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="modal" data-bs-target="#expensesDeleteModal" row.id = "' . $row['a_expenses_id'] . '"  id="btnDeleteExpenses"><i class="fas fa-trash-alt" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Permanently"></i></button></td>
+                        </tr>';
+                    }
+
+                    ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -72,11 +91,11 @@ $year = date("Y");
                 <i class="fas fa-times-circle"></i> Unable to delete this data row...
             </div>
             <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
-                <i class="fas fa-check-circle"></i> Archive Success!
+                <i class="fas fa-check-circle"></i> Successfully Deleted...
             </div>
-            <input type="hidden" id="rowId">
+            <input type="hidden" id="deleteRowId">
             <!-- Modal -->
-            <div class="modal fade" id="expensesArchiveModal" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="expensesDeleteModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -84,10 +103,10 @@ $year = date("Y");
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to archive?
+                            Are you sure you want to delete?<em> It will be permanently deleted</em>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn shadow-none rippleButton ripple" id="expensesArchive">Archive</button>
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="expensesDelete">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -99,10 +118,10 @@ $year = date("Y");
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function() {
-        $(document).on('click','#expensesArchive', function(){
+        $(document).on('click', '#expensesDelete', function() {
             let datastring = {
-                "expensesArchive": $('#expensesArchive').val(),
-                "rowId": $('#rowId').val()
+                "expensesDelete": $('#expensesDelete').val(),
+                "deleteRowId": $('#deleteRowId').val()
             };
             $.ajax({
                 url: 'includes/archive-expenses-report.inc.php',
@@ -114,20 +133,20 @@ $year = date("Y");
                 },
                 success: function(data) {
                     if (data.status) {
-                        $('#expensesArchiveModal').modal('hide');
+                        $('#expensesDeleteModal').modal('hide');
                         $('#errorBox').hide();
                         $('#successBox').show();
                         window.setTimeout(function() {
                             window.location.reload();
                         }, 1000);
                     } else {
-                        $('#expensesArchiveModal').modal('hide');
+                        $('#expensesDeleteModal').modal('hide');
                         $('#errorBox').show();
                         $('#successBox').hide();
                         window.setTimeout(function() {
                             window.location.reload();
                         }, 1000);
-                        
+
                     }
                 },
                 fail: function(xhr, textStatus, errorThrown) {
@@ -141,20 +160,13 @@ $year = date("Y");
 
             });
         });
-        $(document).on('click', '#btnArchiveExpenses', function(){
+        $(document).on('click', '#btnDeleteExpenses', function() {
             let rowId = $(this).attr('row.id');
-            $('#rowId').val(rowId);
+            $('#deleteRowId').val(rowId);
         });
 
-        $(document).on('click','#btnEditExpenses', function(){
-            let rowId = $(this).attr('row.id');
-            $("#loader").fadeIn();
-            window.setTimeout(function() {
-                $("#loader").fadeOut();
-                window.location.href = "expenses-add.php?rowId=" + rowId;
-            }, 2000);
-        });
-        $('#expensesTable').DataTable({
+
+        var table = $('#archiveExpensesTable').DataTable({
             "searching": true,
             "bPaginate": true,
             "lengthChange": true,
@@ -162,17 +174,16 @@ $year = date("Y");
             "bInfo": false,
             "bAutoWidth": true,
             lengthMenu: [5, 10, 25, 50, 100, 200],
-            "columnDefs": [
-                {
+            "columnDefs": [{
                     targets: [3],
                     className: "text-end"
                 },
                 {
-                    targets: [1,2,5,6],
+                    targets: [1, 2, 5, 6],
                     className: "text-justify"
                 },
                 {
-                    targets: [0,4,7],
+                    targets: [0, 4, 7],
                     className: "text-center"
                 },
                 {
@@ -180,77 +191,11 @@ $year = date("Y");
                     targets: [7]
                 }
             ],
-            dom: 'B<"searchBar">frtip',
-            buttons: [{
-                    text: '<i class="fas fa-folder-plus"></i>',
-                    titleAttr: 'NEW INBOUND',
-                    className: 'btn-warning me-3 shadow-none rounded',
-                    action: function(e, dt, node, config) {
-                        $("#loader").fadeIn(function() {
-                            $("#loader").fadeOut();
-                            window.location.href = "expenses-add.php";
-                        });
-
-                    },
-
-                },
-                {
-                    text: '<i class="fas fa-file-excel"></i>',
-                    extend: 'excel',
-                    title: 'Expenses Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    className: 'btn-success me-3 shadow-none rounded',
-                    titleAttr: 'EXCEL',
-                    exportOptions: {
-                        columns: 'th:not(:last-child):visible',
-                    }
-                },
-                {
-                    text: '<i class="fas fa-file-pdf"></i>',
-                    extend: 'pdf',
-                    titleAttr: 'PDF',
-                    orientation: 'portrait',
-                    pageSize: 'LEGAL',
-                    className: 'btn-danger me-3 shadow-none rounded',
-                    filename: 'Expenses Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    header: 'Expenses Report',
-                    messageTop: 'Date: ' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    title: 'Expenses Report',
-                    exportOptions: {
-                        columns: 'th:not(:last-child):visible',
-                    }
-
-                },
-                {
-                    text: '<i class="fas fa-print"></i>',
-                    extend: 'print',
-                    titleAttr: 'PRINT',
-                    className: 'btn-info me-3 shadow-none rounded',
-                    title: 'Expenses Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    exportOptions: {
-                        columns: 'th:not(:last-child):visible',
-                    }
-
-                },
-                {
-                    extend: 'colvis',
-                    className: 'btn-dark me-3 shadow-none rounded-3',
-                    text: '<i class="fas fa-columns"></i>',
-                    titleAttr: 'COLUMNS VISIBLITY'
-                },
-                {
-                    extend: 'pageLength',
-                    className: 'btn-dark shadow-none rounded-3',
-                    text: '<i class="fas fa-ruler-vertical"></i>',
-                    titleAttr: 'PAGE LENGTH'
-                }
-            ]
         });
-
-        var table = $('#expensesTable').DataTable();
-        $("#expensesTable_filter.dataTables_filter").append($("#categoryFilter"));
+        $("#archiveExpensesTable_filter.dataTables_filter").append($("#categoryFilter"));
 
         var categoryIndex = 0;
-        $("#expensesTable th").each(function(i) {
+        $("#archiveExpensesTable th").each(function(i) {
             if ($($(this)).html() == "Date") {
                 categoryIndex = i;
                 return false;

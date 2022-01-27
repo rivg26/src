@@ -164,17 +164,9 @@ if (isset($_SESSION['empId'])) {
                             </div>
                         </li>
                         <li class="header-menu">
-                            <span></span>
-                        </li>
-                        <li class="header-menu">
-                            <span></span>
-                        </li>
-                        <li class="header-menu">
-                            <span></span>
-                        </li>
-                        <li class="header-menu">
                             <span>Archive</span>
                         </li>
+                        
                         <li class="sidebar-dropdown">
                             <a href="#">
                                 <i class="fas fa-file-archive"></i>
@@ -187,6 +179,21 @@ if (isset($_SESSION['empId'])) {
                                     </li>
                                     <li>
                                         <a class="adminNav" link="archive-sales" href="">Sales Report Archive</a>
+                                    </li>
+                                    <li>
+                                        <a class="adminNav" link="archive-product-inbound" href="">Product Inbound Report Archive</a>
+                                    </li>
+                                    <li>
+                                        <a class="adminNav" link="archive-inventory-report" href="">Inventory Report Archive</a>
+                                    </li>
+                                    <li>
+                                        <a class="adminNav" link="archive-customer-list" href="">Customer List Archive</a>
+                                    </li>
+                                    <li>
+                                        <a class="adminNav" link="archive-employee-list" href="">Employee List Archive</a>
+                                    </li>
+                                    <li>
+                                        <a class="adminNav" link="archive-expenses-report" href="">Expenses Report Archive</a>
                                     </li>
 
 
@@ -254,7 +261,7 @@ if (isset($_SESSION['empId'])) {
                             </div>
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-center" href="#">View all notifications</a>
+                        <!-- <a class="dropdown-item text-center" href="#">View all notifications</a> -->
                     </div>
                 </div>
 

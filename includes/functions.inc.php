@@ -173,7 +173,7 @@ function getPunInbound($conn)
 
 function productInboundTable($conn)
 {
-    $sql = "SELECT `pin_id`, `pin_invoice`, product_table.product_name, pin_pun,CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') AS pin_employee_name, pin_date, pin_total_quantity, pin_total_plant_price, pin_total_final_price, pin_metric_tons, pin_product_option, pin_remarks FROM `product_inbound_table` JOIN product_table ON product_table.product_id = pin_product_id JOIN employee_table ON employee_table.emp_id = pin_encoder_id;";
+    $sql = "SELECT `pin_id`, `pin_invoice`, product_table.product_name, pin_pun,CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') AS pin_employee_name, pin_date,pin_quantity, pin_total_quantity, pin_total_plant_price, pin_total_final_price, pin_metric_tons, pin_product_option, pin_remarks FROM `product_inbound_table` JOIN product_table ON product_table.product_id = pin_product_id JOIN employee_table ON employee_table.emp_id = pin_encoder_id;";
     $result = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($result)) {
@@ -183,15 +183,17 @@ function productInboundTable($conn)
             <td style= "font-size: 1.1rem">'.$row['pin_invoice'].'</td>
             <td style= "font-size: 1.1rem">'.$row['pin_pun'].'</td>
             <td style= "font-size: 1.1rem">'.$row['product_name'].'</td>
+            <td>'.$row['pin_quantity'].'</td>
             <td>'.$row['pin_total_quantity'].'</td>
             <td>'.number_format($row['pin_metric_tons'],2).'</td>
             <td>'.number_format($row['pin_total_plant_price'],2).'</td>
             <td>'.number_format($row['pin_total_final_price'],2).'</td>
             <td class="remarksWrapper">'.$row['pin_employee_name'].'</td>
             <td class="remarksWrapper">'.$row['pin_remarks'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none mb-2" row.id="'.$row['pin_id'].'" id = "btnProductInboundEdit" data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-archive" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button></td>
+            <td> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="modal" data-bs-target="#productInboundTableArchiveModal" id = "btnProductInboundArchive" row.id="'.$row['pin_id'].'" ><i class="fas fa-archive" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button></td>
         </tr>';
     }
+    // <button type="button" class="btn btn-warning shadow-none mb-2" row.id="'.$row['pin_id'].'" id = "btnProductInboundEdit" data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit"><i class="fas fa-edit"></i></button>
 }
 
 
@@ -222,7 +224,7 @@ function getProductInboundData($conn, $pinId)
 
 function customerTable($conn)
 {
-    $sql = "SELECT `customer_number`, CONCAT(employee_table.emp_firstname, ' ', employee_table.emp_middlename, ' ', employee_table.emp_lastname) AS 'customer_employee_name', CONCAT( `customer_first_name`, ' ', `customer_middle_name`, ' ', `customer_last_name`) as 'customer_fullname', `customer_phone_number`, `customer_date`, CONCAT(customer_address_table.cus_address_unit, ' ', customer_address_table.cus_address_street, ' ', customer_address_table.cus_address_barangay, ' ', customer_address_table.cus_address_city, ' ', customer_address_table.cus_address_province) as 'customer_full_address' FROM `customer_table` JOIN employee_table ON employee_table.emp_id = customer_encoder_id JOIN customer_address_table ON customer_address_table.cus_customer_number = customer_number;";
+    $sql = "SELECT customer_id, `customer_number`, CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') AS 'customer_employee_name', CONCAT( `customer_first_name`, ' ', `customer_middle_name`, ' ', `customer_last_name`) as 'customer_fullname', `customer_phone_number`, `customer_date`, CONCAT(customer_address_table.cus_address_unit, ' ', customer_address_table.cus_address_street, ' ', customer_address_table.cus_address_barangay, ' ', customer_address_table.cus_address_city, ' ', customer_address_table.cus_address_province) as 'customer_full_address' FROM `customer_table` JOIN employee_table ON employee_table.emp_id = customer_encoder_id JOIN customer_address_table ON customer_address_table.cus_customer_number = customer_number;";
     
     $result = mysqli_query($conn, $sql);
 
@@ -235,7 +237,7 @@ function customerTable($conn)
             <td>'.$row['customer_phone_number'].'</td>
             <td class="remarksWrapper">'.$row['customer_full_address'].'</td>
             <td class="remarksWrapper">'.$row['customer_employee_name'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none" row.id="'.$row['customer_number'].'" id="btnEditCustomer"><i class="fas fa-edit"></i></button>  <button type="button" class="btn btn-danger shadow-none"><i class="fas fa-archive"></i></button></td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id="'.$row['customer_number'].'" id="btnEditCustomer" data-bs-toggle="tooltip" data-bs-placement="top"  title="View/Edit"><i class="fas fa-edit"></i></button>  <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="modal" data-bs-target="#customerArchiveModal" row.id="'.$row['customer_id'].'" id="btnArchiveCustomer" ><i class="fas fa-archive"  data-bs-toggle="tooltip" data-bs-placement="top"  title="Archive"></i></button></td>
         </tr>';
     }
     // <button type="button" class="btn btn-info shadow-none" row.id="'.$row['customer_phone_number'].'" id="btnSendText" data-bs-toggle="modal" data-bs-target="#customerSendModal" ><i class="fas fa-envelope-open-text"></i></button>
@@ -423,7 +425,7 @@ function customerHistoryTable($conn,$customerId)
 
 function employeeTable($conn)
 {
-    $sql = "SELECT emp_number, emp_firstname, emp_middlename, emp_lastname, emp_phonenumber, emp_email FROM `employee_table`";
+    $sql = "SELECT emp_id, emp_number, emp_firstname, emp_middlename, emp_lastname, emp_phonenumber, emp_email FROM `employee_table`";
     $result = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($result)) {
@@ -433,7 +435,7 @@ function employeeTable($conn)
             <td>'.ucfirst($row['emp_lastname']). ', ' . ucfirst($row['emp_firstname']). ' '. ucfirst(substr($row['emp_middlename'],0,1)) .'.'.'</td>
             <td>'.$row['emp_phonenumber'].'</td>
             <td>'.$row['emp_email'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none" id = "btnEditEmployee"  row.id ="'.$row['emp_number'].'"data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button type="button" class="btn btn-warning shadow-none" id = "btnEditEmployee"  row.id ="'.$row['emp_number'].'"data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit"><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="modal" data-bs-target="#employeeArchiveModal"  id = "btnArchiveEmployee"  row.id ="'.$row['emp_id'].'"><i class="fas fa-archive" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button></td>
         </tr>';
     }
 }
@@ -482,7 +484,7 @@ function expensesEmployeeSelect($conn,$empId)
 
 function expensesTable($conn)
 {
-    $sql = "SELECT t.expenses_id, t.expenses_invoice, t.expenses_date, t.expenses_amount, t.expenses_category, t.expenses_description, CONCAT(e1.emp_lastname, ' ', e1.emp_firstname, ' ', e1.emp_middlename) AS 'employee_name', CONCAT(e2.emp_lastname, ' ', e2.emp_firstname, ' ', e2.emp_middlename) AS 'encoder_name' FROM `expenses_table` t JOIN employee_table e1 ON e1.emp_id = t.expenses_employee_id JOIN employee_table e2 ON e2.emp_id = t.expenses_emp_encoder_id;";
+    $sql = "SELECT t.expenses_id, t.expenses_invoice, t.expenses_date, t.expenses_amount, t.expenses_category, t.expenses_description, CONCAT(e1.emp_lastname, ', ', e1.emp_firstname, ' ', SUBSTR(e1.emp_middlename,1,1), '.') AS 'employee_name', CONCAT(e2.emp_lastname, ', ', e2.emp_firstname, ' ', SUBSTR(e2.emp_middlename,1,1), '.') AS 'encoder_name' FROM `expenses_table` t JOIN employee_table e1 ON e1.emp_id = t.expenses_employee_id JOIN employee_table e2 ON e2.emp_id = t.expenses_emp_encoder_id;";
     $result = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($result)) {
@@ -495,7 +497,7 @@ function expensesTable($conn)
             <td>'.$row['expenses_category'].'</td>
             <td class="remarksWrapper">'.$row['encoder_name'].'</td>
             <td class="remarksWrapper">'.$row['expenses_description'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['expenses_id'].'" id="btnEditExpenses" data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit" ><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['expenses_id'].'" id="btnEditExpenses" data-bs-toggle="tooltip" data-bs-placement="top" title="View/Edit" ><i class="fas fa-edit"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="modal" data-bs-target="#expensesArchiveModal" row.id = "'.$row['expenses_id'].'"  id="btnArchiveExpenses"><i class="fas fa-archive" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button></td>
         </tr>';
     }
 }
@@ -535,7 +537,7 @@ function viewInventoryTable($conn)
             <td>'.$row['inv_control_number'].'</td>
             <td>'.$row['inv_type'].'</td>
             <td>'.$row['encoder_name'].'</td>
-            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['inv_control_number'].'" id="btnViewInventory" data-bs-toggle="tooltip" data-bs-placement="top" title="View"><i class="fas fa-eye"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button type="button" class="btn btn-warning shadow-none" row.id = "'.$row['inv_control_number'].'" id="btnViewInventory" data-bs-toggle="tooltip" data-bs-placement="top" title="View"><i class="fas fa-eye"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="modal" data-bs-target="#inventoryArchiveModal" row.id = "'.$row['inv_control_number'].'" id = "btnArchiveInventory" ><i class="fas fa-archive"  data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button></td>
         </tr>';
     }
 }

@@ -31,7 +31,30 @@
                     </tr>
                 </tfoot>
             </table>
-
+            <div class="text-center alert alert-danger my-4" style="display: none;" id="errorBox">
+                <i class="fas fa-times-circle"></i> Unable to delete this data row...
+            </div>
+            <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
+                <i class="fas fa-check-circle"></i> Archive Success!
+            </div>
+            <input type="hidden" id="rowId">
+            <!-- Modal -->
+            <div class="modal fade" id="inventoryArchiveModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to archive?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="inventoryArchive">Archive</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -41,6 +64,55 @@
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function(){
+        $(document).on('click', '#inventoryArchive', function(){
+            let datastring = {
+                "inventoryArchive": $('#inventoryArchive').val(),
+                "rowId": $('#rowId').val()
+            };
+
+            $.ajax({
+                url: 'includes/archive-inventory-view-report.inc.php',
+                type: 'POST',
+                data: datastring,
+                dataType: 'json',
+                error: function(error) {
+                    console.log(error);
+                },
+                success: function(data) {
+                    if (data.status) {
+                        $('#inventoryArchiveModal').modal('hide');
+                        $('#errorBox').hide();
+                        $('#successBox').show();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        $('#inventoryArchiveModal').modal('hide');
+                        $('#errorBox').show();
+                        $('#successBox').hide();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                        
+                    }
+                },
+                fail: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    alert(xhr);
+                    alert(textStatus);
+                },
+                catch: function(error) {
+                    alert(error);
+                }
+
+            });
+        });
+
+        $(document).on('click', '#btnArchiveInventory', function(){
+            let rowId = $(this).attr('row.id');
+            $('#rowId').val(rowId);
+            console.log(rowId);
+        });
         $(document).on('click','#btnViewInventory', function(){
             let rowId = $(this).attr('row.id');
             $("#loader").fadeIn();
@@ -56,7 +128,7 @@
             "bFilter": true,
             "bInfo": false,
             "bAutoWidth": true,
-            lengthMenu: [8, 10, 25, 50, 100, 200],
+            lengthMenu: [5, 10, 25, 50, 100, 200],
             "columnDefs": [{
                     targets: [],
                     className: "text-end"

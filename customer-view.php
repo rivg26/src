@@ -332,10 +332,7 @@ if (isset($_GET['rowId'])) {
                     $(this).removeClass("is-valid");
                     $(this).addClass("is-invalid");
 
-                } else {
-                    $(this).removeClass("is-invalid");
-                    $(this).addClass("is-valid");
-                }
+                } 
             });
             if ($('.is-invalid')[0]) {
                 $('#customerModal').modal('hide');
@@ -392,15 +389,12 @@ if (isset($_GET['rowId'])) {
 
         $(document).on('click', '#customerSubmit', function() {
             $('#customerSubmit').prop('disabled', true);
-            $('input').each(function() {
+            $('input').not('.dataTables_filter input').each(function() {
                 if ($(this).val().trim() === "") {
                     $(this).removeClass("is-valid");
                     $(this).addClass("is-invalid");
 
-                } else {
-                    $(this).removeClass("is-invalid");
-                    $(this).addClass("is-valid");
-                }
+                } 
             });
 
             if ($('.is-invalid')[0]) {
@@ -566,7 +560,7 @@ if (isset($_GET['rowId'])) {
         });
         $(document).on('keyup', '#customerPhoneNumberUpdate', function() {
             $('#customerPhoneNumberFeedback').text('Please input Phone Number....');
-            if (!$(this).val() || $(this).val() === "") {
+            if (!$(this).val().trim() || $(this).val().trim() === "") {
                 $(this).removeClass('is-valid');
                 $(this).addClass('is-invalid');
             } 

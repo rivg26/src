@@ -162,6 +162,21 @@ $(document).on('click', '.adminNav', function () {
       case 'archive-sales':
         var component = 'archive-sales-report.php';
         break;
+      case 'archive-product-inbound':
+        var component = 'archive-product-inbound-report.php';
+        break;
+      case 'archive-inventory-report':
+        var component = 'archive-inventory-report.php';
+        break;
+      case 'archive-customer-list':
+        var component = 'archive-customer-list.php';
+        break;
+      case 'archive-employee-list':
+        var component = 'archive-employee-list.php';
+        break;
+      case 'archive-expenses-report':
+        var component = 'archive-expenses-report.php';
+        break;
       default:
         var component = false;
 

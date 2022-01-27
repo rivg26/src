@@ -1,6 +1,6 @@
 <?php require_once 'head.php' ?>
-<?php 
-$data = getDeliveryDate($conn); 
+<?php
+$data = getDeliveryDate($conn);
 $stocks = getPriceSaleData($conn);
 $quantity = getStocks($conn);
 
@@ -15,13 +15,11 @@ $quantity = getStocks($conn);
 
         for (let x = 0; x < wholeData.length; x++) {
             var colored = "";
-            if(wholeData[x]['delivery_status'] == "to be delivered"){
+            if (wholeData[x]['delivery_status'] == "to be delivered") {
                 colored = '#e06f1f';
-            }
-            else if(wholeData[x]['delivery_status'] == "delivered"){
+            } else if (wholeData[x]['delivery_status'] == "delivered") {
                 colored = '#00b300';
-            }
-            else{
+            } else {
                 colored = '#b30000';
             }
             var hello = {
@@ -36,7 +34,7 @@ $quantity = getStocks($conn);
     }
     getDeliveryData();
     draw();
-    
+
 
     function draw() {
         document.addEventListener('DOMContentLoaded', function() {
@@ -120,8 +118,19 @@ $quantity = getStocks($conn);
     }
 </style>
 <div class="container-fluid" style="position: relative; ">
+
     <div class="row">
         <div class="col-md-6 d-flex flex-column align-items-center justify-content-center ">
+            <div class="container">
+                <button class="btn btn-dark shadow-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" data-toggle="tooltip" title="Legend" data-bs-placement="right">
+                <i class="fas fa-info-circle"></i>
+                </button>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body mb-3">
+                        <span class="alert alert-danger w-25"></span>Warning
+                    </div>
+                </div>
+            </div>
             <div class="container px-4 ">
                 <div class="row gx-5 mb-3">
                     <div class="col-md-6">
@@ -148,7 +157,7 @@ $quantity = getStocks($conn);
                                 <div class="row mb-3">
                                     <div class="text-center">
                                         <p class="mb-1 typeSize">Total Quantity</p>
-                                        <p class="mb-0 <?= ((int)$quantity[0]['total_quantity'] == 0 ? "link-danger" :((int)$quantity[0]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?> quantitySize"><?= $quantity[0]['total_quantity'] ?> <?= (int)$quantity[0]['total_quantity'] <= 5? '<i class="fas fa-caret-down"></i>': '<i class="fas fa-caret-up"></i>' ?></p>
+                                        <p class="mb-0 <?= ((int)$quantity[0]['total_quantity'] == 0 ? "link-danger" : ((int)$quantity[0]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?> quantitySize"><?= $quantity[0]['total_quantity'] ?> <?= (int)$quantity[0]['total_quantity'] <= 5 ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>' ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -178,7 +187,7 @@ $quantity = getStocks($conn);
                                 <div class="row mb-3">
                                     <div class="text-center">
                                         <p class="mb-1 typeSize">Total Quantity</p>
-                                        <p class="mb-0  <?= ((int)$quantity[1]['total_quantity'] == 0 ? "link-danger" :((int)$quantity[1]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[1]['total_quantity'] ?> <?= (int)$quantity[1]['total_quantity'] <= 5? '<i class="fas fa-caret-down"></i>': '<i class="fas fa-caret-up"></i>' ?> </p>
+                                        <p class="mb-0  <?= ((int)$quantity[1]['total_quantity'] == 0 ? "link-danger" : ((int)$quantity[1]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[1]['total_quantity'] ?> <?= (int)$quantity[1]['total_quantity'] <= 5 ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>' ?> </p>
                                     </div>
                                 </div>
                             </div>
@@ -210,7 +219,7 @@ $quantity = getStocks($conn);
                                 <div class="row mb-3">
                                     <div class="text-center">
                                         <p class="mb-1 typeSize">Total Quantity</p>
-                                        <p class="mb-0 <?= ((int)$quantity[2]['total_quantity'] == 0 ? "link-danger" :((int)$quantity[2]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[2]['total_quantity'] ?> <?= (int)$quantity[2]['total_quantity'] <= 5? '<i class="fas fa-caret-down"></i>': '<i class="fas fa-caret-up"></i>' ?></p>
+                                        <p class="mb-0 <?= ((int)$quantity[2]['total_quantity'] == 0 ? "link-danger" : ((int)$quantity[2]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[2]['total_quantity'] ?> <?= (int)$quantity[2]['total_quantity'] <= 5 ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>' ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -240,7 +249,7 @@ $quantity = getStocks($conn);
                                 <div class="row mb-3">
                                     <div class="text-center">
                                         <p class="mb-1 typeSize">Total Quantity</p>
-                                        <p class="mb-0 <?= ((int)$quantity[3]['total_quantity'] == 0 ? "link-danger" :((int)$quantity[3]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[3]['total_quantity'] ?> <?= (int)$quantity[3]['total_quantity'] <= 5? '<i class="fas fa-caret-down"></i>': '<i class="fas fa-caret-up"></i>' ?></p>
+                                        <p class="mb-0 <?= ((int)$quantity[3]['total_quantity'] == 0 ? "link-danger" : ((int)$quantity[3]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[3]['total_quantity'] ?> <?= (int)$quantity[3]['total_quantity'] <= 5 ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>' ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -272,7 +281,7 @@ $quantity = getStocks($conn);
                                 <div class="row mb-3">
                                     <div class="text-center">
                                         <p class="mb-1 typeSize">Total Quantity</p>
-                                        <p class="mb-0 <?= ((int)$quantity[4]['total_quantity'] == 0 ? "link-danger" :((int)$quantity[4]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[4]['total_quantity'] ?> <?= (int)$quantity[4]['total_quantity'] <= 5? '<i class="fas fa-caret-down"></i>': '<i class="fas fa-caret-up"></i>' ?></p>
+                                        <p class="mb-0 <?= ((int)$quantity[4]['total_quantity'] == 0 ? "link-danger" : ((int)$quantity[4]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[4]['total_quantity'] ?> <?= (int)$quantity[4]['total_quantity'] <= 5 ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>' ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -302,7 +311,7 @@ $quantity = getStocks($conn);
                                 <div class="row mb-3">
                                     <div class="text-center">
                                         <p class="mb-1 typeSize">Total Quantity</p>
-                                        <p class="mb-0 <?= ((int)$quantity[5]['total_quantity'] == 0 ? "link-danger" :((int)$quantity[5]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[5]['total_quantity'] ?> <?= (int)$quantity[5]['total_quantity'] <= 5? '<i class="fas fa-caret-down"></i>': '<i class="fas fa-caret-up"></i>' ?></p>
+                                        <p class="mb-0 <?= ((int)$quantity[5]['total_quantity'] == 0 ? "link-danger" : ((int)$quantity[5]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[5]['total_quantity'] ?> <?= (int)$quantity[5]['total_quantity'] <= 5 ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>' ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -334,7 +343,7 @@ $quantity = getStocks($conn);
                                 <div class="row mb-3">
                                     <div class="text-center">
                                         <p class="mb-1 typeSize">Total Quantity</p>
-                                        <p class="mb-0 <?= ((int)$quantity[6]['total_quantity'] == 0 ? "link-danger" :((int)$quantity[6]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[6]['total_quantity'] ?> <?= (int)$quantity[6]['total_quantity'] <= 5? '<i class="fas fa-caret-down"></i>': '<i class="fas fa-caret-up"></i>' ?></p>
+                                        <p class="mb-0 <?= ((int)$quantity[6]['total_quantity'] == 0 ? "link-danger" : ((int)$quantity[6]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?>  quantitySize"><?= $quantity[6]['total_quantity'] ?> <?= (int)$quantity[6]['total_quantity'] <= 5 ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>' ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -364,7 +373,7 @@ $quantity = getStocks($conn);
                                 <div class="row mb-3">
                                     <div class="text-center">
                                         <p class="mb-1 typeSize">Total Quantity</p>
-                                        <p class="mb-0 <?= ((int)$quantity[7]['total_quantity'] == 0 ? "link-danger" :((int)$quantity[7]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?> quantitySize"><?= $quantity[7]['total_quantity'] ?> <?= (int)$quantity[7]['total_quantity'] <= 5? '<i class="fas fa-caret-down"></i>': '<i class="fas fa-caret-up"></i>' ?></p>
+                                        <p class="mb-0 <?= ((int)$quantity[7]['total_quantity'] == 0 ? "link-danger" : ((int)$quantity[7]['total_quantity'] <= 5 ? "link-warning" : "link-info")) ?> quantitySize"><?= $quantity[7]['total_quantity'] ?> <?= (int)$quantity[7]['total_quantity'] <= 5 ? '<i class="fas fa-caret-down"></i>' : '<i class="fas fa-caret-up"></i>' ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -384,7 +393,7 @@ $quantity = getStocks($conn);
         </div>
     </div>
     <div class="row">
-        
+
     </div>
     <?php require_once 'loader.php' ?>
 </div>

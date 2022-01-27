@@ -11,7 +11,7 @@ $year = date("Y");
 <div class="row p-3" style="position: relative;">
     <div class="shadow p-3 mb-5 bg-body rounded">
         <div class="text-center">
-            <h5 class="display-4 mb-5 mt-3">Product Inbound Report</h5>
+            <h5 class="display-4 mb-5 mt-3">Product Inbound Report Archive</h5>
         </div>
 
         <div class="table-responsive my-5 p-5">
@@ -33,20 +33,19 @@ $year = date("Y");
                         <option value='<?php echo "Dec " . $year ?>'>December</option>
                     </optgroup>
                     <optgroup label="Sort by Day">
-                        <option value="<?php echo $today ?>" selected>Today</option>
+                        <option value="<?php echo $today ?>" >Today</option>
                         <option value="<?php echo $yesterday ?>">Yesterday</option>
                     </optgroup>
                 </select>
             </div>
 
-            <table id="productInboundTable" class="tableDesign table table-striped table-hover align-middle shadow-none">
+            <table id="archiveProductInboundTable" class="tableDesign table table-striped table-hover align-middle shadow-none">
                 <thead class="align-middle">
                     <tr>
                         <th>Date Inbound</th>
                         <th>Invoice Number</th>
                         <th>PU Number</th>
                         <th>Product Name</th>
-                        <th>Quantity</th>
                         <th>Total Quantity</th>
                         <th>Metric Tons</th>
                         <th>Plant Price</th>
@@ -57,7 +56,30 @@ $year = date("Y");
                     </tr>
                 </thead>
                 <tbody>
-                    <?= productInboundTable($conn); ?>
+                    <?php
+
+                    $sql = "SELECT `a_pin_id`, `a_pin_invoice`, product_table.product_name, a_pin_pun,CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') AS a_pin_employee_name, a_pin_date, a_pin_total_quantity, a_pin_total_plant_price, a_pin_total_final_price, a_pin_metric_tons, a_pin_product_option, a_pin_remarks FROM `archive_product_inbound_table` JOIN product_table ON product_table.product_id = a_pin_product_id JOIN employee_table ON employee_table.emp_id = a_pin_encoder_id;";
+                    $result = mysqli_query($conn, $sql);
+
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo
+                        '<tr>
+                            <td>' . date('d M Y', strtotime($row['a_pin_date'])) . '</td>
+                            <td style= "font-size: 1.1rem">' . $row['a_pin_invoice'] . '</td>
+                            <td style= "font-size: 1.1rem">' . $row['a_pin_pun'] . '</td>
+                            <td style= "font-size: 1.1rem">' . $row['product_name'] . '</td>
+                            <td>' . $row['a_pin_total_quantity'] . '</td>
+                            <td>' . number_format($row['a_pin_metric_tons'], 2) . '</td>
+                            <td>' . number_format($row['a_pin_total_plant_price'], 2) . '</td>
+                            <td>' . number_format($row['a_pin_total_final_price'], 2) . '</td>
+                            <td class="remarksWrapper">' . $row['a_pin_employee_name'] . '</td>
+                            <td class="remarksWrapper">' . $row['a_pin_remarks'] . '</td>
+                            <td><button type="button" class="btn btn-warning shadow-none mb-2" row.id="' . $row['a_pin_id'] . '" id = "btnProductInboundRestore" data-bs-toggle="modal" data-bs-target="#productInboundTableRestoreModal" ><i class="fas fa-undo" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button> <button type="button" class="btn btn-danger shadow-none" data-bs-toggle="modal" data-bs-target="#productInboundTableDeleteModal" id = "btnProductInboundDelete" row.id="' . $row['a_pin_id'] . '" ><i class="fas fa-trash-alt" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"></i></button></td>
+                        </tr>';
+                    }
+
+
+                    ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -65,7 +87,6 @@ $year = date("Y");
                         <th>Invoice Number</th>
                         <th>PU Number</th>
                         <th>Product Name</th>
-                        <th>Quantity</th>
                         <th>Total Quantity</th>
                         <th>Metric Tons</th>
                         <th>Plant Price</th>
@@ -80,11 +101,11 @@ $year = date("Y");
                 <i class="fas fa-times-circle"></i> Unable to delete this data row...
             </div>
             <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
-                <i class="fas fa-check-circle"></i> Archive Success!
+                <i class="fas fa-check-circle"></i> <span id="successText"> Archive Success!</span>
             </div>
-            <input type="hidden" id="rowId">
+            <input type="hidden" id="deleteRowId">
             <!-- Modal -->
-            <div class="modal fade" id="productInboundTableArchiveModal" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="productInboundTableRestoreModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -92,10 +113,26 @@ $year = date("Y");
                             <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to archive?
+                            Are you sure you want to restore?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn shadow-none rippleButton ripple" id="productInboundArchive">Archive</button>
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="productInboundRestore">Restore</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="productInboundTableDeleteModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to archive?<em>It will be permanently deleted</em>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="productInboundDelete">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -105,16 +142,15 @@ $year = date("Y");
     </div>
 
 </div>
-
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function() {
-        $(document).on('click', '#productInboundArchive', function(){
+        
+        $(document).on('click', '#productInboundDelete', function(){
             let datastring = {
-                "productInboundArchive": $('#productInboundArchive').val(),
-                "rowId": $('#rowId').val()
+                "productInboundDelete": $('#productInboundDelete').val(),
+                "deleteRowId": $('#deleteRowId').val()
             };
-
             $.ajax({
                 url: 'includes/archive-product-inbound.inc.php',
                 type: 'POST',
@@ -125,14 +161,15 @@ $year = date("Y");
                 },
                 success: function(data) {
                     if (data.status) {
-                        $('#productInboundTableArchiveModal').modal('hide');
+                        $('#productInboundTableDeleteModal').modal('hide');
                         $('#errorBox').hide();
+                        $('#successText').text('Successfully Deleted...')
                         $('#successBox').show();
                         window.setTimeout(function() {
                             window.location.reload();
                         }, 1000);
                     } else {
-                        $('#productInboundTableArchiveModal').modal('hide');
+                        $('#productInboundTableDeleteModal').modal('hide');
                         $('#errorBox').show();
                         $('#successBox').hide();
                         window.setTimeout(function() {
@@ -151,37 +188,61 @@ $year = date("Y");
                 }
 
             });
-
         });
+        $(document).on('click', '#productInboundRestore', function(){
+            let datastring = {
+                "productInboundRestore": $('#productInboundRestore').val(),
+                "deleteRowId": $('#deleteRowId').val()
+            };
+            $.ajax({
+                url: 'includes/archive-product-inbound.inc.php',
+                type: 'POST',
+                data: datastring,
+                dataType: 'json',
+                error: function(error) {
+                    console.log(error);
+                },
+                success: function(data) {
+                    if (data.status) {
+                        $('#productInboundTableRestoreModal').modal('hide');
+                        $('#errorBox').hide();
+                        $('#successText').text('Restore Complete...')
+                        $('#successBox').show();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        $('#productInboundTableRestoreModal').modal('hide');
+                        $('#errorBox').show();
+                        $('#successBox').hide();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                        
+                    }
+                },
+                fail: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    alert(xhr);
+                    alert(textStatus);
+                },
+                catch: function(error) {
+                    alert(error);
+                }
 
-
-        $(document).on('click', '#btnProductInboundArchive', function(){
+            });
+        });
+        $(document).on('click', '#btnProductInboundRestore', function(){
             let rowId = $(this).attr('row.id');
-            $('#rowId').val(rowId);
-            console.log($('#rowId').val())
-            
+            $('#deleteRowId').val(rowId);
+            console.log($('#deleteRowId').val())
         });
-
-        $(document).on('click', '#btnProductInboundEdit', function() {
+        $(document).on('click', '#btnProductInboundDelete', function(){
             let rowId = $(this).attr('row.id');
-            $("#loader").fadeIn();
-            window.setTimeout(function() {
-                $("#loader").fadeOut();
-                window.location.href = "product-inbound-add.php?rowId=" + rowId;
-            }, 2000);
-
+            $('#deleteRowId').val(rowId);
+            console.log($('#deleteRowId').val())
         });
-
-        // var today = new Date().toLocaleString();
-        var today = new Date();
-        // today.toLocaleDateString("en-US", options);
-        var options = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        };
-        $('#productInboundTable').DataTable({
+        var table = $('#archiveProductInboundTable').DataTable({
             "searching": true,
             "bPaginate": true,
             "lengthChange": true,
@@ -190,93 +251,29 @@ $year = date("Y");
             "bAutoWidth": true,
             lengthMenu: [5, 10, 25, 50, 100, 200],
             "columnDefs": [{
-                    targets: [4,5,6,7,8],
+                    targets: [4, 5, 6, 7],
                     className: "text-end"
                 },
                 {
-                    targets: [1,2,3,9,10],
+                    targets: [1, 2, 3, 8, 9],
                     className: "text-justify"
                 },
                 {
-                    targets: [0, 11],
+                    targets: [0, 10],
                     className: "text-center"
                 },
                 {
                     orderable: false,
-                    targets: [11]
+                    targets: [10]
                 }
             ],
-            dom: 'B<"searchBar">frtip',
-            buttons: [
-                {
-                    text: '<i class="fas fa-folder-plus"></i>',
-                    titleAttr: 'NEW INBOUND',
-                    className: 'btn-warning me-3 shadow-none rounded',
-                    action: function(e, dt, node, config) {
-                        $("#loader").fadeIn(function() {
-                            $("#loader").fadeOut();
-                            window.location.href = "product-inbound-add.php";
-                        });
-
-                    },
-
-                },
-                {
-                    text: '<i class="fas fa-file-excel"></i>',
-                    extend: 'excel',
-                    title: 'Product Inbound Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    className: 'btn-success me-3 shadow-none rounded',
-                    titleAttr: 'EXCEL',
-                    exportOptions: {
-                        columns: 'th:not(:last-child):visible',
-                    }
-                },
-                {
-                    text: '<i class="fas fa-file-pdf"></i>',
-                    extend: 'pdf',
-                    titleAttr: 'PDF',
-                    orientation: 'portrait',
-                    pageSize: 'LEGAL',
-                    className: 'btn-danger me-3 shadow-none rounded',
-                    filename: 'Product Inbound Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    header: 'Product Inbound Report',
-                    messageTop: 'Date: ' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    title: 'Product Inbound Report',
-                    exportOptions: {
-                        columns: 'th:not(:last-child):visible',
-                    }
-
-                },
-                {
-                    text: '<i class="fas fa-print"></i>',
-                    extend: 'print',
-                    titleAttr: 'PRINT',
-                    className: 'btn-info me-3 shadow-none rounded',
-                    title: 'Product Inbound Report_' + moment().format('MMMM Do YYYY, h:mm:ss a'),
-                    exportOptions: {
-                        columns: 'th:not(:last-child):visible',
-                    }
-
-                },
-                {
-                    extend: 'colvis',
-                    className: 'btn-dark me-3 shadow-none rounded-3',
-                    text: '<i class="fas fa-columns"></i>',
-                    titleAttr: 'COLUMNS VISIBLITY'
-                },
-                {
-                    extend: 'pageLength',
-                    className: 'btn-dark shadow-none rounded-3',
-                    text: '<i class="fas fa-ruler-vertical"></i>',
-                    titleAttr: 'PAGE LENGTH'
-                }
-            ]
         });
-        var table = $('#productInboundTable').DataTable();
-        $("#productInboundTable_filter.dataTables_filter").append($("#categoryFilter"));
+
+
+        $("#archiveProductInboundTable_filter.dataTables_filter").append($("#categoryFilter"));
 
         var categoryIndex = 0;
-        $("#productInboundTable th").each(function(i) {
+        $("#archiveProductInboundTable th").each(function(i) {
             if ($($(this)).html() == "Date Inbound") {
                 categoryIndex = i;
                 return false;
@@ -302,20 +299,6 @@ $year = date("Y");
         });
 
         table.draw();
-
-
-
-        $(document).on('click', '#hel', function() {
-            alert('hello');
-        });
-
-
-
-
-
-
-
-
 
     });
 </script>
