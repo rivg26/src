@@ -21,7 +21,7 @@
                 <div class="col-sm-12 col-md-12 col-lg-5 img-Container">
                     <div class="img-Wrapper">
                         <img src="assets/admin-img/petron4.png" alt="" class="img-Banner">
-                    </div>    
+                    </div>
                 </div>
                 <div class="d-flex flex-column align-items-center justify-content-center col-sm-12 col-md-12 col-lg-7">
                     <div class="shadow p-5 mb-5 bg-body rounded wrapper">
@@ -96,8 +96,7 @@
                     $('#adminUsername').removeClass('is-valid');
                     $('#adminUsername').addClass('is-invalid');
                     $('#adminUsernameFeedback').text('Please input username...');
-                }
-                else{
+                } else {
                     $('#adminPassword').removeClass('is-valid');
                     $('#adminPassword').addClass('is-invalid');
                     $('#adminPasswordFeedback').text('Please input password...');
@@ -123,6 +122,10 @@
                             window.location.href = "admin-otp.php";
                         } else if (data.message === 'accLock') {
                             $('#errorBox').text('Your Account is Locked. You already reach the maximum attempts. To retrieve account, please click forgot password');
+                            $('#errorBox').show();
+                            $('#btnLogin').prop('disabled', true);
+                        } else if (data.message === 'permaLock') {
+                            $('#errorBox').text('Your Account is permanent locked. Please ask for the admin to unlock it...');
                             $('#errorBox').show();
                             $('#btnLogin').prop('disabled', true);
                         } else {

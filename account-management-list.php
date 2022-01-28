@@ -28,6 +28,47 @@
                     </tr>
                 </tfoot>
             </table>
+            
+            <div class="text-center alert alert-danger my-4" style="display: none;" id="errorBox">
+                <i class="fas fa-times-circle"></i> <span id="errorText"></span>
+            </div>
+            <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
+                <i class="fas fa-check-circle"></i> <span id="successText"></span>
+            </div>
+            <input type="hidden" id="rowId">
+            <!-- Modal -->
+            <div class="modal fade" id="lockAccountModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to lock this account?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="lock">Lock</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="unlockAccountModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmation <i class="fas fa-question-circle link-warning"></i></h5>
+                            <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to unlock this account?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn shadow-none rippleButton ripple" id="unlock">unlock</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <?php require_once 'loader.php' ?>
@@ -35,6 +76,105 @@
 <?php require_once 'footer.php' ?>
 <script>
     $(document).ready(function(){
+        $(document).on('click','#lock', function(){
+            let datastring = {
+                "lock": $('#lock').val(),
+                "rowId": $('#rowId').val()
+            };
+
+            $.ajax({
+                url: 'includes/account-management-list.inc.php',
+                type: 'POST',
+                data: datastring,
+                dataType: 'json',
+                error: function(error) {
+                    console.log(error);
+                },
+                success: function(data) {
+                    if (data.status) {
+                        $('#lockAccountModal').modal('hide');
+                        $('#errorBox').hide();
+                        $('#successText').text('Successfully lock the account...');
+                        $('#successBox').show();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        $('#lockAccountModal').modal('hide');
+                        $('#errorText').text('Unable to lock the account...');
+                        $('#errorBox').show();
+                        $('#successBox').hide();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                        
+                    }
+                },
+                fail: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    alert(xhr);
+                    alert(textStatus);
+                },
+                catch: function(error) {
+                    alert(error);
+                }
+
+            });
+        });
+        $(document).on('click','#unlock', function(){
+            let datastring = {
+                "unlock": $('#unlock').val(),
+                "rowId": $('#rowId').val()
+            };
+
+            $.ajax({
+                url: 'includes/account-management-list.inc.php',
+                type: 'POST',
+                data: datastring,
+                dataType: 'json',
+                error: function(error) {
+                    console.log(error);
+                },
+                success: function(data) {
+                    if (data.status) {
+                        $('#unlockAccountModal').modal('hide');
+                        $('#errorBox').hide();
+                        $('#successText').text('Successfully unlock the account...');
+                        $('#successBox').show();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        $('#unlockAccountModal').modal('hide');
+                        $('#errorText').text('Unable to unlock the account...');
+                        $('#errorBox').show();
+                        $('#successBox').hide();
+                        window.setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                        
+                    }
+                },
+                fail: function(xhr, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    alert(xhr);
+                    alert(textStatus);
+                },
+                catch: function(error) {
+                    alert(error);
+                }
+
+            });
+        });
+
+        $(document).on('click','#btnAccLock', function(){
+            let rowId = $(this).attr('row.id');
+            $('#rowId').val(rowId);
+        });
+        $(document).on('click','#btnAccUnlock', function(){
+            let rowId = $(this).attr('row.id');
+            $('#rowId').val(rowId);
+        });
         $('#accountManagementTable').DataTable({
             "searching": true,
             "bPaginate": true,

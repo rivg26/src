@@ -1,1 +1,1 @@
-# src
+#An undergraduate thesis manuscript submitted to the faculty of the Department of Information Technology, Cavite State University, Imus, Cavite in partial fulfillment of the requirements for the degree of Bachelor of Science in Information Technology with Contribution No.____. Prepared under the supervision of Mr. Lerio Batula.

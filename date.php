@@ -83,12 +83,12 @@ require_once 'includes/dbh.inc.php';
 
 session_start();
 // echo $_SESSION['otpPhoneNumber'] . '<br>';
-echo $_SESSION['otp'] . '<br>';
+// echo $_SESSION['otp'] . '<br>';
 // echo $_SESSION['otpExpiration'] . '<br>';
 // echo $_SESSION['username'] . '<br>';
 // echo $_SESSION['accRole'];
 // echo $_SESSION['forgotUsername'];
-
+// date_default_timezone_set('Asia/Hong_Kong');
 // $list=array();
 // $month = date('m');
 // $year = date('Y');
@@ -99,9 +99,28 @@ echo $_SESSION['otp'] . '<br>';
 //     if (date('m', $time)==$month)       
 //         $list[]=date('Y-m-d', $time);
 // }
-// echo "<pre>";
-// print_r($list);
-// echo "</pre>";
+// $rows = [];
+// for($x= 0; $x < count($list); $x++){
+//     $sql = "SELECT SUM(`sales_total_price`) AS 'total_sales' FROM `sales_table` WHERE `sales_status` = 'paid' AND `sales_purchase_date` = '$list[$x]';";
+//     $result = mysqli_query($conn,$sql);
+//     // if()
+//     while($row = mysqli_fetch_assoc($result)){
+//         array_push($rows, $row['total_sales']);
+//     }
+// }
+// $pushAllQuantity = [];
+// for ($y = 1; $y <= 8; $y++) {
+//     $sqlUniq = "SELECT SUM(item_table.item_quantity) AS 'total_quant' FROM `sales_table` JOIN item_table ON item_table.item_invoice = sales_invoice WHERE sales_status = 'paid' AND `sales_purchase_date` > date_sub(now(), interval 1 week) AND item_table.item_product_id = '$y';";
+//     $resultA = mysqli_query($conn, $sqlUniq);
+//     while($rowa = mysqli_fetch_assoc($resultA)){
+//         array_push($pushAllQuantity, $rowa['total_quant']);
+//     }
+
+// }
+
+echo "<pre>";
+print_r($rows);
+echo "</pre>";
 
 
 
@@ -115,7 +134,7 @@ echo $_SESSION['otp'] . '<br>';
 
 function newCheckKeys($conn, $RandStr, $sql, $rowKey, $sql2, $rowKey2)
 {
-    
+
     $result = mysqli_query($conn, $sql);
     $check = true;
     while ($Row = mysqli_fetch_assoc($result)) {
@@ -128,20 +147,18 @@ function newCheckKeys($conn, $RandStr, $sql, $rowKey, $sql2, $rowKey2)
     }
 
 
-    if(!$check){
+    if (!$check) {
 
-        $result2 = mysqli_query($conn,$sql2);
+        $result2 = mysqli_query($conn, $sql2);
 
-        while($row = mysqli_fetch_assoc($result2)){
-            if($row[$rowKey2] === $RandStr){
+        while ($row = mysqli_fetch_assoc($result2)) {
+            if ($row[$rowKey2] === $RandStr) {
                 return true;
-            }
-            else{
+            } else {
                 return false;
             }
         }
     }
-
 }
 
 function newGenerateKey($conn, $sql, $code, $rowKey, $sql2, $rowKey2)
@@ -424,15 +441,15 @@ function getCancelledItems($conn, $salesInvoice)
     mysqli_stmt_execute($stmt);
 
     $resultData = mysqli_stmt_get_result($stmt);
-    
+
     while ($row = mysqli_fetch_assoc($resultData)) {
         $rows[] = $row;
-    } 
+    }
     return $rows;
     mysqli_stmt_close($stmt);
 }
 
-function getLatestQuantityOfItem($conn,$productId)
+function getLatestQuantityOfItem($conn, $productId)
 {
     $sql = "SELECT `pin_invoice`,`pin_product_id`, `pin_quantity` FROM `product_inbound_table` WHERE `pin_product_id` = ? AND `pin_date` = (SELECT MAX(`pin_date`) FROM `product_inbound_table` WHERE `pin_product_id` = ? LIMIT 1) ORDER BY `pin_id` DESC LIMIT 1;";
     $stmt = mysqli_stmt_init($conn);
@@ -444,11 +461,10 @@ function getLatestQuantityOfItem($conn,$productId)
     mysqli_stmt_execute($stmt);
 
     $resultData = mysqli_stmt_get_result($stmt);
-    
+
     if ($row = mysqli_fetch_assoc($resultData)) {
         return $row;
-    } 
-    else{
+    } else {
         return false;
     }
     mysqli_stmt_close($stmt);

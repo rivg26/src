@@ -177,6 +177,12 @@ $(document).on('click', '.adminNav', function () {
       case 'archive-expenses-report':
         var component = 'archive-expenses-report.php';
         break;
+      case 'help':
+        var component = 'help.php';
+        break;
+      case 'settings':
+        var component = 'settings.php';
+        break;
       default:
         var component = false;
 

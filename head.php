@@ -271,8 +271,8 @@ if (isset($_SESSION['empId'])) {
                         <span class="badge-sonar"></span>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="dropdown2">
-                        <a class="dropdown-item" href="#">Help</a>
-                        <a class="dropdown-item" href="#">Setting</a>
+                        <a class="dropdown-item adminNav" link="help" href="">Help</a>
+                        <a class="dropdown-item adminNav" link="settings" href="">Settings</a>
                     </div>
                 </div>
                 <div>

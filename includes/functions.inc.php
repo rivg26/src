@@ -610,7 +610,7 @@ function accountManagementTable($conn)
             <td>'.$row['acc_emp_name'].'</td>
             <td>'.$row['acc_username'].'</td>
             <td>'.$row['acc_role'].'</td>
-            <td><button type="button" class="btn btn-danger shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" title="Archive"><i class="fas fa-trash-alt"></i></button></td>
+            <td><button type="button" class="btn btn-danger shadow-none" row.id= "'.$row['acc_id'].'" id= "btnAccLock" data-bs-toggle="modal" data-bs-target="#lockAccountModal"><i class="fas fa-lock" data-bs-toggle="tooltip" data-bs-placement="top" title="Lock Account"></i></button> <button type="button" class="btn btn-dark shadow-none" data-bs-toggle="modal" data-bs-target="#unlockAccountModal" row.id= "'.$row['acc_id'].'" id= "btnAccUnlock"><i class="fas fa-lock-open" data-bs-toggle="tooltip" data-bs-placement="top" title="Unlock Account"></i></button></td>
         </tr>';
     }
 }

@@ -49,6 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 ]);
 
             }
+            elseif($lock === 5){
+                echo json_encode([
+                    'status' => false,
+                    'message' => 'permaLock'
+                ]);
+            }
             elseif($checkPassword === false){
 
                 $token = $lock + 1;
