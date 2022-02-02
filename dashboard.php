@@ -179,8 +179,8 @@ while ($row10 = mysqli_fetch_assoc($result10)) {
         }
     }
 </style>
-<div class="container-fluid" style="position: relative; ">
 
+<div class="container-fluid" style="position: relative; ">
     <div class="row">
         <div class="col-md-6 d-flex flex-column align-items-center justify-content-center ">
             <div class="container">
@@ -192,15 +192,15 @@ while ($row10 = mysqli_fetch_assoc($result10)) {
                         <div class="text-center mt-2">
                             <h6>Total Quantity Legend</h6>
                         </div>
-                        <div class="row my-4">
-                            <div class="col-md-4"><span class="alert alert-info w-25 rounded"></span> &nbsp; Sufficient Quantity</div>
-                            <div class="col-md-4"><span class="alert alert-warning w-25 rounded"></span> &nbsp; Low Quantity</div>
-                            <div class="col-md-4"><span class="alert alert-danger w-25 rounded"></span> &nbsp; Zero Quantity</div>
+                        <div class="row my-3">
+                            <div class="col-md-4"><span class="alert alert-info w-25 rounded"></span> &nbsp; Sufficient Supply</div>
+                            <div class="col-md-4"><span class="alert alert-warning w-25 rounded"></span> &nbsp; Low Supply</div>
+                            <div class="col-md-4"><span class="alert alert-danger w-25 rounded"></span> &nbsp; Zero Supply</div>
                         </div>
                         <div class="text-center mt-5">
                             <h6>Calendar Legend</h6>
                         </div>
-                        <div class="row my-4">
+                        <div class="row my-2">
                             <div class="col-md-4"><span class="alert w-25 rounded" style="background-color: #e06f1f;"></span> &nbsp; To be Delivered</div>
                             <div class="col-md-4"><span class="alert w-25 rounded" style="background-color: #00b300;"></span> &nbsp; Delivered</div>
                             <div class="col-md-4"><span class="alert w-25 rounded" style="background-color: #b30000;"></span> &nbsp; Cancelled</div>
@@ -477,18 +477,27 @@ while ($row10 = mysqli_fetch_assoc($result10)) {
     </div>
     <div class="row flex-row align-items-center justify-content-center">
         <div class="col-md-5 shadow-sm p-3 mb-5 bg-body rounded me-1">
+            <div class="text-center mb-3">
+                <h6 class="display-6">Fast Moving Items</h6>
+            </div>
             <canvas id="myChart2"></canvas>
         </div>
         <div class="col-md-5 shadow-sm p-3 mb-5 bg-body rounded ms-1">
+            <div class="text-center mb-3">
+                <h6 class="display-6">Sales Comparison</h6>
+            </div>
             <canvas id="myChart3"></canvas>
         </div>
     </div>
     <?php require_once 'loader.php' ?>
 </div>
+
 <?php require_once 'footer.php' ?>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.js" integrity="sha256-nCXGH8kkPFozCBx4meHWhA5OCqXhhBzoBVpHfM/HmwM=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js" integrity="sha256-Y26AMvaIfrZ1EQU49pf6H4QzVTrOI8m9wQYKkftBt4s=" crossorigin="anonymous"></script>
 <script>
+
+
     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];;
     var date = new Date();
     const ctx = document.getElementById('myChart').getContext('2d');
@@ -594,7 +603,7 @@ while ($row10 = mysqli_fetch_assoc($result10)) {
                     },
                     align: 'start',
                     position: 'left',
-                    
+
 
                 }
             }

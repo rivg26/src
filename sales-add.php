@@ -23,7 +23,7 @@ $stocks = getStocks($conn);
                 </div>
             </div>
             <input type="hidden" id="salesInvoice" value="<?= GenerateKey($conn, 'SELECT * FROM sales_table;', 'SINV-', 'sales_invoice') ?>">
-            <button class="col-sm-1 btn btn-success shadow-none" data-toggle="tooltip" title="Add New Customer" data-bs-placement="right"><i class="fas fa-user-plus"></i> NEW</button>
+            <button class="col-sm-1 btn btn-success shadow-none" data-toggle="tooltip" title="Add New Customer" data-bs-placement="right" id="newCustomer"><i class="fas fa-user-plus"></i> NEW</button>
         </div>
         <fieldset class="border mt-5 p-5  g-5 bg-light">
             <legend class="float-none w-auto">CART</legend>
@@ -393,6 +393,14 @@ $stocks = getStocks($conn);
 
 <script>
     $(document).ready(function() {
+        $(document).on('click','#newCustomer', function(){
+            $("#loader").fadeIn();
+            window.setTimeout(function() {
+                $("#loader").fadeOut();
+                window.location.href = "customer-view.php";
+            }, 2000);
+
+        });
         // var time = new Date().getTime();
         // $(document.body).bind("mousemove keypress", function(e) {
         //     time = new Date().getTime();
@@ -647,7 +655,7 @@ $stocks = getStocks($conn);
 
         });
 
-        $('.zoom').magnify();
+        // $('.zoom').magnify();
         var today = new Date().toLocaleString();
         // $('[data-toggle="tooltip"]').tooltip();
 

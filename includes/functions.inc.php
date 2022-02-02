@@ -600,7 +600,8 @@ function accountEmployeeSelect($conn)
 
 function accountManagementTable($conn)
 {
-    $sql = "SELECT `acc_id`, `acc_role`, `acc_username`, `acc_date_creation`, CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') as 'acc_emp_name' FROM `admin_account_table` JOIN employee_table ON employee_table.emp_id = acc_emp_id;";
+    $employee = $_SESSION['empId'];
+    $sql = "SELECT `acc_id`, `acc_role`, `acc_username`, `acc_date_creation`, CONCAT(employee_table.emp_lastname, ', ', employee_table.emp_firstname, ' ' , SUBSTR(employee_table.emp_middlename,1,1), '.') as 'acc_emp_name' FROM `admin_account_table` JOIN employee_table ON employee_table.emp_id = acc_emp_id WHERE NOT acc_emp_id = '$employee';";
     $result = mysqli_query($conn, $sql);
 
     while ($row = mysqli_fetch_assoc($result)) {

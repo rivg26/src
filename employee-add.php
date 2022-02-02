@@ -59,7 +59,7 @@ if (isset($_GET['rowId'])) {
     <div class="d-flex justify-content-center align-items-start flex-row" style="position: relative;display:none; "><?php require_once 'loader.php' ?></div>
     <div class="mx-auto shadow p-5 my-5 bg-white rounded justify-content-center">
         <div class="text-start">
-            <h5 class="display-4  mt-3 no-printme">Add Employee</h5>
+            <h5 class="display-4  mt-3 no-printme">View/Add Employee</h5>
         </div>
         <div class="mb-5 no-printme">
             &nbsp;

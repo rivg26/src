@@ -31,16 +31,16 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
     if(isset($_POST['customerSubmit'])){
 
-        $customerFirstName = validateData($_POST['customerFirstName']);
-        $customerLastName = validateData($_POST['customerLastName']);
-        $customerMiddleName = validateData($_POST['customerMiddleName']);
+        $customerFirstName = ucwords(validateData($_POST['customerFirstName']));
+        $customerLastName = ucwords(validateData($_POST['customerLastName']));
+        $customerMiddleName = ucwords(validateData($_POST['customerMiddleName']));
         $customerPhoneNumber = "0".validateData($_POST['customerPhoneNumber']);
-        $customerUnit = validateData($_POST['customerUnit']);
-        $customerStreet = validateData($_POST['customerStreet']);
-        $customerBarangay = validateData($_POST['customerBarangay']);
-        $customerCity = validateData($_POST['customerCity']);
-        $customerProvince = validateData($_POST['customerProvince']);
-        $customerLandmark = validateData($_POST['customerLandmark']);
+        $customerUnit = ucwords(validateData($_POST['customerUnit']));
+        $customerStreet = ucwords(validateData($_POST['customerStreet']));
+        $customerBarangay = ucwords(validateData($_POST['customerBarangay']));
+        $customerCity = ucwords(validateData($_POST['customerCity']));
+        $customerProvince = ucwords(validateData($_POST['customerProvince']));
+        $customerLandmark = ucwords(validateData($_POST['customerLandmark']));
         $customerNumber = validateData($_POST['customerNumber']);
         date_default_timezone_set('Asia/Hong_Kong');
         $customerDate = date('Y-m-d');
@@ -54,16 +54,16 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     }
 
     if(isset($_POST['customerUpdate'])){
-        $customerFirstName = validateData($_POST['customerFirstName']);
-        $customerLastName = validateData($_POST['customerLastName']);
-        $customerMiddleName = validateData($_POST['customerMiddleName']);
+        $customerFirstName = ucwords(validateData($_POST['customerFirstName']));
+        $customerLastName = ucwords(validateData($_POST['customerLastName']));
+        $customerMiddleName = ucwords(validateData($_POST['customerMiddleName']));
         $customerPhoneNumber = "0".validateData($_POST['customerPhoneNumber']);
-        $customerUnit = validateData($_POST['customerUnit']);
-        $customerStreet = validateData($_POST['customerStreet']);
-        $customerBarangay = validateData($_POST['customerBarangay']);
-        $customerCity = validateData($_POST['customerCity']);
-        $customerProvince = validateData($_POST['customerProvince']);
-        $customerLandmark = validateData($_POST['customerLandmark']);
+        $customerUnit = ucwords(validateData($_POST['customerUnit']));
+        $customerStreet = ucwords(validateData($_POST['customerStreet']));
+        $customerBarangay = ucwords(validateData($_POST['customerBarangay']));
+        $customerCity = ucwords(validateData($_POST['customerCity']));
+        $customerProvince = ucwords(validateData($_POST['customerProvince']));
+        $customerLandmark = ucwords(validateData($_POST['customerLandmark']));
         $customerNumber = validateData($_POST['customerNumber']);
         date_default_timezone_set('Asia/Hong_Kong');
         $customerDate = date('Y-m-d');

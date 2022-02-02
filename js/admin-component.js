@@ -21,4 +21,15 @@ $(document).ready(function () {
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    var toastList = toastElList.map(function(toastEl) {
+        // Creates an array of toasts (it only initializes them)
+        return new bootstrap.Toast(toastEl, {
+            animation: true,
+            autohide: false,
+            delay: 10000,
+        }) // No need for options; use the default options
+    });
+    toastList.forEach(toast => toast.show());
 });

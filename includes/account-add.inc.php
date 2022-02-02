@@ -47,7 +47,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         $accDate = date('Y-m-d');
         $hashedPwd = password_hash($accPassword, PASSWORD_DEFAULT);
         $apicode = "ST-RONIV102938_YZMCN";
-        $passwd = "}prcryxu((";
+        $passwd = "l$3ap3176e";
         $message = "Paredes Petron User Account | Username: ". $accUsername . " Password: ". $accPassword;
         itexmo($accPhoneNumber, $message, $apicode, $passwd);
         insertAccountData($conn,$accEmployee,$accRole,$accUsername,$hashedPwd,$accDate,$accLock);

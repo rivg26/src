@@ -20,7 +20,7 @@ if (isset($_GET['rowId'])) {
 <div class="container" style="position: relative;">
     <div class="mx-auto shadow p-5 my-5 bg-white rounded justify-content-center printme">
         <div class="text-center ">
-            <h5 class=" display-4 mb-5">Add Expenses</h5>
+            <h5 class=" display-4 mb-5">View/Add Expenses</h5>
         </div>
 
         <div class="row mt-5 mb-4 d-flex flex-row justify-content-between">

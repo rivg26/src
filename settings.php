@@ -40,14 +40,22 @@
         </div>
         <hr>
         <div class="row">
-            <div class="mb-3 row">
-                <label for="staticEmail" class="col-sm-3 col-form-label">
-                    <h5>Download Database: </h5>
-                </label>
-                <div class="col-sm-9">
-                    <button class="btn shadow-none rippleButton ripple" data-bs-toggle="modal" data-bs-target="#downloadModal" id="btnDownload">Download</button>
-                </div>
-            </div>
+            <?php
+                if(isset($_SESSION['accRole'])){
+                    if($_SESSION['accRole'] === 'admin'){
+                        echo 
+                        '<div class="mb-3 row">
+                        <label for="staticEmail" class="col-sm-3 col-form-label">
+                            <h5>Download Database: </h5>
+                        </label>
+                        <div class="col-sm-9">
+                            <button class="btn shadow-none rippleButton ripple" data-bs-toggle="modal" data-bs-target="#downloadModal" id="btnDownload">Download</button>
+                        </div>
+                    </div>';
+                    }
+                }
+            ?>
+            
         </div>
         <div class="text-center alert alert-success my-4" style="display: none;" id="successBox">
             <i class="fas fa-check-circle"></i> <span id="successText"></span>

@@ -83,7 +83,7 @@ require_once 'includes/dbh.inc.php';
 
 session_start();
 // echo $_SESSION['otpPhoneNumber'] . '<br>';
-// echo $_SESSION['otp'] . '<br>';
+echo $_SESSION['otp'] . '<br>';
 // echo $_SESSION['otpExpiration'] . '<br>';
 // echo $_SESSION['username'] . '<br>';
 // echo $_SESSION['accRole'];
@@ -118,9 +118,9 @@ session_start();
 
 // }
 
-echo "<pre>";
-print_r($rows);
-echo "</pre>";
+// echo "<pre>";
+// print_r($rows);
+// echo "</pre>";
 
 
 

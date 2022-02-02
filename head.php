@@ -30,7 +30,7 @@ if (isset($_SESSION['empId'])) {
     <link rel="stylesheet" href="css/admin-component.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css" integrity="sha256-zsz1FbyNCtIE2gIB+IyWV7GbCLyKJDTBRz0qQaBSLxM=" crossorigin="anonymous">
     <link rel="shortcut icon" type="image/png" href="assets/logo/favicon.ico" />
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>
@@ -94,9 +94,7 @@ if (isset($_SESSION['empId'])) {
                                     <li>
                                         <a class="adminNav" link="sales-report" href="">Sales Report</a>
                                     </li>
-                                    <li>
-                                        <a class="adminNav" link="price-update-report" href="">Price Update Report</a>
-                                    </li>
+
                                 </ul>
                             </div>
                         </li>
@@ -121,6 +119,9 @@ if (isset($_SESSION['empId'])) {
                                     </li> -->
                                     <li>
                                         <a class="adminNav" link="inventory-report" href="">View Inventory Report</a>
+                                    </li>
+                                    <li>
+                                        <a class="adminNav" link="price-update-report" href="">Price Update Report</a>
                                     </li>
                                 </ul>
                             </div>
@@ -166,7 +167,7 @@ if (isset($_SESSION['empId'])) {
                         <li class="header-menu">
                             <span>Archive</span>
                         </li>
-                        
+
                         <li class="sidebar-dropdown">
                             <a href="#">
                                 <i class="fas fa-file-archive"></i>
@@ -207,10 +208,34 @@ if (isset($_SESSION['empId'])) {
             <!-- sidebar-footer  -->
             <div class="sidebar-footer">
                 <div class="dropdown customDropdown">
+                    <?php
+                    $allQuantity = getStocks($conn);
+
+                    $pending = '';
+                    $notif = 0;
+                    $lqs = "SELECT COUNT(`delivery_status`) as 'pending_delivery' FROM `delivery_table` WHERE `delivery_status` = 'to be delivered';";
+                    $aim = mysqli_query($conn, $lqs);
+
+                    if (mysqli_num_rows($aim) > 0) {
+                        $notif++;
+                        $pending = true;
+                    } else {
+                    }
+
+                    for ($x = 0; $x < 8; $x++) {
+                        if ($allQuantity[$x]['total_quantity'] <= 0) {
+                            $notif++;
+                        } elseif ($allQuantity[$x]['total_quantity'] <= 5) {
+                            $notif++;
+                        }
+                    }
+
+
+                    ?>
 
                     <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" id="dropdown1" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-bell"></i>
-                        <span class="badge rounded-pill bg-warning notification">3</span>
+                        <span class="badge rounded-pill bg-primary notification"><?php echo $notif; ?></span>
                     </a>
                     <div class="dropdown-menu notifications " aria-labelledby="dropdown1">
                         <div class="notifications-header">
@@ -218,7 +243,67 @@ if (isset($_SESSION['empId'])) {
                             Notifications
                         </div>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">
+                        <?php
+                        if ($pending) {
+                            $data = "";
+                            $notif += 1;
+                            while ($sow = mysqli_fetch_assoc($aim)) {
+                                $data = $sow['pending_delivery'];
+                            }
+                            echo '
+                                <a class="dropdown-item" href="">
+                                    <div class="notification-content">
+                                        <div class="icon">
+                                            <i class="fas fa-truck-loading text-info border border-info"></i>
+                                        </div>
+                                        <div class="content">
+                                            <div class="notification-detail">There are still ' . $data . ' pending delivery that you need to process...</div>
+                                            <div class="notification-time">
+                                                Today
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                ';
+                        }
+                        for ($x = 0; $x < 8; $x++) {
+                            if ($allQuantity[$x]['total_quantity'] <= 0) {
+                                echo '<a class="dropdown-item" href="">
+                                        <div class="notification-content">
+                                            <div class="icon">
+                                                <i class="fas fa-exclamation text-danger border border-danger"></i>
+                                            </div>
+                                            <div class="content">
+                                                <div class="notification-detail">The stocks of ' . $allQuantity[$x]['product_name'] . ' is depleted. Please Restock immediately.</div>
+                                                <div class="notification-time">
+                                                    Today
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    ';
+                            } elseif ($allQuantity[$x]['total_quantity'] <= 5) {
+                                echo '                        
+                                    <a class="dropdown-item" href="">
+                                        <div class="notification-content">
+                                            <div class="icon">
+                                                <i class="fas fa-exclamation-triangle text-warning border border-warning"></i>
+                                            </div>
+                                            <div class="content">
+                                                <div class="notification-detail">The stocks of ' . $allQuantity[$x]['product_name'] . ' is less than 5. Please Restock immediately.</div>
+                                                <div class="notification-time">
+                                                    Today
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>';
+                            }
+                        }
+
+
+                        ?>
+
+                        <!-- <a class="dropdown-item" href="#">
                             <div class="notification-content">
                                 <div class="icon">
                                     <i class="fas fa-check text-success border border-success"></i>
@@ -235,7 +320,7 @@ if (isset($_SESSION['empId'])) {
                         <a class="dropdown-item" href="#">
                             <div class="notification-content">
                                 <div class="icon">
-                                    <i class="fas fa-exclamation text-info border border-info"></i>
+                                    <i class="fas fa-exclamation text-danger border border-danger"></i>
                                 </div>
                                 <div class="content">
                                     <div class="notification-detail">Lorem ipsum dolor sit amet consectetur adipisicing
@@ -259,7 +344,7 @@ if (isset($_SESSION['empId'])) {
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </a> -->
                         <div class="dropdown-divider"></div>
                         <!-- <a class="dropdown-item text-center" href="#">View all notifications</a> -->
                     </div>
@@ -297,7 +382,7 @@ if (isset($_SESSION['empId'])) {
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Are you sure you want to logout? 
+                        Are you sure you want to logout?
                     </div>
 
                     <div class="modal-footer">
@@ -311,13 +396,53 @@ if (isset($_SESSION['empId'])) {
             <div id="overlay" class="overlay"></div>
             <div class="container-fluid p-5">
                 <div class="row no-printme">
-                    <div class="form-group col-md-12 mb-0 p-1">
-                        <a id="toggle-sidebar" class="btn shadow-none rounded-0" href="#">
+                    <div class="form-group col-md-12 mb-0 p-1 ">
+                        <a id="toggle-sidebar" class="btn shadow-none rounded-0"  href="#">
                             <span><i class="fas fa-bars"></i></span>
                         </a>
                         <!-- <a id="pin-sidebar" class="btn btn-outline-secondary rounded-0" href="#">
                             <span>Pin Sidebar</span>
                         </a> -->
+                        
+                        <div class="toast-container position-absolute top-0 end-0 p-3" id="toastPlacement" style="z-index: 11">
+                            <!-- Then put toasts within -->
+                            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <img src="..." class="rounded me-2" alt="...">
+                                    <strong class="me-auto">Bootstrap</strong>
+                                    <small class="text-muted">just now</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">
+                                    See? Just like this.
+                                </div>
+                            </div>
+
+                            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <img src="..." class="rounded me-2" alt="...">
+                                    <strong class="me-auto">Bootstrap</strong>
+                                    <small class="text-muted">2 seconds ago</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">
+                                    Heads up, toasts will stack automatically
+                                </div>
+                            </div>
+                            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <img src="..." class="rounded me-2" alt="...">
+                                    <strong class="me-auto">Bootstrap</strong>
+                                    <small class="text-muted">2 seconds ago</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">
+                                    Heads up, toasts will stack automatically
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </div>
