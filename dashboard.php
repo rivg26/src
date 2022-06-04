@@ -498,7 +498,7 @@ while ($row10 = mysqli_fetch_assoc($result10)) {
 <script>
 
 
-    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];;
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var date = new Date();
     const ctx = document.getElementById('myChart').getContext('2d');
     const myChart = new Chart(ctx, {
