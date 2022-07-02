@@ -9,7 +9,7 @@ $stocks = getStocks($conn);
 <div class="row" style="position: relative;">
     <div class="row shadow p-5 mb-4 bg-body rounded  mt-3">
         <div class="text-center">
-            <h5 class="display-4 mb-5 mt-3">Add Sales</h5>
+            <h5 class="display-4 mb-5 mt-3">Point of Sales</h5>
         </div>
         <div class="mb-3 row">
             <label for="tags" class="col-sm-1 col-form-label" style="font-size: 0.82rem;">Customer Name</label>
